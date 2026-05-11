@@ -1,0 +1,8 @@
+<div class="ds-stat-card__label">{{ label() }}</div>
+<div class="ds-stat-card__value">{{ value() }}</div>
+@if (delta()) {
+  <div [class]="deltaClasses()">
+    <ng-content select="[ds-stat-icon]" />
+    <span>{{ delta() }}</span>
+  </div>
+}

@@ -1,0 +1,37 @@
+// Typography primitives — scale map + helper mixin.
+
+@use 'sass:map';
+
+$font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+$font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+// Each entry: size, line-height, optional letter-spacing, optional weight.
+$type-scale: (
+  xs:      (size: 11px, line-height: 16px, tracking: 0.02em),
+  sm:      (size: 12px, line-height: 18px),
+  base:    (size: 13px, line-height: 20px),
+  md:      (size: 14px, line-height: 22px),
+  lg:      (size: 16px, line-height: 24px, tracking: -0.005em),
+  xl:      (size: 20px, line-height: 28px, tracking: -0.01em),
+  '2xl':   (size: 28px, line-height: 36px, tracking: -0.02em),
+  display: (size: 40px, line-height: 48px, tracking: -0.025em, weight: 600),
+);
+
+@function type-size($name) {
+  @return map.get(map.get($type-scale, $name), size);
+}
+
+@mixin type-style($name) {
+  $tokens: map.get($type-scale, $name);
+  @if $tokens == null {
+    @error "Unknown type size `#{$name}`.";
+  }
+  font-size: map.get($tokens, size);
+  line-height: map.get($tokens, line-height);
+  @if map.has-key($tokens, tracking) {
+    letter-spacing: map.get($tokens, tracking);
+  }
+  @if map.has-key($tokens, weight) {
+    font-weight: map.get($tokens, weight);
+  }
+}

@@ -1,0 +1,5 @@
+@if (src()) {
+  <img class="ds-avatar__img" [src]="src()" [alt]="alt()" />
+} @else {
+  <span aria-hidden="true">{{ shortInitials() }}</span>
+}

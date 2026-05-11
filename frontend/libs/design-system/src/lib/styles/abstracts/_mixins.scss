@@ -1,0 +1,117 @@
+// Theme emission mixins — turn SASS source-of-truth values into CSS custom
+// properties that components consume. Light theme runs at :root; dark theme
+// only overrides the values that differ.
+
+@use 'palette' as p;
+@use 'spacing' as s;
+@use 'status' as st;
+
+@mixin emit-palette {
+  --n-0:   #{p.$n-0};
+  --n-50:  #{p.$n-50};
+  --n-100: #{p.$n-100};
+  --n-200: #{p.$n-200};
+  --n-300: #{p.$n-300};
+  --n-400: #{p.$n-400};
+  --n-500: #{p.$n-500};
+  --n-600: #{p.$n-600};
+  --n-700: #{p.$n-700};
+  --n-800: #{p.$n-800};
+  --n-900: #{p.$n-900};
+
+  --brand-50:  #{p.$brand-50};
+  --brand-100: #{p.$brand-100};
+  --brand-200: #{p.$brand-200};
+  --brand-300: #{p.$brand-300};
+  --brand-400: #{p.$brand-400};
+  --brand-500: #{p.$brand-500};
+  --brand-600: #{p.$brand-600};
+  --brand-700: #{p.$brand-700};
+  --brand-800: #{p.$brand-800};
+
+  --success-400: #{p.$success-400};
+  --success-500: #{p.$success-500};
+  --success-600: #{p.$success-600};
+  --warning-400: #{p.$warning-400};
+  --warning-500: #{p.$warning-500};
+  --warning-600: #{p.$warning-600};
+  --danger-400:  #{p.$danger-400};
+  --danger-500:  #{p.$danger-500};
+  --danger-600:  #{p.$danger-600};
+  --info-400:    #{p.$info-400};
+  --info-500:    #{p.$info-500};
+  --info-600:    #{p.$info-600};
+}
+
+@mixin emit-scale {
+  --sp-1: #{s.$sp-1};
+  --sp-2: #{s.$sp-2};
+  --sp-3: #{s.$sp-3};
+  --sp-4: #{s.$sp-4};
+  --sp-5: #{s.$sp-5};
+  --sp-6: #{s.$sp-6};
+  --sp-7: #{s.$sp-7};
+  --sp-8: #{s.$sp-8};
+
+  --r-sm: #{s.$radius-sm};
+  --r-md: #{s.$radius-md};
+  --r-lg: #{s.$radius-lg};
+  --r-xl: #{s.$radius-xl};
+}
+
+@mixin emit-status-tokens($theme) {
+  @each $name in st.$status-names {
+    --st-#{$name}-fg: #{st.status-fg($name, $theme)};
+    --st-#{$name}-bg: #{st.status-bg($name, $theme)};
+  }
+}
+
+@mixin emit-shadows($theme) {
+  @if $theme == dark {
+    --sh-1: #{s.$shadow-1-dark};
+    --sh-2: #{s.$shadow-2-dark};
+    --sh-3: #{s.$shadow-3-dark};
+    --sh-4: #{s.$shadow-4-dark};
+  } @else {
+    --sh-1: #{s.$shadow-1-light};
+    --sh-2: #{s.$shadow-2-light};
+    --sh-3: #{s.$shadow-3-light};
+    --sh-4: #{s.$shadow-4-light};
+  }
+}
+
+@mixin emit-light-theme {
+  @include emit-palette;
+  @include emit-scale;
+  @include emit-status-tokens(light);
+  @include emit-shadows(light);
+
+  --bg-canvas:  #fafafb;
+  --bg-surface: #ffffff;
+  --bg-subtle:  #f4f4f6;
+  --bg-muted:   #eeeef0;
+  --border-1:   #e7e7eb;
+  --border-2:   #d8d8de;
+  --text-1:     #{p.$n-900};
+  --text-2:     #{p.$n-600};
+  --text-3:     #{p.$n-500};
+  --text-4:     #{p.$n-400};
+  --ring:       rgba(91, 77, 238, 0.45);
+}
+
+@mixin emit-dark-theme {
+  @include emit-status-tokens(dark);
+  @include emit-shadows(dark);
+
+  --bg-canvas:  #0a0a10;
+  --bg-surface: #111118;
+  --bg-subtle:  #15151d;
+  --bg-muted:   #1c1c26;
+  --border-1:   #23232f;
+  --border-2:   #2d2d3a;
+  --text-1:     #f3f3f6;
+  --text-2:     #c9c9d0;
+  --text-3:     #9a9aa6;
+  --text-4:     #6c6c79;
+  --ring:       rgba(122, 106, 255, 0.55);
+}

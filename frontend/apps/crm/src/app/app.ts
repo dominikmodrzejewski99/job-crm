@@ -2,22 +2,26 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { catchError, of } from 'rxjs';
+
+// Per-component imports demonstrate the secondary-entry-point pattern.
+// Each import resolves directly to that component's public-api.ts via the
+// tsconfig.base.json paths, giving consumers tighter tree-shaking and
+// clearer dependency boundaries than a single barrel import.
+import { DsAvatar } from '@frontend/design-system/avatar';
+import { DsBadge, DsApplicationStatus } from '@frontend/design-system/badge';
+import { DsButton } from '@frontend/design-system/button';
 import {
-  DsApplicationStatus,
-  DsAvatar,
-  DsBadge,
-  DsButton,
   DsCard,
   DsCardBody,
   DsCardFooter,
   DsCardHeader,
-  DsChip,
-  DsEmpty,
-  DsSkeleton,
-  DsSpinner,
-  DsStatCard,
-  ThemeService,
-} from '@frontend/design-system';
+} from '@frontend/design-system/card';
+import { DsChip } from '@frontend/design-system/chip';
+import { DsEmpty } from '@frontend/design-system/empty';
+import { DsSkeleton } from '@frontend/design-system/skeleton';
+import { DsSpinner } from '@frontend/design-system/spinner';
+import { DsStatCard } from '@frontend/design-system/stat-card';
+import { ThemeService } from '@frontend/design-system/theme';
 
 interface PingResponse {
   status: string;

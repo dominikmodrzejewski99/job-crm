@@ -1,3 +1,6 @@
-// Pull in the JobTrack design system: tokens, themes, base layer, typography,
-// and utility classes. Component styles live in their own .scss files.
+// Pull in the JobTrack design system global layer: SASS abstracts are the
+// source of truth, the index.scss barrel emits CSS custom properties (light
+// and dark themes), typography utility classes, base reset, and helpers.
+// Component styles live in their own .scss files and consume the SASS
+// abstracts directly via @use.
 @use '../../../libs/design-system/src/lib/styles' as ds;

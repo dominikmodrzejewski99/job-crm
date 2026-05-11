@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'ds-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<ng-content />`,
+  templateUrl: './card.html',
   styleUrl: './card.scss',
   host: { class: 'ds-card' },
 })
@@ -18,7 +18,7 @@ export class DsCard {}
   selector: 'ds-card-header',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<ng-content />`,
+  templateUrl: './card.html',
   styleUrls: ['./card.scss'],
   host: { class: 'ds-card__header' },
 })
@@ -28,7 +28,7 @@ export class DsCardHeader {}
   selector: 'ds-card-body',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<ng-content />`,
+  templateUrl: './card.html',
   styleUrls: ['./card.scss'],
   host: { class: 'ds-card__body' },
 })
@@ -38,7 +38,7 @@ export class DsCardBody {}
   selector: 'ds-card-footer',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<ng-content />`,
+  templateUrl: './card.html',
   styleUrls: ['./card.scss'],
   host: { class: 'ds-card__footer' },
 })

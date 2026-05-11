@@ -1,91 +1,9 @@
-// Design tokens — sourced from JobTrack Design System.html
-// Light theme is the default; dark theme overrides via [data-theme="dark"] in _themes.scss.
+// Light theme — emits CSS custom properties from SASS source-of-truth values.
+// All theme-dependent surfaces, text, ring, shadows, and status tokens flow
+// through the `emit-light-theme` mixin defined in `abstracts/_mixins.scss`.
+
+@use 'abstracts/mixins' as m;
 
 :root {
-  // ---- Neutral scale (cool slate) ----
-  --n-0:   #ffffff;
-  --n-50:  #f7f7f8;
-  --n-100: #eeeef0;
-  --n-200: #e3e3e7;
-  --n-300: #c9c9d0;
-  --n-400: #9a9aa6;
-  --n-500: #6c6c79;
-  --n-600: #48485a;
-  --n-700: #2d2d3a;
-  --n-800: #1c1c26;
-  --n-900: #0e0e14;
-
-  // ---- Brand (saturated indigo/violet) ----
-  --brand-50:  #efeeff;
-  --brand-100: #ddd9ff;
-  --brand-200: #c0b8ff;
-  --brand-300: #9b8eff;
-  --brand-400: #7a6aff;
-  --brand-500: #5b4dee; // primary action
-  --brand-600: #4a3edc;
-  --brand-700: #3b31b3;
-  --brand-800: #2d2685;
-
-  // ---- Semantic ----
-  --success-400: #4ade80;
-  --success-500: #16a34a;
-  --success-600: #15803d;
-  --warning-400: #fbbf24;
-  --warning-500: #d97706;
-  --warning-600: #b45309;
-  --danger-400:  #f87171;
-  --danger-500:  #dc2626;
-  --danger-600:  #b91c1c;
-  --info-400:    #38bdf8;
-  --info-500:    #0284c7;
-  --info-600:    #0369a1;
-
-  // ---- Application status (per backend enum) ----
-  // Pair: foreground (text/dot) + tinted background
-  --st-draft-fg:    #6c6c79;  --st-draft-bg:    rgba(108, 108, 121, 0.12);
-  --st-applied-fg:  #5b4dee;  --st-applied-bg:  rgba(91, 77, 238, 0.14);
-  --st-ack-fg:      #0ea5e9;  --st-ack-bg:      rgba(14, 165, 233, 0.14);
-  --st-intsch-fg:   #a855f7;  --st-intsch-bg:   rgba(168, 85, 247, 0.14);
-  --st-intdone-fg:  #8b5cf6;  --st-intdone-bg:  rgba(139, 92, 246, 0.14);
-  --st-taskrx-fg:   #f59e0b;  --st-taskrx-bg:   rgba(245, 158, 11, 0.14);
-  --st-tasktx-fg:   #65a30d;  --st-tasktx-bg:   rgba(101, 163, 13, 0.14);
-  --st-offer-fg:    #16a34a;  --st-offer-bg:    rgba(22, 163, 74, 0.16);
-  --st-rejected-fg: #dc2626;  --st-rejected-bg: rgba(220, 38, 38, 0.14);
-  --st-withdraw-fg: #48485a;  --st-withdraw-bg: rgba(72, 72, 90, 0.14);
-  --st-ghosted-fg:  #9a9aa6;  --st-ghosted-bg:  rgba(154, 154, 166, 0.12);
-
-  // ---- Spacing scale (4px base, 8 steps) ----
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
-  --sp-7: 48px;
-  --sp-8: 64px;
-
-  // ---- Radius ----
-  --r-sm: 4px;
-  --r-md: 6px;
-  --r-lg: 10px;
-  --r-xl: 16px;
-
-  // ---- Shadow (light theme) ----
-  --sh-1: 0 1px 2px rgba(15, 15, 25, 0.06), 0 1px 1px rgba(15, 15, 25, 0.04);
-  --sh-2: 0 2px 4px rgba(15, 15, 25, 0.06), 0 4px 8px rgba(15, 15, 25, 0.06);
-  --sh-3: 0 4px 12px rgba(15, 15, 25, 0.08), 0 8px 24px rgba(15, 15, 25, 0.08);
-  --sh-4: 0 8px 20px rgba(15, 15, 25, 0.10), 0 24px 48px rgba(15, 15, 25, 0.16);
-
-  // ---- Semantic surfaces (light) ----
-  --bg-canvas:  #fafafb;
-  --bg-surface: #ffffff;
-  --bg-subtle:  #f4f4f6;
-  --bg-muted:   #eeeef0;
-  --border-1:   #e7e7eb;
-  --border-2:   #d8d8de;
-  --text-1:     #0e0e14;
-  --text-2:     #48485a;
-  --text-3:     #6c6c79;
-  --text-4:     #9a9aa6;
-  --ring:       rgba(91, 77, 238, 0.45);
+  @include m.emit-light-theme;
 }

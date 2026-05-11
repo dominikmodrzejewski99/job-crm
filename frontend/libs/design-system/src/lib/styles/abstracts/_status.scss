@@ -1,0 +1,96 @@
+// ApplicationStatus tokens — keyed by status name, each entry holds light and
+// dark variants. Consumers should prefer the `status-fg()` / `status-bg()`
+// functions over reaching into the map directly.
+
+@use 'sass:map';
+
+$status-tokens: (
+  draft: (
+    fg-light: #6c6c79,
+    bg-light: rgba(108, 108, 121, 0.12),
+    fg-dark:  #9a9aa6,
+    bg-dark:  rgba(154, 154, 166, 0.10),
+  ),
+  applied: (
+    fg-light: #5b4dee,
+    bg-light: rgba(91, 77, 238, 0.14),
+    fg-dark:  #a89bff,
+    bg-dark:  rgba(122, 106, 255, 0.16),
+  ),
+  ack: (
+    fg-light: #0ea5e9,
+    bg-light: rgba(14, 165, 233, 0.14),
+    fg-dark:  #7dd3fc,
+    bg-dark:  rgba(56, 189, 248, 0.14),
+  ),
+  intsch: (
+    fg-light: #a855f7,
+    bg-light: rgba(168, 85, 247, 0.14),
+    fg-dark:  #d8b4fe,
+    bg-dark:  rgba(192, 132, 252, 0.16),
+  ),
+  intdone: (
+    fg-light: #8b5cf6,
+    bg-light: rgba(139, 92, 246, 0.14),
+    fg-dark:  #c4b5fd,
+    bg-dark:  rgba(167, 139, 250, 0.16),
+  ),
+  taskrx: (
+    fg-light: #f59e0b,
+    bg-light: rgba(245, 158, 11, 0.14),
+    fg-dark:  #fcd34d,
+    bg-dark:  rgba(251, 191, 36, 0.14),
+  ),
+  tasktx: (
+    fg-light: #65a30d,
+    bg-light: rgba(101, 163, 13, 0.14),
+    fg-dark:  #bef264,
+    bg-dark:  rgba(132, 204, 22, 0.14),
+  ),
+  offer: (
+    fg-light: #16a34a,
+    bg-light: rgba(22, 163, 74, 0.16),
+    fg-dark:  #86efac,
+    bg-dark:  rgba(74, 222, 128, 0.16),
+  ),
+  rejected: (
+    fg-light: #dc2626,
+    bg-light: rgba(220, 38, 38, 0.14),
+    fg-dark:  #fca5a5,
+    bg-dark:  rgba(248, 113, 113, 0.14),
+  ),
+  withdraw: (
+    fg-light: #48485a,
+    bg-light: rgba(72, 72, 90, 0.14),
+    fg-dark:  #9a9aa6,
+    bg-dark:  rgba(154, 154, 166, 0.10),
+  ),
+  ghosted: (
+    fg-light: #9a9aa6,
+    bg-light: rgba(154, 154, 166, 0.12),
+    fg-dark:  #6c6c79,
+    bg-dark:  rgba(154, 154, 166, 0.08),
+  ),
+);
+
+// Ordered list of status keys — used by @each loops in component styles.
+$status-names: draft, applied, ack, intsch, intdone, taskrx, tasktx, offer,
+  rejected, withdraw, ghosted;
+
+@function status-fg($name, $theme: light) {
+  $key: if($theme == dark, fg-dark, fg-light);
+  $tokens: map.get($status-tokens, $name);
+  @if $tokens == null {
+    @error "Unknown status `#{$name}`. Expected one of: #{$status-names}.";
+  }
+  @return map.get($tokens, $key);
+}
+
+@function status-bg($name, $theme: light) {
+  $key: if($theme == dark, bg-dark, bg-light);
+  $tokens: map.get($status-tokens, $name);
+  @if $tokens == null {
+    @error "Unknown status `#{$name}`. Expected one of: #{$status-names}.";
+  }
+  @return map.get($tokens, $key);
+}

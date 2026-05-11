@@ -27,12 +27,7 @@ export type DsBadgeVariant =
   selector: 'ds-badge',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    @if (dot()) {
-      <span class="ds-badge__dot" aria-hidden="true"></span>
-    }
-    <ng-content />
-  `,
+  templateUrl: './badge.html',
   styleUrl: './badge.scss',
   host: {
     '[class]': 'classes()',

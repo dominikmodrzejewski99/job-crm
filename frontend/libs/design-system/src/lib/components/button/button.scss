@@ -1,14 +1,13 @@
-// Button — variants × sizes, mirroring JobTrack design.
-// Selector: button[ds-button]
+@use '../../styles/abstracts' as a;
 
 button[ds-button] {
-  // ---- Base ----
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  position: relative;
   font-weight: 500;
-  border-radius: var(--r-md);
+  border-radius: a.$radius-md;
   border: 1px solid transparent;
   white-space: nowrap;
   user-select: none;
@@ -33,26 +32,9 @@ button[ds-button] {
   }
 
   // ---- Sizes ----
-  &.ds-btn-sm {
-    height: 28px;
-    padding: 0 10px;
-    font-size: 12px;
-    line-height: 1;
-  }
-
-  &.ds-btn-md {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 13px;
-    line-height: 1;
-  }
-
-  &.ds-btn-lg {
-    height: 40px;
-    padding: 0 16px;
-    font-size: 14px;
-    line-height: 1;
-  }
+  &.ds-btn-sm { height: 28px; padding: 0 10px; font-size: 12px; line-height: 1; }
+  &.ds-btn-md { height: 32px; padding: 0 12px; font-size: 13px; line-height: 1; }
+  &.ds-btn-lg { height: 40px; padding: 0 16px; font-size: 14px; line-height: 1; }
 
   // ---- Variants ----
   &.ds-btn-primary {
@@ -94,7 +76,6 @@ button[ds-button] {
     &:hover:not(:disabled) { background: var(--danger-600); }
   }
 
-  // Loading — replaces label visually while preserving width.
   &.is-loading {
     cursor: progress;
 
@@ -106,8 +87,6 @@ button[ds-button] {
       animation: ds-btn-spin 800ms linear infinite;
     }
   }
-
-  position: relative;
 }
 
 @keyframes ds-btn-spin {

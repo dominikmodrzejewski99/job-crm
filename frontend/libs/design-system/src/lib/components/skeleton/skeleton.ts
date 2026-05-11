@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'ds-skeleton',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '',
+  templateUrl: './skeleton.html',
   styleUrl: './skeleton.scss',
   host: {
     class: 'ds-skeleton',

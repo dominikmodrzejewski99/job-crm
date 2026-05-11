@@ -1,0 +1,30 @@
+// Spacing, radius, and shadow primitives. SASS variables; no CSS output.
+
+// 4 px base, 8 stops.
+$sp-1: 4px;
+$sp-2: 8px;
+$sp-3: 12px;
+$sp-4: 16px;
+$sp-5: 24px;
+$sp-6: 32px;
+$sp-7: 48px;
+$sp-8: 64px;
+
+// Border radius.
+$radius-sm:   4px;
+$radius-md:   6px;
+$radius-lg:   10px;
+$radius-xl:   16px;
+$radius-pill: 999px;
+
+// Shadow values per theme. Box-shadow supports comma-separated layers;
+// SASS exposes them as comma-separated lists.
+$shadow-1-light: 0 1px 2px rgba(15, 15, 25, 0.06), 0 1px 1px rgba(15, 15, 25, 0.04);
+$shadow-2-light: 0 2px 4px rgba(15, 15, 25, 0.06), 0 4px 8px rgba(15, 15, 25, 0.06);
+$shadow-3-light: 0 4px 12px rgba(15, 15, 25, 0.08), 0 8px 24px rgba(15, 15, 25, 0.08);
+$shadow-4-light: 0 8px 20px rgba(15, 15, 25, 0.10), 0 24px 48px rgba(15, 15, 25, 0.16);
+
+$shadow-1-dark: 0 1px 2px rgba(0, 0, 0, 0.5);
+$shadow-2-dark: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.4);
+$shadow-3-dark: 0 6px 16px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+$shadow-4-dark: 0 12px 32px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.45);

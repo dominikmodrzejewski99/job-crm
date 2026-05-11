@@ -4,18 +4,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'ds-empty',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="ds-empty__icon">
-      <ng-content select="[ds-empty-icon]" />
-    </div>
-    <h3 class="ds-empty__title">{{ title() }}</h3>
-    @if (description()) {
-      <p class="ds-empty__description">{{ description() }}</p>
-    }
-    <div class="ds-empty__actions">
-      <ng-content select="[ds-empty-actions]" />
-    </div>
-  `,
+  templateUrl: './empty.html',
   styleUrl: './empty.scss',
   host: { class: 'ds-empty' },
 })

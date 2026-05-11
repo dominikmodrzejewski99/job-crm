@@ -7,19 +7,7 @@ export type DsButtonSize = 'sm' | 'md' | 'lg';
   selector: 'button[ds-button]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <span class="ds-btn-content">
-      <ng-content />
-    </span>
-    @if (loading()) {
-      <span class="ds-btn-spinner" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
-             stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </span>
-    }
-  `,
+  templateUrl: './button.html',
   styleUrl: './button.scss',
   host: {
     '[class]': 'classes()',

@@ -1,0 +1,40 @@
+// Raw color palette — SASS variables only. No CSS output.
+// These are the immutable source-of-truth values for the design system.
+
+// ---- Neutral (cool slate, very subtle warmth) ----
+$n-0:   #ffffff;
+$n-50:  #f7f7f8;
+$n-100: #eeeef0;
+$n-200: #e3e3e7;
+$n-300: #c9c9d0;
+$n-400: #9a9aa6;
+$n-500: #6c6c79;
+$n-600: #48485a;
+$n-700: #2d2d3a;
+$n-800: #1c1c26;
+$n-900: #0e0e14;
+
+// ---- Brand (saturated indigo/violet) ----
+$brand-50:  #efeeff;
+$brand-100: #ddd9ff;
+$brand-200: #c0b8ff;
+$brand-300: #9b8eff;
+$brand-400: #7a6aff;
+$brand-500: #5b4dee; // primary action
+$brand-600: #4a3edc;
+$brand-700: #3b31b3;
+$brand-800: #2d2685;
+
+// ---- Semantic ----
+$success-400: #4ade80;
+$success-500: #16a34a;
+$success-600: #15803d;
+$warning-400: #fbbf24;
+$warning-500: #d97706;
+$warning-600: #b45309;
+$danger-400:  #f87171;
+$danger-500:  #dc2626;
+$danger-600:  #b91c1c;
+$info-400:    #38bdf8;
+$info-500:    #0284c7;
+$info-600:    #0369a1;

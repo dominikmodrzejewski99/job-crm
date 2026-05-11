@@ -6,16 +6,7 @@ export type DsStatDeltaTone = 'positive' | 'negative' | 'neutral';
   selector: 'ds-stat-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="ds-stat-card__label">{{ label() }}</div>
-    <div class="ds-stat-card__value">{{ value() }}</div>
-    @if (delta()) {
-      <div [class]="deltaClasses()">
-        <ng-content select="[ds-stat-icon]" />
-        <span>{{ delta() }}</span>
-      </div>
-    }
-  `,
+  templateUrl: './stat-card.html',
   styleUrl: './stat-card.scss',
   host: { class: 'ds-stat-card' },
 })

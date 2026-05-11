@@ -1,20 +1,14 @@
-// Typography scale — 7 sizes + display, sourced from JobTrack design.
-// Inter as primary font, JetBrains Mono for code/monospace.
+// Typography utility classes generated from the SASS scale.
 
-.t-xs   { font-size: 11px; line-height: 16px; letter-spacing: 0.02em; }
-.t-sm   { font-size: 12px; line-height: 18px; }
-.t-base { font-size: 13px; line-height: 20px; }
-.t-md   { font-size: 14px; line-height: 22px; }
-.t-lg   { font-size: 16px; line-height: 24px; letter-spacing: -0.005em; }
-.t-xl   { font-size: 20px; line-height: 28px; letter-spacing: -0.01em; }
-.t-2xl  { font-size: 28px; line-height: 36px; letter-spacing: -0.02em; }
-.t-display {
-  font-size: 40px;
-  line-height: 48px;
-  letter-spacing: -0.025em;
-  font-weight: 600;
+@use 'sass:map';
+@use 'abstracts/typography' as t;
+
+@each $name, $tokens in t.$type-scale {
+  .t-#{$name} {
+    @include t.type-style($name);
+  }
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: t.$font-mono;
 }

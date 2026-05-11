@@ -1,0 +1,1 @@
+export { DsSkeleton } from './skeleton';

@@ -6,13 +6,7 @@ export type DsAvatarSize = 'sm' | 'md' | 'lg';
   selector: 'ds-avatar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    @if (src()) {
-      <img class="ds-avatar__img" [src]="src()" [alt]="alt()" />
-    } @else {
-      <span aria-hidden="true">{{ shortInitials() }}</span>
-    }
-  `,
+  templateUrl: './avatar.html',
   styleUrl: './avatar.scss',
   host: {
     '[class]': 'classes()',

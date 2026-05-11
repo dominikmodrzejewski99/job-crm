@@ -1,10 +1,10 @@
-// Avatar — circular image or initials placeholder.
+@use '../../styles/abstracts' as a;
 
 .ds-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: a.$radius-pill;
   background: var(--bg-muted);
   color: var(--text-1);
   font-weight: 500;

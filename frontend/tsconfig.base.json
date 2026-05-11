@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "@frontend/design-system": ["./libs/design-system/src/index.ts"]
+      "@frontend/design-system": ["./libs/design-system/src/index.ts"],
+      "@frontend/design-system/button": ["./libs/design-system/src/lib/components/button/public-api.ts"],
+      "@frontend/design-system/badge": ["./libs/design-system/src/lib/components/badge/public-api.ts"],
+      "@frontend/design-system/chip": ["./libs/design-system/src/lib/components/chip/public-api.ts"],
+      "@frontend/design-system/card": ["./libs/design-system/src/lib/components/card/public-api.ts"],
+      "@frontend/design-system/avatar": ["./libs/design-system/src/lib/components/avatar/public-api.ts"],
+      "@frontend/design-system/spinner": ["./libs/design-system/src/lib/components/spinner/public-api.ts"],
+      "@frontend/design-system/skeleton": ["./libs/design-system/src/lib/components/skeleton/public-api.ts"],
+      "@frontend/design-system/empty": ["./libs/design-system/src/lib/components/empty/public-api.ts"],
+      "@frontend/design-system/stat-card": ["./libs/design-system/src/lib/components/stat-card/public-api.ts"],
+      "@frontend/design-system/theme": ["./libs/design-system/src/lib/theme/public-api.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

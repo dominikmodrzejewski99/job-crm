@@ -1,0 +1,10 @@
+// Public API of the SCSS abstracts layer.
+// Component styles consume this via:
+//   @use '../../styles/abstracts' as a;
+//   .foo { padding: a.$sp-3; background: a.status-bg('applied'); }
+
+@forward 'palette';
+@forward 'spacing';
+@forward 'status';
+@forward 'typography';
+@forward 'mixins';
