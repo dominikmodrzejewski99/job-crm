@@ -43,6 +43,8 @@ import { ThemeService } from '@frontend/design-system/theme';
 import { DsToastService } from '@frontend/design-system/toast';
 import { DsTooltip } from '@frontend/design-system/tooltip';
 
+import { ApplicationApi } from './api/application-api';
+import { ApiApplication, statusToBadge } from './api/application-types';
 import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { ConfirmModal } from './confirm-modal';
 
@@ -103,6 +105,7 @@ export class App {
   private readonly http = inject(HttpClient);
   private readonly modal = inject(DsModalService);
   private readonly toast = inject(DsToastService);
+  private readonly api = inject(ApplicationApi);
   protected readonly themeService = inject(ThemeService);
 
   protected readonly ping = signal<PingResponse | null>(null);
@@ -170,21 +173,44 @@ export class App {
   // ---- Tabs state ----
   protected readonly activeTab = signal(0);
 
-  protected readonly allRows: ApplicationRow[] = [
-    { id: 1, company: 'Acme Corp', position: 'Senior Java Engineer', status: 'intsch', appliedAt: '2026-05-06' },
-    { id: 2, company: 'Globex', position: 'Backend Lead', status: 'applied', appliedAt: '2026-05-04' },
-    { id: 3, company: 'Initech', position: 'Software Engineer II', status: 'ack', appliedAt: '2026-05-02' },
-    { id: 4, company: 'Stark Industries', position: 'Platform Engineer', status: 'offer', appliedAt: '2026-04-28' },
-    { id: 5, company: 'Umbrella', position: 'Java/Kotlin Dev', status: 'rejected', appliedAt: '2026-04-25' },
-    { id: 6, company: 'Tyrell', position: 'Senior SWE', status: 'intdone', appliedAt: '2026-04-22' },
-    { id: 7, company: 'Cyberdyne', position: 'JVM Engineer', status: 'taskrx', appliedAt: '2026-04-20' },
-    { id: 8, company: 'OCP', position: 'Tech Lead', status: 'tasktx', appliedAt: '2026-04-18' },
-    { id: 9, company: 'Soylent', position: 'Senior Backend', status: 'ghosted', appliedAt: '2026-04-15' },
-    { id: 10, company: 'Massive Dynamic', position: 'Staff Engineer', status: 'withdraw', appliedAt: '2026-04-10' },
-  ];
+  // Live applications loaded from /api/v1/applications. We keep the raw
+  // ApiApplication entries (for delete / mutations) and project a UI-shaped
+  // ApplicationRow[] for AG Grid via a computed signal.
+  protected readonly applications = signal<ApiApplication[]>([]);
+  protected readonly applicationsLoading = signal(true);
+  protected readonly applicationsError = signal<string | null>(null);
 
-  // AG Grid handles sort + pagination internally; rows() drives its dataset.
-  protected readonly rows = computed(() => this.allRows);
+  protected readonly rows = computed<ApplicationRow[]>(() =>
+    this.applications().map((a) => ({
+      id: a.id,
+      company: a.companyName,
+      position: a.position,
+      status: statusToBadge(a.currentStatus),
+      appliedAt: a.appliedAt,
+    })),
+  );
+
+  constructor() {
+    this.loadApplications();
+  }
+
+  private loadApplications(): void {
+    this.applicationsLoading.set(true);
+    this.applicationsError.set(null);
+    this.api
+      .list()
+      .pipe(
+        catchError((err) => {
+          this.applicationsError.set(err?.message ?? 'Nie udało się pobrać aplikacji');
+          this.toast.error('Nie udało się pobrać aplikacji');
+          return of({ content: [], totalElements: 0, totalPages: 0, number: 0, size: 0, empty: true });
+        }),
+      )
+      .subscribe((page) => {
+        this.applications.set(page.content);
+        this.applicationsLoading.set(false);
+      });
+  }
 
   protected pingBackend(): void {
     this.pingLoading.set(true);
@@ -214,8 +240,35 @@ export class App {
       this.toast.warning('Popraw błędy w formularzu');
       return;
     }
-    this.submitted.set(this.formValue());
-    this.toast.success('Aplikacja zapisana lokalnie');
+    const v = this.formValue();
+    this.api
+      .create({
+        companyName: v.company,
+        position: v.position,
+        source: this.formSourceToApi(v.source),
+        remote: v.remote,
+        location: null,
+        appliedAt: new Date().toISOString().slice(0, 10),
+        notes: v.notes || null,
+      })
+      .subscribe({
+        next: (created) => {
+          this.applications.update((list) => [created, ...list]);
+          this.submitted.set(this.formValue());
+          this.toast.success('Aplikacja zapisana');
+          this.reset();
+        },
+        error: () => this.toast.error('Backend odrzucił aplikację'),
+      });
+  }
+
+  private formSourceToApi(s: Source): ApiApplication['source'] {
+    switch (s) {
+      case 'justjoin': return 'JUSTJOIN';
+      case 'nofluff':  return 'NOFLUFF';
+      case 'referral': return 'REFERRAL';
+      default:         return 'OTHER';
+    }
   }
 
   protected reset(): void {
@@ -230,24 +283,36 @@ export class App {
     this.submitted.set(null);
   }
 
-  protected confirmDeleteById(id: number): void {
-    const row = this.allRows.find((r) => r.id === id);
-    if (!row) return;
-    this.confirmDelete(row);
-  }
-
-  protected confirmDelete(row: ApplicationRow): void {
+  protected confirmDeleteById(id: string): void {
+    const app = this.applications().find((a) => a.id === id);
+    if (!app) return;
     const ref = this.modal.open<ConfirmModal, boolean>(ConfirmModal, {
       data: {
-        title: `Usunąć ${row.company}?`,
-        message: `Aplikacja "${row.position}" zostanie usunięta z lokalnego stanu (demo).`,
+        title: `Usunąć ${app.companyName}?`,
+        message: `Aplikacja "${app.position}" zostanie usunięta na zawsze.`,
         confirmText: 'Usuń',
         cancelText: 'Anuluj',
       },
     });
-    ref.afterClosed().subscribe((result) => {
-      if (result) this.toast.error(`Usunięto aplikację ${row.company}`);
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.api.delete(id).subscribe({
+        next: () => {
+          this.applications.update((list) => list.filter((a) => a.id !== id));
+          this.toast.success(`Usunięto ${app.companyName}`);
+        },
+        error: () => this.toast.error('Nie udało się usunąć aplikacji'),
+      });
     });
+  }
+
+  protected demoConfirmDelete(): void {
+    const first = this.applications()[0];
+    if (first) {
+      this.confirmDeleteById(first.id);
+    } else {
+      this.toast.info('Brak aplikacji do usunięcia — najpierw dodaj jedną');
+    }
   }
 
   protected showToast(variant: ToastKind): void {

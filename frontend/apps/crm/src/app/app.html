@@ -87,7 +87,7 @@
           <ds-card>
             <ds-card-header>
               <span class="text-3 t-sm">
-                <strong class="text-1">{{ allRows.length }}</strong> aplikacji ·
+                <strong class="text-1">{{ applications().length }}</strong> aplikacji ·
                 kliknij nagłówek żeby sortować, filtr w hamburgerze
               </span>
               <div class="card-header-actions">
@@ -213,7 +213,7 @@
                   </ds-menu>
 
                   <button ds-button variant="danger" size="sm"
-                          (click)="confirmDelete(allRows[0])">Usuń aplikację (modal)</button>
+                          (click)="demoConfirmDelete()">Usuń aplikację (modal)</button>
                 </div>
               </ds-card-body>
             </ds-card>
@@ -316,14 +316,14 @@
           <div class="phase-meta text-3 t-sm">21 komponentów, SASS abstracts, signal-based forms, CDK Overlay, ag-grid</div>
         </div>
       </li>
-      <li class="phase phase--current">
+      <li class="phase phase--done">
         <span class="phase-num">03</span>
         <div>
           <div class="phase-title">Backend CRUD Application</div>
-          <div class="phase-meta text-3 t-sm">JPA, Flyway, OpenAPI, Testcontainers</div>
+          <div class="phase-meta text-3 t-sm">JPA, Flyway V2, OpenAPI, Testcontainers, ProblemDetail, live na <code>/api/v1/applications</code></div>
         </div>
       </li>
-      <li class="phase">
+      <li class="phase phase--current">
         <span class="phase-num">04</span>
         <div>
           <div class="phase-title">Auth multi-user + JWT</div>

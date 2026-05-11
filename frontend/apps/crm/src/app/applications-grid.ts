@@ -24,7 +24,7 @@ import {
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export interface ApplicationRow {
-  id: number;
+  id: string;
   company: string;
   position: string;
   status: DsApplicationStatus;
@@ -32,7 +32,7 @@ export interface ApplicationRow {
 }
 
 const sharedThemeParams = {
-  fontFamily: { googleFont: 'Inter' },
+  fontFamily: { googleFont: 'Geist' },
   fontSize: 13,
   cellHorizontalPadding: 14,
   rowHeight: 44,
@@ -91,7 +91,7 @@ export class ApplicationsGrid {
   readonly rows = input<ApplicationRow[]>([]);
   readonly themeMode = input<'light' | 'dark'>('dark');
 
-  readonly delete = output<number>();
+  readonly delete = output<string>();
 
   protected readonly theme = computed<Theme>(() =>
     this.themeMode() === 'dark' ? darkTheme : lightTheme,
@@ -157,6 +157,6 @@ export class ApplicationsGrid {
    * access to this component's instance directly) can call back through it.
    */
   protected readonly context = {
-    delete: (id: number) => this.delete.emit(id),
+    delete: (id: string) => this.delete.emit(id),
   };
 }

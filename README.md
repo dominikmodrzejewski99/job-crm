@@ -337,8 +337,8 @@ Trigger: push do `main` → GitHub Actions → deploy.
 ## Status
 
 - [x] Faza 1: Skeleton + Docker Compose
-- [~] Faza 2: Design system v0 (tokens + theme + ds-button done; pozostałe komponenty WIP)
-- [ ] Faza 3: Backend CRUD Application
+- [x] Faza 2: Design system v0 (21 komponentów Angular CDK, SASS abstracts, signal-based forms, ag-grid)
+- [x] Faza 3: Backend CRUD Application (JPA, Flyway, OpenAPI, Testcontainers, ProblemDetail)
 - [ ] Faza 4: Frontend CRUD Application
 - [ ] Faza 5: Auth multi-user
 - [ ] Faza 6: Follow-up reminders + email

@@ -14,7 +14,7 @@ import {
 import { DsTooltip } from '@frontend/design-system/tooltip';
 
 interface RowCtx {
-  delete?: (id: number) => void;
+  delete?: (id: string) => void;
 }
 
 @Component({
@@ -88,16 +88,16 @@ export class GridCompanyCell implements ICellRendererAngularComp {
   `,
 })
 export class GridActionsCell implements ICellRendererAngularComp {
-  private rowId = 0;
+  private rowId = '';
   private context: RowCtx = {};
 
-  agInit(params: ICellRendererParams<{ id: number }> & { context?: RowCtx }): void {
-    this.rowId = params.data?.id ?? 0;
+  agInit(params: ICellRendererParams<{ id: string }> & { context?: RowCtx }): void {
+    this.rowId = params.data?.id ?? '';
     this.context = (params.context ?? {}) as RowCtx;
   }
 
-  refresh(params: ICellRendererParams<{ id: number }> & { context?: RowCtx }): boolean {
-    this.rowId = params.data?.id ?? 0;
+  refresh(params: ICellRendererParams<{ id: string }> & { context?: RowCtx }): boolean {
+    this.rowId = params.data?.id ?? '';
     this.context = (params.context ?? {}) as RowCtx;
     return true;
   }
