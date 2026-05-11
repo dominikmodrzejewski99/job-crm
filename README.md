@@ -340,7 +340,7 @@ Trigger: push do `main` → GitHub Actions → deploy.
 - [x] Faza 2: Design system v0 (21 komponentów Angular CDK, SASS abstracts, signal-based forms, ag-grid)
 - [x] Faza 3: Backend CRUD Application (JPA, Flyway, OpenAPI, Testcontainers, ProblemDetail)
 - [x] Faza 4: Auth multi-user + JWT (Spring Security stateless, BCrypt, per-user data isolation, login/register UI)
-- [ ] Faza 6: Follow-up reminders + email
+- [x] Faza 5: Follow-up reminders + email (@EnableScheduling, JavaMailSender → MailHog dev, /api/v1/follow-ups, dashboard widget)
 - [ ] Faza 7: Job board integration (JustJoinIT + NoFluffJobs)
 - [ ] Faza 8: Stats + dashboard
 - [ ] Faza 9: CI/CD + deploy
