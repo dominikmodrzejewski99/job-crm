@@ -211,6 +211,76 @@
     </ds-empty>
   </section>
 
+  <!-- ============ FORM DEMO ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Dodaj aplikację (demo)</h2>
+      <span class="text-3 t-sm">reactive form · ds-input · ds-textarea · ds-checkbox · ds-switch · ds-radio</span>
+    </header>
+
+    <ds-card>
+      <ds-card-body>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+          <ds-input
+            formControlName="company"
+            label="Firma"
+            placeholder="np. Acme Corp"
+            required
+            errorText="Podaj nazwę firmy (min. 2 znaki)"
+            helperText="Pełna nazwa pracodawcy"
+          />
+
+          <ds-input
+            formControlName="position"
+            label="Stanowisko"
+            placeholder="np. Senior Java Engineer"
+            required
+            errorText="Pole wymagane"
+          />
+
+          <div class="form-grid__full">
+            <ds-textarea
+              formControlName="notes"
+              label="Notatki"
+              placeholder="Co warto zapamiętać przed rozmową…"
+              helperText="Opcjonalne — np. nazwiska rekruterów, pytania do zadania"
+              [rows]="3"
+            />
+          </div>
+
+          <div class="form-grid__full">
+            <div class="field-cluster">
+              <span class="field-cluster__label" id="source-label">Źródło aplikacji</span>
+              <ds-radio-group formControlName="source" aria-labelledby="source-label" style="flex-direction: row; gap: 16px;">
+                <ds-radio [value]="'justjoin'" label="JustJoinIT" />
+                <ds-radio [value]="'nofluff'" label="NoFluffJobs" />
+                <ds-radio [value]="'referral'" label="Polecenie" />
+                <ds-radio [value]="'other'" label="Inne" />
+              </ds-radio-group>
+            </div>
+          </div>
+
+          <div class="form-grid__full toggles">
+            <ds-checkbox formControlName="remote" label="Praca w pełni zdalna" />
+            <ds-switch formControlName="notifyByEmail" label="Powiadom mnie mailem o follow-upach" />
+          </div>
+
+          <div class="form-grid__full form-actions">
+            <button type="button" ds-button variant="ghost" size="md" (click)="reset()">Wyczyść</button>
+            <button type="submit" ds-button variant="primary" size="md">Zapisz aplikację</button>
+          </div>
+        </form>
+
+        @if (submitted(); as data) {
+          <div class="form-result">
+            <div class="text-3 t-xs">Submitted value</div>
+            <pre class="form-result__code">{{ data | json }}</pre>
+          </div>
+        }
+      </ds-card-body>
+    </ds-card>
+  </section>
+
   <!-- ============ ROADMAP ============ -->
   <section class="phases">
     <h2 class="t-xl">Roadmap</h2>

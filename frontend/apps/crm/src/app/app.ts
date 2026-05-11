@@ -1,12 +1,20 @@
+import { JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { catchError, of } from 'rxjs';
 
-// Per-component imports demonstrate the secondary-entry-point pattern.
-// Each import resolves directly to that component's public-api.ts via the
-// tsconfig.base.json paths, giving consumers tighter tree-shaking and
-// clearer dependency boundaries than a single barrel import.
 import { DsAvatar } from '@frontend/design-system/avatar';
 import { DsBadge, DsApplicationStatus } from '@frontend/design-system/badge';
 import { DsButton } from '@frontend/design-system/button';
@@ -16,11 +24,16 @@ import {
   DsCardFooter,
   DsCardHeader,
 } from '@frontend/design-system/card';
+import { DsCheckbox } from '@frontend/design-system/checkbox';
 import { DsChip } from '@frontend/design-system/chip';
 import { DsEmpty } from '@frontend/design-system/empty';
+import { DsInput } from '@frontend/design-system/input';
+import { DsRadio, DsRadioGroup } from '@frontend/design-system/radio';
 import { DsSkeleton } from '@frontend/design-system/skeleton';
 import { DsSpinner } from '@frontend/design-system/spinner';
 import { DsStatCard } from '@frontend/design-system/stat-card';
+import { DsSwitch } from '@frontend/design-system/switch';
+import { DsTextarea } from '@frontend/design-system/textarea';
 import { ThemeService } from '@frontend/design-system/theme';
 
 interface PingResponse {
@@ -39,6 +52,8 @@ interface StatusDemo {
   standalone: true,
   imports: [
     RouterModule,
+    ReactiveFormsModule,
+    JsonPipe,
     DsButton,
     DsBadge,
     DsChip,
@@ -51,6 +66,12 @@ interface StatusDemo {
     DsSkeleton,
     DsEmpty,
     DsStatCard,
+    DsInput,
+    DsTextarea,
+    DsCheckbox,
+    DsSwitch,
+    DsRadio,
+    DsRadioGroup,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -58,6 +79,7 @@ interface StatusDemo {
 })
 export class App {
   private readonly http = inject(HttpClient);
+  private readonly fb = inject(FormBuilder);
   protected readonly themeService = inject(ThemeService);
 
   protected readonly ping = signal<PingResponse | null>(null);
@@ -86,6 +108,17 @@ export class App {
     'kraków',
   ]);
 
+  protected readonly form: FormGroup = this.fb.nonNullable.group({
+    company: ['', [Validators.required, Validators.minLength(2)]],
+    position: ['', Validators.required],
+    notes: [''],
+    source: ['justjoin', Validators.required],
+    remote: [true],
+    notifyByEmail: [false],
+  });
+
+  protected readonly submitted = signal<unknown | null>(null);
+
   protected pingBackend(): void {
     this.pingLoading.set(true);
     this.pingError.set(null);
@@ -105,5 +138,25 @@ export class App {
 
   protected removeTag(tag: string): void {
     this.tags.update((list) => list.filter((t) => t !== tag));
+  }
+
+  protected submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.submitted.set(this.form.getRawValue());
+  }
+
+  protected reset(): void {
+    this.form.reset({
+      company: '',
+      position: '',
+      notes: '',
+      source: 'justjoin',
+      remote: true,
+      notifyByEmail: false,
+    });
+    this.submitted.set(null);
   }
 }

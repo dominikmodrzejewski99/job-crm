@@ -1,0 +1,39 @@
+@if (label()) {
+  <label class="ds-field__label" [for]="inputId">
+    {{ label() }}
+    @if (required()) {
+      <span class="ds-field__required" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<div class="ds-field__control" [class.is-error]="showError()" [class.is-disabled]="disabled()">
+  <ng-content select="[ds-input-prefix]" />
+  <input
+    #control
+    [id]="inputId"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [attr.aria-invalid]="showError() ? 'true' : null"
+    [attr.aria-describedby]="describedBy()"
+    [attr.autocomplete]="autocomplete()"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+  <ng-content select="[ds-input-suffix]" />
+</div>
+
+@if (showError() && errorText()) {
+  <p class="ds-field__error" [id]="errorId">
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    {{ errorText() }}
+  </p>
+} @else if (helperText()) {
+  <p class="ds-field__helper" [id]="helperId">{{ helperText() }}</p>
+}

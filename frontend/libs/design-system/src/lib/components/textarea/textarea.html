@@ -1,0 +1,28 @@
+@if (label()) {
+  <label class="ds-field__label" [for]="inputId">
+    {{ label() }}
+    @if (required()) {
+      <span class="ds-field__required" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<textarea
+  #control
+  [id]="inputId"
+  class="ds-textarea__control"
+  [class.is-error]="showError()"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [rows]="rows()"
+  [attr.aria-invalid]="showError() ? 'true' : null"
+  [attr.aria-describedby]="describedBy()"
+  (input)="onInput($event)"
+  (blur)="onBlur()"
+></textarea>
+
+@if (showError() && errorText()) {
+  <p class="ds-field__error" [id]="errorId">{{ errorText() }}</p>
+} @else if (helperText()) {
+  <p class="ds-field__helper" [id]="helperId">{{ helperText() }}</p>
+}

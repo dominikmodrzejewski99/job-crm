@@ -1,0 +1,9 @@
+<span class="ds-radio__circle" aria-hidden="true">
+  @if (selected()) {
+    <span class="ds-radio__dot"></span>
+  }
+</span>
+@if (label()) {
+  <span class="ds-radio__label">{{ label() }}</span>
+}
+<ng-content />

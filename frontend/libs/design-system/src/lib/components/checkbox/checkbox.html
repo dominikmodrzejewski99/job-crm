@@ -1,0 +1,12 @@
+<span class="ds-checkbox__box" [attr.aria-checked]="ariaChecked()" [attr.aria-disabled]="disabled() || null">
+  @if (checked() && !indeterminate()) {
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+         stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  }
+</span>
+@if (label()) {
+  <span class="ds-checkbox__label">{{ label() }}</span>
+}
+<ng-content />

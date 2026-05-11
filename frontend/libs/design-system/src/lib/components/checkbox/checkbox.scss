@@ -1,0 +1,56 @@
+@use '../../styles/abstracts' as a;
+
+.ds-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: a.$sp-2;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-1);
+  font-size: 13px;
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.ds-checkbox__box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-surface);
+  border-radius: a.$radius-sm;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms, border-color 120ms, box-shadow 120ms;
+  flex: none;
+  color: #fff;
+
+  .ds-checkbox:hover:not(.is-disabled) & {
+    border-color: var(--brand-400);
+  }
+
+  .ds-checkbox[aria-checked='true'] & {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+  }
+
+  .ds-checkbox[aria-checked='mixed'] & {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+
+    &::after {
+      content: '';
+      width: 8px;
+      height: 2px;
+      background: #fff;
+      border-radius: 1px;
+    }
+  }
+}
+
+.ds-checkbox__label {
+  line-height: 1.4;
+}

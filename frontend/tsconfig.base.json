@@ -24,6 +24,11 @@
       "@frontend/design-system/skeleton": ["./libs/design-system/src/lib/components/skeleton/public-api.ts"],
       "@frontend/design-system/empty": ["./libs/design-system/src/lib/components/empty/public-api.ts"],
       "@frontend/design-system/stat-card": ["./libs/design-system/src/lib/components/stat-card/public-api.ts"],
+      "@frontend/design-system/input": ["./libs/design-system/src/lib/components/input/public-api.ts"],
+      "@frontend/design-system/textarea": ["./libs/design-system/src/lib/components/textarea/public-api.ts"],
+      "@frontend/design-system/checkbox": ["./libs/design-system/src/lib/components/checkbox/public-api.ts"],
+      "@frontend/design-system/switch": ["./libs/design-system/src/lib/components/switch/public-api.ts"],
+      "@frontend/design-system/radio": ["./libs/design-system/src/lib/components/radio/public-api.ts"],
       "@frontend/design-system/theme": ["./libs/design-system/src/lib/theme/public-api.ts"]
     }
   },

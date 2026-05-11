@@ -1,0 +1,50 @@
+@use '../../styles/abstracts' as a;
+
+.ds-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: a.$sp-2;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-1);
+  font-size: 13px;
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.ds-switch__track {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: a.$radius-pill;
+  background: var(--border-2);
+  transition: background 150ms;
+  flex: none;
+
+  .ds-switch.is-checked & {
+    background: var(--brand-500);
+  }
+}
+
+.ds-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: a.$radius-pill;
+  transition: transform 150ms;
+  box-shadow: var(--sh-1);
+
+  .ds-switch.is-checked & {
+    transform: translateX(14px);
+  }
+}
+
+.ds-switch__label {
+  line-height: 1.4;
+}

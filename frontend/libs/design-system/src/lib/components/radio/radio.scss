@@ -1,0 +1,49 @@
+@use '../../styles/abstracts' as a;
+
+.ds-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: a.$sp-2;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-1);
+  font-size: 13px;
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.ds-radio__circle {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-surface);
+  border-radius: a.$radius-pill;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms, border-color 120ms;
+  flex: none;
+
+  .ds-radio:hover:not(.is-disabled) & {
+    border-color: var(--brand-400);
+  }
+
+  .ds-radio.is-selected & {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+  }
+}
+
+.ds-radio__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: a.$radius-pill;
+  background: #fff;
+}
+
+.ds-radio__label {
+  line-height: 1.4;
+}

@@ -1,0 +1,105 @@
+@use '../../styles/abstracts' as a;
+
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ds-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.ds-field__required {
+  color: var(--danger-500);
+}
+
+.ds-field__control {
+  display: flex;
+  align-items: center;
+  gap: a.$sp-2;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-2);
+  border-radius: a.$radius-md;
+  color: var(--text-1);
+  font-size: 13px;
+  line-height: 1;
+  transition: border-color 120ms, box-shadow 120ms, background 120ms;
+
+  input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    padding: 0;
+
+    &::placeholder {
+      color: var(--text-4);
+    }
+  }
+
+  &:hover:not(.is-disabled) {
+    border-color: var(--n-400);
+
+    [data-theme='dark'] & {
+      border-color: #3a3a48;
+    }
+  }
+
+  &:focus-within:not(.is-disabled) {
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  &.is-error {
+    border-color: var(--danger-500);
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+    }
+  }
+
+  &.is-disabled {
+    background: var(--bg-muted);
+    color: var(--text-4);
+    cursor: not-allowed;
+
+    input {
+      cursor: not-allowed;
+    }
+  }
+
+  // Icon slots (prefix / suffix)
+  ::ng-deep svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-3);
+    flex: none;
+  }
+}
+
+.ds-field__helper {
+  font-size: 11px;
+  color: var(--text-3);
+  margin: 0;
+}
+
+.ds-field__error {
+  font-size: 11px;
+  color: var(--danger-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
