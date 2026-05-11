@@ -6,8 +6,10 @@
 ![Nx](https://img.shields.io/badge/Nx-monorepo-143055?logo=nx&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
-![Status](https://img.shields.io/badge/status-WIP-yellow)
 ![License](https://img.shields.io/badge/license-MIT-green)
+
+[![backend-ci](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/backend-ci.yml)
+[![frontend-ci](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/frontend-ci.yml)
 
 Osobisty CRM do śledzenia aplikacji o pracę — zastępuje Google Sheets, dodaje automatyczne przypomnienia o follow-upach, integracje z job boardami i powiadomienia email.
 
@@ -311,14 +313,33 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 
 ## Deployment
 
-| Komponent | Hosting | Free tier |
-|---|---|---|
-| Backend | [Render](https://render.com) | 750h/mc, sleeps after 15min |
-| Frontend | [Vercel](https://vercel.com) | Hobby, unlimited |
-| Database | Render Postgres | 256 MB / 1 GB storage |
-| Mail | [Resend](https://resend.com) | 3000 emails/mc, 100/dzień |
+| Komponent | Hosting | Free tier | Config |
+|---|---|---|---|
+| Backend | [Render](https://render.com) | 750h/mc, sleeps after 15 min | `render.yaml` |
+| Frontend | [Vercel](https://vercel.com) | Hobby, unlimited | `frontend/vercel.json` |
+| Database | Render Postgres | 256 MB | declared w `render.yaml` |
+| Mail | [Resend](https://resend.com) lub [Mailtrap](https://mailtrap.io) | 3 k / mc | env vars `MAIL_*` |
 
-Trigger: push do `main` → GitHub Actions → deploy.
+### CI
+
+| Workflow | Triggers | Co robi |
+|---|---|---|
+| `.github/workflows/backend-ci.yml` | push/PR z `backend/**` | `mvn verify` na Ubuntu, Java 21, Testcontainers (Docker w runnerze) |
+| `.github/workflows/frontend-ci.yml` | push/PR z `frontend/**` | `npm ci`, `nx lint`, `nx test`, `nx build crm` na Node 22 |
+
+### Pierwsze uruchomienie deploy (jednorazowe)
+
+1. **Render** — `https://dashboard.render.com/blueprints` → New blueprint → wskaż na repo. Render czyta `render.yaml`, tworzy: web service `job-crm-backend` (Docker) + Postgres `job-crm-db`. Auto-deploy z `main` jest włączony.
+2. **Render — wypełnij env vars** w UI dla `MAIL_HOST` / `MAIL_USERNAME` / `MAIL_PASSWORD` (zostały oznaczone `sync: false` żeby nie commitować sekretów). `JWT_SECRET` Render generuje sam (`generateValue: true`).
+3. **Backend URL** — sprawdź adres w Render dashboard (np. `https://job-crm-backend.onrender.com`). Jeśli inny — zaktualizuj `rewrites` w `frontend/vercel.json` i pushnij.
+4. **Vercel** — `vercel.com/new` → import repo. Root: `frontend/`. Framework: Other. Build/output/install jest w `vercel.json`, więc Vercel sam wykryje.
+5. **Czekasz na pierwszy deploy**, podajesz adres w CV.
+
+### Free-tier gotchas
+
+- Render Web Service na free tier zasypia po 15 minutach bezruchu. Pierwsze zapytanie po przerwie = ~30 s wake-up.
+- Postgres free tier wygasa po 90 dniach od utworzenia bazy — zrób backup przed deadline.
+- Crawler JJIT/NFJ co 6h wywołuje outbound HTTP. Wyłącz przez `JOBBOARD_ENABLED=false` jeśli chcesz oszczędzać CPU.
 
 ---
 
@@ -343,5 +364,5 @@ Trigger: push do `main` → GitHub Actions → deploy.
 - [x] Faza 5: Follow-up reminders + email (@EnableScheduling, JavaMailSender → MailHog dev, /api/v1/follow-ups, dashboard widget)
 - [x] Faza 6: Job board integration (Spring RestClient → JustJoinIT + NoFluffJobs, 6h crawler, dedup, save-as-application, ag-grid UI)
 - [x] Faza 7: Stats + dashboard (`/api/v1/stats/dashboard` agregacje, custom SVG funnel + weekly chart + status bars)
-- [ ] Faza 9: CI/CD + deploy
+- [x] Faza 8: CI/CD + deploy (GitHub Actions backend-ci + frontend-ci, render.yaml blueprint, vercel.json z /api rewrites, application-prod.yml)
 - [ ] Faza 10: Polish (i18n, PWA, dark mode, a11y audit)

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npx nx build crm --configuration=production",
+  "outputDirectory": "dist/apps/crm/browser",
+  "installCommand": "npm ci",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://job-crm-backend.onrender.com/api/$1"
+    },
+    {
+      "source": "/swagger-ui.html",
+      "destination": "https://job-crm-backend.onrender.com/swagger-ui.html"
+    },
+    {
+      "source": "/v3/api-docs/(.*)",
+      "destination": "https://job-crm-backend.onrender.com/v3/api-docs/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.(?:js|css|woff2?|svg|png|jpg|jpeg|webp|ico)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

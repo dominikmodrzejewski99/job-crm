@@ -1,0 +1,53 @@
+name: backend-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: mvn verify (Java 21 + Testcontainers)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Show Docker daemon (Testcontainers needs it)
+        run: docker info
+
+      - name: mvn verify
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository -Dmaven.test.failure.ignore=false"
+          # Stable test secret so the JWT bean has 32+ chars even when the
+          # default fallback isn't picked up by spring-boot-test config.
+          JWT_SECRET: ci-test-secret-ci-test-secret-ci-test-secret
+        run: ./mvnw -B verify || mvn -B verify
+
+      - name: Upload Surefire reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: backend/target/surefire-reports/
+          if-no-files-found: ignore

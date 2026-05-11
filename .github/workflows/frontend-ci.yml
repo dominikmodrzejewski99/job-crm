@@ -1,0 +1,62 @@
+name: frontend-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+concurrency:
+  group: frontend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test-build:
+    name: nx lint / test / build (Node 22)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      # Keep Nx away from its AI agent mode in CI so commands stay
+      # deterministic regardless of who triggered the run.
+      CLAUDECODE: ""
+      OPENCODE: ""
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Nx affected needs the base ref's history to compute diffs.
+          fetch-depth: 0
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: npm ci
+        run: npm ci
+
+      - name: Lint
+        run: npx nx run-many --target=lint --all --skip-nx-cache --output-style=stream
+
+      - name: Unit tests (design-system)
+        run: npx nx run-many --target=test --all --skip-nx-cache --output-style=stream
+
+      - name: Production build (apps/crm)
+        run: npx nx build crm --configuration=production
+
+      - name: Upload bundle on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: angular-dist
+          path: frontend/dist/
+          if-no-files-found: ignore
