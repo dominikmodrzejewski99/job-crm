@@ -79,11 +79,50 @@
       <ds-tab label="Dashboard">
         <ng-template>
           <div class="stat-grid">
-            <ds-stat-card label="Aktywne aplikacje" [value]="applications().length" />
-            <ds-stat-card label="Follow-up do 7 dni" [value]="followUps().length" />
-            <ds-stat-card label="Response rate 30d" value="—" />
-            <ds-stat-card label="Rozmowy w tym tyg." value="—" />
+            <ds-stat-card label="Aktywne aplikacje" [value]="stats()?.active ?? applications().length" />
+            <ds-stat-card label="Wszystkie" [value]="stats()?.total ?? '—'" />
+            <ds-stat-card label="Response rate"
+                          [value]="responseRatePct() !== null ? (responseRatePct() + '%') : '—'" />
+            <ds-stat-card label="Follow-up do 7 dni" [value]="stats()?.followUpsDueWithin7Days ?? followUps().length" />
           </div>
+
+          @if (stats(); as s) {
+            <div class="dashboard-grid">
+              <ds-card>
+                <ds-card-header>
+                  <h3 class="overlay-card__title">Lejek rekrutacji</h3>
+                  <span class="text-3 t-sm">applied → interview → offer</span>
+                </ds-card-header>
+                <ds-card-body>
+                  <dashboard-funnel [data]="s.funnel" />
+                </ds-card-body>
+              </ds-card>
+
+              <ds-card>
+                <ds-card-header>
+                  <h3 class="overlay-card__title">Aplikacje tygodniowo (12 tyg.)</h3>
+                </ds-card-header>
+                <ds-card-body>
+                  <dashboard-weekly-chart [data]="s.weekly" />
+                </ds-card-body>
+              </ds-card>
+
+              <ds-card class="dashboard-grid__full">
+                <ds-card-header>
+                  <h3 class="overlay-card__title">Status breakdown</h3>
+                  <span class="text-3 t-sm">11 stanów z enuma backendowego</span>
+                </ds-card-header>
+                <ds-card-body>
+                  <dashboard-status-bars [counts]="s.byStatus" />
+                </ds-card-body>
+              </ds-card>
+            </div>
+          } @else if (statsLoading()) {
+            <div class="dashboard-loading">
+              <ds-skeleton width="100%" height="200px" />
+              <ds-skeleton width="100%" height="200px" />
+            </div>
+          }
 
           <ds-card class="followup-card">
             <ds-card-header>

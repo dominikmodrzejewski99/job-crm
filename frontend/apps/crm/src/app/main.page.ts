@@ -49,6 +49,11 @@ import { FollowUpApi } from './api/follow-up-api';
 import { JobOfferApi } from './api/job-offer-api';
 import { JobOffer } from './api/job-offer-types';
 import { JobOffersGrid } from './job-offers-grid';
+import { StatsApi } from './api/stats-api';
+import { DashboardStats } from './api/stats-types';
+import { DashboardFunnel } from './dashboard/funnel';
+import { DashboardStatusBars } from './dashboard/status-bars';
+import { DashboardWeeklyChart } from './dashboard/weekly-chart';
 import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { AuthService } from './auth/auth.service';
 import { ConfirmModal } from './confirm-modal';
@@ -102,6 +107,9 @@ type ToastKind = 'success' | 'info' | 'warning' | 'error';
     DsSelect,
     DsOption,
     JobOffersGrid,
+    DashboardFunnel,
+    DashboardStatusBars,
+    DashboardWeeklyChart,
   ],
   templateUrl: './main.page.html',
   styleUrl: './main.page.scss',
@@ -114,6 +122,7 @@ export class MainPage {
   private readonly api = inject(ApplicationApi);
   private readonly followUpApi = inject(FollowUpApi);
   private readonly jobOfferApi = inject(JobOfferApi);
+  private readonly statsApi = inject(StatsApi);
   private readonly router = inject(Router);
   protected readonly auth = inject(AuthService);
   protected readonly themeService = inject(ThemeService);
@@ -124,6 +133,14 @@ export class MainPage {
   protected readonly jobOffers = signal<JobOffer[]>([]);
   protected readonly jobOffersLoading = signal(true);
   protected readonly crawlerRunning = signal(false);
+
+  protected readonly stats = signal<DashboardStats | null>(null);
+  protected readonly statsLoading = signal(true);
+
+  protected readonly responseRatePct = computed(() => {
+    const s = this.stats();
+    return s ? Math.round(s.responseRate * 100) : null;
+  });
 
   protected readonly ping = signal<PingResponse | null>(null);
   protected readonly pingError = signal<string | null>(null);
@@ -211,6 +228,23 @@ export class MainPage {
     this.loadApplications();
     this.loadFollowUps();
     this.loadJobOffers();
+    this.loadStats();
+  }
+
+  private loadStats(): void {
+    this.statsLoading.set(true);
+    this.statsApi
+      .dashboard()
+      .pipe(
+        catchError(() => {
+          this.statsLoading.set(false);
+          return of(null);
+        }),
+      )
+      .subscribe((s) => {
+        this.stats.set(s);
+        this.statsLoading.set(false);
+      });
   }
 
   private loadJobOffers(): void {

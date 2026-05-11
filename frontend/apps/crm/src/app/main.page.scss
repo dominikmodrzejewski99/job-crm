@@ -458,3 +458,27 @@
   padding: var(--sp-5) var(--sp-4);
   text-align: center;
 }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.dashboard-grid__full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+@media (max-width: 720px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

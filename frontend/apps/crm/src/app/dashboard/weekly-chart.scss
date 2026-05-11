@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.weekly {
+  width: 100%;
+  height: 160px;
+  display: block;
+}
+
+.weekly__axis {
+  stroke: var(--border-1);
+  stroke-width: 1;
+}
+
+.weekly__grid {
+  stroke: var(--border-1);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.5;
+}
+
+.weekly__line {
+  fill: none;
+  stroke: var(--brand-500);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.weekly__area {
+  fill: var(--brand-500);
+  opacity: 0.1;
+}
+
+.weekly__dot {
+  fill: var(--bg-surface);
+  stroke: var(--brand-500);
+  stroke-width: 2;
+}
+
+.weekly__label {
+  font-size: 10px;
+  fill: var(--text-3);
+  font-family: 'Geist Mono', ui-monospace, monospace;
+}
