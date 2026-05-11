@@ -1,0 +1,22 @@
+// Skeleton — animated shimmer placeholder. Default to a single-line text block;
+// callers override width / height via inline styles.
+
+.ds-skeleton {
+  display: block;
+  width: 100%;
+  height: 12px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--bg-muted) 0%,
+    var(--bg-subtle) 50%,
+    var(--bg-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: ds-skeleton-shimmer 1400ms linear infinite;
+}
+
+@keyframes ds-skeleton-shimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}

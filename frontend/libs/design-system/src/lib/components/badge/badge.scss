@@ -1,0 +1,61 @@
+// Badge — small pill label, with optional leading dot.
+// Used heavily for ApplicationStatus throughout the app.
+
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.ds-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex: none;
+  background: currentColor;
+}
+
+// ---- Generic variants ----
+.ds-badge--neutral {
+  background: var(--bg-muted);
+  color: var(--text-2);
+}
+
+.ds-badge--outline {
+  background: transparent;
+  border-color: var(--border-2);
+  color: var(--text-2);
+}
+
+.ds-badge--solid-success { background: var(--success-500); color: #fff; }
+.ds-badge--solid-warning { background: var(--warning-500); color: #fff; }
+.ds-badge--solid-danger  { background: var(--danger-500);  color: #fff; }
+.ds-badge--solid-info    { background: var(--info-500);    color: #fff; }
+.ds-badge--solid-brand   { background: var(--brand-500);   color: #fff; }
+
+// ---- ApplicationStatus tinted variants ----
+// Each pairs a tinted background with the matching foreground token.
+@mixin status-variant($name) {
+  background: var(--st-#{$name}-bg);
+  color: var(--st-#{$name}-fg);
+}
+
+.ds-badge--draft    { @include status-variant(draft); }
+.ds-badge--applied  { @include status-variant(applied); }
+.ds-badge--ack      { @include status-variant(ack); }
+.ds-badge--intsch   { @include status-variant(intsch); }
+.ds-badge--intdone  { @include status-variant(intdone); }
+.ds-badge--taskrx   { @include status-variant(taskrx); }
+.ds-badge--tasktx   { @include status-variant(tasktx); }
+.ds-badge--offer    { @include status-variant(offer); }
+.ds-badge--rejected { @include status-variant(rejected); }
+.ds-badge--withdraw { @include status-variant(withdraw); }
+.ds-badge--ghosted  { @include status-variant(ghosted); }

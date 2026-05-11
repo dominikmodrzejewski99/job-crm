@@ -1,0 +1,39 @@
+// Stat card — small uppercase label, large value, optional delta with semantic color.
+
+.ds-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+}
+
+.ds-stat-card__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+}
+
+.ds-stat-card__value {
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.ds-stat-card__delta {
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+
+  &--positive { color: var(--success-500); }
+  &--negative { color: var(--danger-500); }
+  &--neutral  { color: var(--text-3); }
+}

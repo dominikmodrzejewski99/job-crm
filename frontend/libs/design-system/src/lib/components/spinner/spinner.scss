@@ -1,0 +1,16 @@
+// Spinner — inline SVG loader, color inherits currentColor.
+
+.ds-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.ds-spinner__svg {
+  animation: ds-spinner-rotate 800ms linear infinite;
+}
+
+@keyframes ds-spinner-rotate {
+  to { transform: rotate(360deg); }
+}

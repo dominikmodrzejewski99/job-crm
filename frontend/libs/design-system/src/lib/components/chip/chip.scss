@@ -1,0 +1,42 @@
+// Chip — pill-shaped tag with optional remove button.
+
+.ds-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-1);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-1);
+}
+
+.ds-chip--no-close {
+  padding-right: 10px;
+}
+
+.ds-chip__remove {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--text-3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+
+  &:hover {
+    background: var(--bg-muted);
+    color: var(--text-1);
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}

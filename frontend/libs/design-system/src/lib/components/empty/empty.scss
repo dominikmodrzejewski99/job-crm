@@ -1,0 +1,51 @@
+// Empty state — used when a list, table, or section has no content yet.
+
+.ds-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--sp-7) var(--sp-5);
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-lg);
+  color: var(--text-2);
+  gap: var(--sp-3);
+}
+
+.ds-empty__icon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  background: var(--bg-muted);
+  color: var(--text-3);
+
+  ::ng-deep svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.ds-empty__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0;
+}
+
+.ds-empty__description {
+  max-width: 380px;
+  font-size: 13px;
+  color: var(--text-3);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.ds-empty__actions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}

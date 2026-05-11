@@ -20,22 +20,19 @@
       size="sm"
       (click)="themeService.setTheme('light')"
       [attr.aria-pressed]="themeService.theme() === 'light'"
-    >
-      Jasny
-    </button>
+    >Jasny</button>
     <button
       ds-button
       variant="ghost"
       size="sm"
       (click)="themeService.setTheme('dark')"
       [attr.aria-pressed]="themeService.theme() === 'dark'"
-    >
-      Ciemny
-    </button>
+    >Ciemny</button>
   </div>
 </header>
 
 <main class="page">
+  <!-- ============ HERO ============ -->
   <section class="hero">
     <span class="kicker">
       <span class="kicker-dot" aria-hidden="true"></span>
@@ -86,6 +83,135 @@
     }
   </section>
 
+  <!-- ============ STATS PREVIEW ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Dashboard preview</h2>
+      <span class="text-3 t-sm">tak wygląda jak masz aplikacje w bazie</span>
+    </header>
+    <div class="stat-grid">
+      <ds-stat-card label="Aktywne aplikacje" value="47" delta="+12% / 7d" deltaTone="positive" />
+      <ds-stat-card label="Follow-up dziś" value="5" delta="2 zaległe" deltaTone="negative" />
+      <ds-stat-card label="Response rate 30d" value="34%" delta="bez zmian" deltaTone="neutral" />
+      <ds-stat-card label="Rozmowy w tym tyg." value="3" delta="+1 vs prev" deltaTone="positive" />
+    </div>
+  </section>
+
+  <!-- ============ STATUS BADGES ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Application status</h2>
+      <span class="text-3 t-sm">11 wartości z enuma backendowego</span>
+    </header>
+    <div class="badge-row">
+      @for (s of statusDemos; track s.variant) {
+        <ds-badge [variant]="s.variant" dot>{{ s.label }}</ds-badge>
+      }
+    </div>
+  </section>
+
+  <!-- ============ CARD + AVATAR + CHIPS ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Aplikacja — preview</h2>
+      <span class="text-3 t-sm">card / avatar / chip / badge w akcji</span>
+    </header>
+
+    <ds-card>
+      <ds-card-header>
+        <div class="card-title-row">
+          <ds-avatar size="md" alt="Acme Corp" initials="AC" />
+          <div>
+            <div class="t-md" style="font-weight: 600">Senior Java Engineer · Acme Corp</div>
+            <div class="text-3 t-sm">Aplikowano 5 dni temu · źródło: JustJoinIT</div>
+          </div>
+        </div>
+        <ds-badge variant="intsch" dot>Interview scheduled</ds-badge>
+      </ds-card-header>
+      <ds-card-body>
+        <div class="card-meta">
+          <div><span class="text-3 t-xs">Widełki</span><code>22 000 – 28 000 PLN</code></div>
+          <div><span class="text-3 t-xs">Lokalizacja</span><span>Kraków · remote</span></div>
+          <div><span class="text-3 t-xs">Kontakt</span><span>Anna Nowak (rekruterka)</span></div>
+        </div>
+        <div class="chip-row">
+          @for (t of tags(); track t) {
+            <ds-chip removable (remove)="removeTag(t)">{{ t }}</ds-chip>
+          }
+          @if (tags().length === 0) {
+            <span class="text-3 t-sm">brak tagów</span>
+          }
+        </div>
+      </ds-card-body>
+      <ds-card-footer>
+        <button ds-button variant="ghost" size="sm">Snooze 3 dni</button>
+        <button ds-button variant="secondary" size="sm">Wyślij follow-up</button>
+        <button ds-button variant="primary" size="sm">Otwórz</button>
+      </ds-card-footer>
+    </ds-card>
+  </section>
+
+  <!-- ============ LOADING STATES ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Loading states</h2>
+      <span class="text-3 t-sm">spinner + skeleton</span>
+    </header>
+
+    <div class="loading-grid">
+      <ds-card>
+        <ds-card-body>
+          <div class="loading-row">
+            <ds-spinner [size]="14" />
+            <span class="text-2 t-sm">Inline spinner — pasek statusu, akcja w toku</span>
+          </div>
+          <div class="loading-row" style="margin-top: 12px;">
+            <ds-spinner [size]="28" />
+            <span class="text-2 t-sm">Większy, np. ładowanie sekcji</span>
+          </div>
+        </ds-card-body>
+      </ds-card>
+
+      <ds-card>
+        <ds-card-body>
+          <div class="skeleton-stack">
+            <ds-skeleton width="60%" height="14px" />
+            <ds-skeleton width="40%" height="12px" />
+            <ds-skeleton width="80%" height="12px" />
+          </div>
+        </ds-card-body>
+      </ds-card>
+    </div>
+  </section>
+
+  <!-- ============ EMPTY STATE ============ -->
+  <section class="showcase">
+    <header class="showcase-header">
+      <h2 class="t-xl">Empty state</h2>
+      <span class="text-3 t-sm">jak wygląda nim coś dodasz</span>
+    </header>
+
+    <ds-empty
+      title="Nie masz jeszcze żadnej aplikacji"
+      description="Dodaj swoją pierwszą aplikację o pracę — ręcznie albo importem z JustJoinIT / NoFluffJobs."
+    >
+      <svg ds-empty-icon viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="12" y1="18" x2="12" y2="12" />
+        <line x1="9" y1="15" x2="15" y2="15" />
+      </svg>
+      <button ds-empty-actions ds-button variant="secondary" size="md">
+        Importuj z job board
+      </button>
+      <button ds-empty-actions ds-button variant="primary" size="md">
+        Dodaj aplikację
+      </button>
+    </ds-empty>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
   <section class="phases">
     <h2 class="t-xl">Roadmap</h2>
     <ol class="phase-list">
@@ -100,7 +226,7 @@
         <span class="phase-num">02</span>
         <div>
           <div class="phase-title">Design system v0</div>
-          <div class="phase-meta text-3 t-sm">Tokeny, theme switcher, pierwsze komponenty Angular CDK</div>
+          <div class="phase-meta text-3 t-sm">Tokens · theme · button · badge · card · chip · avatar · spinner · skeleton · empty · stat-card</div>
         </div>
       </li>
       <li class="phase">
