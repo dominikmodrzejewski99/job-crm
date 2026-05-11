@@ -22,7 +22,6 @@
 </header>
 
 <main class="page">
-  <!-- ============ HERO ============ -->
   <section class="hero">
     <span class="kicker">
       <span class="kicker-dot" aria-hidden="true"></span>
@@ -60,7 +59,6 @@
     }
   </section>
 
-  <!-- ============ TABS WITH SHOWCASE INSIDE ============ -->
   <section class="showcase">
     <header class="showcase-header">
       <h2 class="t-xl">Design system showcase</h2>
@@ -68,7 +66,6 @@
     </header>
 
     <ds-tabs [(active)]="activeTab">
-      <!-- ===== Tab 1: Dashboard ===== -->
       <ds-tab label="Dashboard">
         <ng-template>
           <div class="stat-grid">
@@ -77,7 +74,7 @@
             <ds-stat-card label="Response rate 30d" value="34%" delta="bez zmian" deltaTone="neutral" />
             <ds-stat-card label="Rozmowy w tym tyg." value="3" delta="+1 vs prev" deltaTone="positive" />
           </div>
-          <div class="badge-row" style="margin-top: 16px;">
+          <div class="badge-row badge-row--spaced">
             @for (s of statusDemos; track s.variant) {
               <ds-badge [variant]="s.variant" dot>{{ s.label }}</ds-badge>
             }
@@ -85,55 +82,27 @@
         </ng-template>
       </ds-tab>
 
-      <!-- ===== Tab 2: Application table ===== -->
       <ds-tab label="Aplikacje">
         <ng-template>
-          <div class="table-wrap">
-            <table ds-table>
-              <thead>
-                <tr>
-                  <th ds-sort-header="company" [(sort)]="sort">Firma</th>
-                  <th ds-sort-header="position" [(sort)]="sort">Stanowisko</th>
-                  <th>Status</th>
-                  <th ds-sort-header="appliedAt" [(sort)]="sort">Aplikowano</th>
-                  <th style="width: 1px;">Akcje</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of visibleRows(); track row.id) {
-                  <tr>
-                    <td>{{ row.company }}</td>
-                    <td>{{ row.position }}</td>
-                    <td><ds-badge [variant]="row.status" dot>{{ row.status }}</ds-badge></td>
-                    <td><code>{{ row.appliedAt }}</code></td>
-                    <td>
-                      <button ds-button variant="ghost" size="sm"
-                              [dsMenuTrigger]="rowMenu" aria-label="Więcej akcji">⋯</button>
-                      <ds-menu #rowMenu>
-                        <button ds-menu-item dsTooltip="Wyślij follow-up email">📧 Wyślij follow-up</button>
-                        <button ds-menu-item>📌 Snooze 3 dni</button>
-                        <hr ds-menu-divider />
-                        <button ds-menu-item class="is-danger" (click)="confirmDelete(row)">
-                          🗑 Usuń aplikację
-                        </button>
-                      </ds-menu>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-
-          <div class="pagination-row">
-            <span class="text-3 t-sm">
-              {{ visibleRows().length }} z {{ allRows.length }} aplikacji
-            </span>
-            <ds-pagination [(page)]="currentPage" [total]="allRows.length" [perPage]="perPage" />
-          </div>
+          <ds-card>
+            <ds-card-header>
+              <span class="text-3 t-sm">
+                <strong class="text-1">{{ allRows.length }}</strong> aplikacji ·
+                kliknij nagłówek żeby sortować, filtr w hamburgerze
+              </span>
+              <div class="card-header-actions">
+                <button ds-button variant="primary" size="sm">+ Nowa</button>
+              </div>
+            </ds-card-header>
+            <applications-grid
+              [rows]="rows()"
+              [themeMode]="themeService.theme()"
+              (delete)="confirmDeleteById($event)"
+            />
+          </ds-card>
         </ng-template>
       </ds-tab>
 
-      <!-- ===== Tab 3: New application form ===== -->
       <ds-tab label="Dodaj aplikację">
         <ng-template>
           <form (submit)="$event.preventDefault(); submit()" class="form-grid">
@@ -164,8 +133,7 @@
             <div class="form-grid__full">
               <div class="field-cluster">
                 <span class="field-cluster__label" id="source-label">Źródło aplikacji</span>
-                <ds-radio-group [(value)]="source" aria-labelledby="source-label"
-                                style="flex-direction: row; gap: 16px;">
+                <ds-radio-group class="radio-group--inline" [(value)]="source" aria-labelledby="source-label">
                   <ds-radio [value]="'justjoin'" label="JustJoinIT" />
                   <ds-radio [value]="'nofluff'" label="NoFluffJobs" />
                   <ds-radio [value]="'referral'" label="Polecenie" />
@@ -191,23 +159,22 @@
             <div class="text-3 t-xs">Live signal state (computed)</div>
             <pre class="form-result__code">{{ formValue() | json }}</pre>
             @if (submitted(); as data) {
-              <div class="text-3 t-xs" style="margin-top: 12px;">Last submitted</div>
+              <div class="text-3 t-xs form-result__divider">Last submitted</div>
               <pre class="form-result__code">{{ data | json }}</pre>
             }
           </div>
         </ng-template>
       </ds-tab>
 
-      <!-- ===== Tab 4: Overlay primitives ===== -->
       <ds-tab label="Overlay & feedback">
         <ng-template>
           <div class="overlay-grid">
             <ds-card>
               <ds-card-header>
-                <h3 class="t-md" style="margin:0;font-weight:600;">Tooltips</h3>
+                <h3 class="overlay-card__title">Tooltips</h3>
               </ds-card-header>
               <ds-card-body>
-                <div class="loading-row" style="flex-wrap: wrap;">
+                <div class="button-row">
                   <button ds-button variant="secondary" size="sm" dsTooltip="Pozycja: top (default)">Top</button>
                   <button ds-button variant="secondary" size="sm" dsTooltip="Bottom" dsTooltipPosition="bottom">Bottom</button>
                   <button ds-button variant="secondary" size="sm" dsTooltip="Left" dsTooltipPosition="left">Left</button>
@@ -218,10 +185,10 @@
 
             <ds-card>
               <ds-card-header>
-                <h3 class="t-md" style="margin:0;font-weight:600;">Toasts</h3>
+                <h3 class="overlay-card__title">Toasts</h3>
               </ds-card-header>
               <ds-card-body>
-                <div class="loading-row" style="flex-wrap: wrap; gap: 8px;">
+                <div class="button-row">
                   <button ds-button variant="secondary" size="sm" (click)="showToast('success')">Success</button>
                   <button ds-button variant="secondary" size="sm" (click)="showToast('info')">Info</button>
                   <button ds-button variant="secondary" size="sm" (click)="showToast('warning')">Warning</button>
@@ -232,10 +199,10 @@
 
             <ds-card>
               <ds-card-header>
-                <h3 class="t-md" style="margin:0;font-weight:600;">Menu &amp; Modal</h3>
+                <h3 class="overlay-card__title">Menu &amp; Modal</h3>
               </ds-card-header>
               <ds-card-body>
-                <div class="loading-row" style="gap: 12px; flex-wrap: wrap;">
+                <div class="button-row">
                   <button ds-button variant="secondary" size="sm" [dsMenuTrigger]="demoMenu">Otwórz menu ⌄</button>
                   <ds-menu #demoMenu>
                     <button ds-menu-item>Edytuj profil</button>
@@ -253,10 +220,10 @@
 
             <ds-card>
               <ds-card-header>
-                <h3 class="t-md" style="margin:0;font-weight:600;">Loading states</h3>
+                <h3 class="overlay-card__title">Loading states</h3>
               </ds-card-header>
               <ds-card-body>
-                <div class="loading-row" style="margin-bottom: 12px;">
+                <div class="loading-row loading-row--spaced">
                   <ds-spinner [size]="14" />
                   <span class="text-2 t-sm">Inline spinner</span>
                 </div>
@@ -271,7 +238,6 @@
         </ng-template>
       </ds-tab>
 
-      <!-- ===== Tab 5: Empty state ===== -->
       <ds-tab label="Empty state">
         <ng-template>
           <ds-empty
@@ -293,7 +259,6 @@
     </ds-tabs>
   </section>
 
-  <!-- ============ APPLICATION CARD DEMO ============ -->
   <section class="showcase">
     <header class="showcase-header">
       <h2 class="t-xl">Aplikacja — single view</h2>
@@ -305,7 +270,7 @@
         <div class="card-title-row">
           <ds-avatar size="md" alt="Acme Corp" initials="AC" />
           <div>
-            <div class="t-md" style="font-weight: 600">Senior Java Engineer · Acme Corp</div>
+            <div class="card-title-row__heading">Senior Java Engineer · Acme Corp</div>
             <div class="text-3 t-sm">Aplikowano 5 dni temu · źródło: JustJoinIT</div>
           </div>
         </div>
@@ -334,7 +299,6 @@
     </ds-card>
   </section>
 
-  <!-- ============ ROADMAP ============ -->
   <section class="phases">
     <h2 class="t-xl">Roadmap</h2>
     <ol class="phase-list">
@@ -348,8 +312,8 @@
       <li class="phase phase--done">
         <span class="phase-num">02</span>
         <div>
-          <div class="phase-title">Design system v0</div>
-          <div class="phase-meta text-3 t-sm">21 komponentów, SASS abstracts, signal-based forms, CDK Overlay</div>
+          <div class="phase-title">Design system v0 + AG Grid</div>
+          <div class="phase-meta text-3 t-sm">21 komponentów, SASS abstracts, signal-based forms, CDK Overlay, ag-grid</div>
         </div>
       </li>
       <li class="phase phase--current">

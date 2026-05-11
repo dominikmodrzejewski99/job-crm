@@ -26,7 +26,7 @@ export interface DsOptionLike<T = unknown> {
   selector: 'ds-option',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content />',
-  styles: [':host { display: none; }'],
+  host: { hidden: 'true' },
 })
 export class DsOption<T = unknown> {
   readonly value = input.required<T>();

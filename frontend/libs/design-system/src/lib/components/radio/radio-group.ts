@@ -18,20 +18,12 @@ let nextGroupId = 0;
   selector: 'ds-radio-group',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-content />`,
+  styleUrl: './radio-group.scss',
   host: {
     class: 'ds-radio-group',
     role: 'radiogroup',
     '[attr.aria-labelledby]': 'labelledBy()',
   },
-  styles: [
-    `
-      :host {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-    `,
-  ],
 })
 export class DsRadioGroup implements ControlValueAccessor {
   /** Two-way bound selected value. Use `[(value)]="mySignal"`. */

@@ -8,3 +8,10 @@
 // CDK Overlay prebuilt styles — required so overlays from ds-tooltip,
 // ds-menu, ds-modal, ds-toast, and ds-select position correctly.
 @import '@angular/cdk/overlay-prebuilt.css';
+
+// AG Grid uses inline JS Theme objects (no global stylesheet), but we still
+// want monospace timestamps in one column.
+.ag-cell.mono-cell {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+}

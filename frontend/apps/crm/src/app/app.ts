@@ -37,17 +37,13 @@ import { DsSkeleton } from '@frontend/design-system/skeleton';
 import { DsSpinner } from '@frontend/design-system/spinner';
 import { DsStatCard } from '@frontend/design-system/stat-card';
 import { DsSwitch } from '@frontend/design-system/switch';
-import {
-  DsSortHeader,
-  DsSortState,
-  DsTable,
-} from '@frontend/design-system/table';
 import { DsTab, DsTabs } from '@frontend/design-system/tabs';
 import { DsTextarea } from '@frontend/design-system/textarea';
 import { ThemeService } from '@frontend/design-system/theme';
 import { DsToastService } from '@frontend/design-system/toast';
 import { DsTooltip } from '@frontend/design-system/tooltip';
 
+import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { ConfirmModal } from './confirm-modal';
 
 interface PingResponse {
@@ -59,14 +55,6 @@ interface PingResponse {
 interface StatusDemo {
   variant: DsApplicationStatus;
   label: string;
-}
-
-interface ApplicationRow {
-  id: number;
-  company: string;
-  position: string;
-  status: DsApplicationStatus;
-  appliedAt: string;
 }
 
 type Source = 'justjoin' | 'nofluff' | 'referral' | 'other';
@@ -98,9 +86,8 @@ type ToastKind = 'success' | 'info' | 'warning' | 'error';
     DsTabs,
     DsTab,
     DsPagination,
-    DsTable,
-    DsSortHeader,
     DsTooltip,
+    ApplicationsGrid,
     DsMenu,
     DsMenuTrigger,
     DsMenuItem,
@@ -180,10 +167,8 @@ export class App {
 
   protected readonly submitted = signal<unknown | null>(null);
 
-  // ---- Tabs / pagination / table state ----
+  // ---- Tabs state ----
   protected readonly activeTab = signal(0);
-  protected readonly currentPage = signal(1);
-  protected readonly sort = signal<DsSortState>({ column: 'appliedAt', direction: 'desc' });
 
   protected readonly allRows: ApplicationRow[] = [
     { id: 1, company: 'Acme Corp', position: 'Senior Java Engineer', status: 'intsch', appliedAt: '2026-05-06' },
@@ -198,24 +183,8 @@ export class App {
     { id: 10, company: 'Massive Dynamic', position: 'Staff Engineer', status: 'withdraw', appliedAt: '2026-04-10' },
   ];
 
-  protected readonly perPage = 5;
-  protected readonly Math = Math;
-
-  protected readonly sortedRows = computed(() => {
-    const sort = this.sort();
-    if (!sort.column) return this.allRows;
-    const dir = sort.direction === 'asc' ? 1 : -1;
-    return [...this.allRows].sort((a, b) => {
-      const av = (a as unknown as Record<string, string>)[sort.column!];
-      const bv = (b as unknown as Record<string, string>)[sort.column!];
-      return av > bv ? dir : av < bv ? -dir : 0;
-    });
-  });
-
-  protected readonly visibleRows = computed(() => {
-    const start = (this.currentPage() - 1) * this.perPage;
-    return this.sortedRows().slice(start, start + this.perPage);
-  });
+  // AG Grid handles sort + pagination internally; rows() drives its dataset.
+  protected readonly rows = computed(() => this.allRows);
 
   protected pingBackend(): void {
     this.pingLoading.set(true);
@@ -259,6 +228,12 @@ export class App {
     this.notifyByEmail.set(false);
     this.attemptedSubmit.set(false);
     this.submitted.set(null);
+  }
+
+  protected confirmDeleteById(id: number): void {
+    const row = this.allRows.find((r) => r.id === id);
+    if (!row) return;
+    this.confirmDelete(row);
   }
 
   protected confirmDelete(row: ApplicationRow): void {
