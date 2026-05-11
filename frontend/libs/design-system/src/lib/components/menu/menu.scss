@@ -1,0 +1,47 @@
+@use '../../styles/abstracts' as a;
+
+.ds-menu {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: a.$radius-lg;
+  box-shadow: var(--sh-3);
+  padding: 4px;
+  min-width: 200px;
+  font-family: inherit;
+}
+
+.ds-menu__item {
+  display: flex;
+  align-items: center;
+  gap: a.$sp-2;
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: var(--text-1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: a.$radius-sm;
+  text-align: left;
+  font-family: inherit;
+
+  &:hover {
+    background: var(--bg-subtle);
+  }
+
+  &.is-danger {
+    color: var(--danger-500);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ds-menu__divider {
+  height: 1px;
+  background: var(--border-1);
+  margin: 4px 0;
+  border: none;
+}

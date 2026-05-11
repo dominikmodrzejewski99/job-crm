@@ -1,0 +1,56 @@
+@if (label()) {
+  <label class="ds-field__label" [for]="inputId">{{ label() }}</label>
+}
+
+<button
+  #trigger
+  type="button"
+  class="ds-select__trigger"
+  [class.is-error]="showError()"
+  [class.is-disabled]="isDisabled()"
+  [class.is-open]="isOpen()"
+  [id]="inputId"
+  [disabled]="isDisabled()"
+  [attr.aria-expanded]="isOpen()"
+  [attr.aria-haspopup]="'listbox'"
+  (click)="toggle()"
+>
+  <span class="ds-select__value" [class.is-placeholder]="!displayLabel()">
+    {{ displayLabel() || placeholder() }}
+  </span>
+  <svg class="ds-select__chevron" viewBox="0 0 24 24" width="14" height="14" fill="none"
+       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+</button>
+
+<ng-content />
+
+<ng-template #panel>
+  <div class="ds-select__panel" role="listbox">
+    @for (opt of options(); track opt.value()) {
+      <button
+        type="button"
+        class="ds-select__option"
+        role="option"
+        [class.is-selected]="isSelected(opt)"
+        [attr.aria-selected]="isSelected(opt)"
+        (click)="select(opt)"
+      >
+        <span>{{ opt.getLabel() }}</span>
+        @if (isSelected(opt)) {
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        }
+      </button>
+    }
+  </div>
+</ng-template>
+
+@if (showError() && errorText()) {
+  <p class="ds-field__error">{{ errorText() }}</p>
+} @else if (helperText()) {
+  <p class="ds-field__helper">{{ helperText() }}</p>
+}

@@ -1,0 +1,92 @@
+@use '../../styles/abstracts' as a;
+
+.ds-tabs {
+  display: flex;
+}
+
+.ds-tabs--horizontal {
+  flex-direction: column;
+}
+
+.ds-tabs--vertical {
+  flex-direction: row;
+  gap: a.$sp-4;
+}
+
+.ds-tabs__list {
+  display: flex;
+}
+
+.ds-tabs__list--horizontal {
+  border-bottom: 1px solid var(--border-1);
+}
+
+.ds-tabs__list--vertical {
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
+}
+
+.ds-tabs__tab {
+  position: relative;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 120ms;
+  font-family: inherit;
+
+  &:hover:not(:disabled) {
+    color: var(--text-1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Horizontal active indicator
+  .ds-tabs__list--horizontal &.is-active {
+    color: var(--text-1);
+    font-weight: 500;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: -1px;
+      height: 2px;
+      background: var(--brand-500);
+      border-radius: 2px;
+    }
+  }
+
+  // Vertical active indicator
+  .ds-tabs__list--vertical & {
+    text-align: left;
+    border-radius: a.$radius-md;
+    padding: 6px 10px;
+  }
+
+  .ds-tabs__list--vertical &:hover:not(:disabled) {
+    background: var(--bg-subtle);
+  }
+
+  .ds-tabs__list--vertical &.is-active {
+    color: var(--text-1);
+    background: var(--bg-muted);
+    font-weight: 500;
+  }
+}
+
+.ds-tabs__panel {
+  flex: 1;
+  padding-top: a.$sp-4;
+}
+
+.ds-tabs--vertical .ds-tabs__panel {
+  padding-top: 0;
+}

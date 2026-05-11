@@ -1,0 +1,122 @@
+@use '../../styles/abstracts' as a;
+
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ds-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  user-select: none;
+}
+
+.ds-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: a.$sp-2;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-2);
+  border-radius: a.$radius-md;
+  color: var(--text-1);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 120ms, box-shadow 120ms;
+
+  &:hover:not(.is-disabled) {
+    border-color: var(--n-400);
+
+    [data-theme='dark'] & { border-color: #3a3a48; }
+  }
+
+  &:focus,
+  &.is-open {
+    outline: none;
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  &.is-error {
+    border-color: var(--danger-500);
+
+    &:focus, &.is-open { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25); }
+  }
+
+  &.is-disabled {
+    background: var(--bg-muted);
+    color: var(--text-4);
+    cursor: not-allowed;
+  }
+}
+
+.ds-select__value {
+  flex: 1;
+  text-align: left;
+
+  &.is-placeholder {
+    color: var(--text-4);
+  }
+}
+
+.ds-select__chevron {
+  color: var(--text-3);
+  transition: transform 120ms;
+
+  .ds-select__trigger.is-open & {
+    transform: rotate(180deg);
+  }
+}
+
+.ds-select__panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: a.$radius-lg;
+  box-shadow: var(--sh-3);
+  padding: 4px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.ds-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: a.$sp-2;
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: var(--text-1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: a.$radius-sm;
+  text-align: left;
+  font-family: inherit;
+
+  &:hover {
+    background: var(--bg-subtle);
+  }
+
+  &.is-selected {
+    color: var(--brand-500);
+    font-weight: 500;
+  }
+}
+
+.ds-field__helper {
+  font-size: 11px;
+  color: var(--text-3);
+  margin: 0;
+}
+
+.ds-field__error {
+  font-size: 11px;
+  color: var(--danger-500);
+  margin: 0;
+}

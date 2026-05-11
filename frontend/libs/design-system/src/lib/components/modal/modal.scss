@@ -1,0 +1,48 @@
+@use '../../styles/abstracts' as a;
+
+// Note: .ds-modal-backdrop is global (defined in styles/_overlay.scss)
+// because it lives in the CDK overlay container outside the component tree.
+
+.ds-modal {
+  display: flex;
+  flex-direction: column;
+  min-width: 360px;
+  max-width: min(90vw, 560px);
+  max-height: 85vh;
+  background: var(--bg-surface);
+  color: var(--text-1);
+  border: 1px solid var(--border-1);
+  border-radius: a.$radius-lg;
+  box-shadow: var(--sh-4);
+  font-family: inherit;
+  overflow: hidden;
+}
+
+.ds-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: a.$sp-3;
+  padding: a.$sp-3 a.$sp-4;
+  border-bottom: 1px solid var(--border-1);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ds-modal__body {
+  padding: a.$sp-4;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-2);
+}
+
+.ds-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: a.$sp-2;
+  padding: a.$sp-3 a.$sp-4;
+  border-top: 1px solid var(--border-1);
+  background: var(--bg-canvas);
+}

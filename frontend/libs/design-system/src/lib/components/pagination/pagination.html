@@ -1,0 +1,49 @@
+@if (totalPages() > 1) {
+  <nav class="ds-pagination" [attr.aria-label]="ariaLabel()">
+    <button
+      type="button"
+      class="ds-pagination__btn"
+      [disabled]="page() <= 1"
+      (click)="goTo(1)"
+      aria-label="Pierwsza strona"
+    >«</button>
+
+    <button
+      type="button"
+      class="ds-pagination__btn"
+      [disabled]="page() <= 1"
+      (click)="goTo(page() - 1)"
+      aria-label="Poprzednia strona"
+    >‹</button>
+
+    @for (item of pages(); track $index) {
+      @if (item === '…') {
+        <span class="ds-pagination__ellipsis" aria-hidden="true">…</span>
+      } @else {
+        <button
+          type="button"
+          class="ds-pagination__btn"
+          [class.is-active]="item === page()"
+          [attr.aria-current]="item === page() ? 'page' : null"
+          (click)="goTo(item)"
+        >{{ item }}</button>
+      }
+    }
+
+    <button
+      type="button"
+      class="ds-pagination__btn"
+      [disabled]="page() >= totalPages()"
+      (click)="goTo(page() + 1)"
+      aria-label="Następna strona"
+    >›</button>
+
+    <button
+      type="button"
+      class="ds-pagination__btn"
+      [disabled]="page() >= totalPages()"
+      (click)="goTo(totalPages())"
+      aria-label="Ostatnia strona"
+    >»</button>
+  </nav>
+}

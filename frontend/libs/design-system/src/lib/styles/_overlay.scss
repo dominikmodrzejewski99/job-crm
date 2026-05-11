@@ -1,0 +1,16 @@
+// Overlay-related global classes. These are applied to elements rendered
+// through CDK Overlay into the overlay container, which lives outside the
+// component view tree — that's why they must be global rather than scoped.
+
+.ds-modal-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme='dark'] .ds-modal-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.ds-toast-overlay {
+  pointer-events: none;
+}

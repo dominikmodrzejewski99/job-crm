@@ -29,6 +29,14 @@
       "@frontend/design-system/checkbox": ["./libs/design-system/src/lib/components/checkbox/public-api.ts"],
       "@frontend/design-system/switch": ["./libs/design-system/src/lib/components/switch/public-api.ts"],
       "@frontend/design-system/radio": ["./libs/design-system/src/lib/components/radio/public-api.ts"],
+      "@frontend/design-system/tabs": ["./libs/design-system/src/lib/components/tabs/public-api.ts"],
+      "@frontend/design-system/pagination": ["./libs/design-system/src/lib/components/pagination/public-api.ts"],
+      "@frontend/design-system/table": ["./libs/design-system/src/lib/components/table/public-api.ts"],
+      "@frontend/design-system/tooltip": ["./libs/design-system/src/lib/components/tooltip/public-api.ts"],
+      "@frontend/design-system/menu": ["./libs/design-system/src/lib/components/menu/public-api.ts"],
+      "@frontend/design-system/modal": ["./libs/design-system/src/lib/components/modal/public-api.ts"],
+      "@frontend/design-system/toast": ["./libs/design-system/src/lib/components/toast/public-api.ts"],
+      "@frontend/design-system/select": ["./libs/design-system/src/lib/components/select/public-api.ts"],
       "@frontend/design-system/theme": ["./libs/design-system/src/lib/theme/public-api.ts"]
     }
   },

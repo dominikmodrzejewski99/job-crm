@@ -23,13 +23,32 @@ import { DsCheckbox } from '@frontend/design-system/checkbox';
 import { DsChip } from '@frontend/design-system/chip';
 import { DsEmpty } from '@frontend/design-system/empty';
 import { DsInput } from '@frontend/design-system/input';
+import {
+  DsMenu,
+  DsMenuDivider,
+  DsMenuItem,
+  DsMenuTrigger,
+} from '@frontend/design-system/menu';
+import { DsModalService } from '@frontend/design-system/modal';
+import { DsPagination } from '@frontend/design-system/pagination';
 import { DsRadio, DsRadioGroup } from '@frontend/design-system/radio';
+import { DsOption, DsSelect } from '@frontend/design-system/select';
 import { DsSkeleton } from '@frontend/design-system/skeleton';
 import { DsSpinner } from '@frontend/design-system/spinner';
 import { DsStatCard } from '@frontend/design-system/stat-card';
 import { DsSwitch } from '@frontend/design-system/switch';
+import {
+  DsSortHeader,
+  DsSortState,
+  DsTable,
+} from '@frontend/design-system/table';
+import { DsTab, DsTabs } from '@frontend/design-system/tabs';
 import { DsTextarea } from '@frontend/design-system/textarea';
 import { ThemeService } from '@frontend/design-system/theme';
+import { DsToastService } from '@frontend/design-system/toast';
+import { DsTooltip } from '@frontend/design-system/tooltip';
+
+import { ConfirmModal } from './confirm-modal';
 
 interface PingResponse {
   status: string;
@@ -42,7 +61,16 @@ interface StatusDemo {
   label: string;
 }
 
+interface ApplicationRow {
+  id: number;
+  company: string;
+  position: string;
+  status: DsApplicationStatus;
+  appliedAt: string;
+}
+
 type Source = 'justjoin' | 'nofluff' | 'referral' | 'other';
+type ToastKind = 'success' | 'info' | 'warning' | 'error';
 
 @Component({
   selector: 'app-root',
@@ -68,6 +96,18 @@ type Source = 'justjoin' | 'nofluff' | 'referral' | 'other';
     DsSwitch,
     DsRadio,
     DsRadioGroup,
+    DsTabs,
+    DsTab,
+    DsPagination,
+    DsTable,
+    DsSortHeader,
+    DsTooltip,
+    DsMenu,
+    DsMenuTrigger,
+    DsMenuItem,
+    DsMenuDivider,
+    DsSelect,
+    DsOption,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -75,14 +115,14 @@ type Source = 'justjoin' | 'nofluff' | 'referral' | 'other';
 })
 export class App {
   private readonly http = inject(HttpClient);
+  private readonly modal = inject(DsModalService);
+  private readonly toast = inject(DsToastService);
   protected readonly themeService = inject(ThemeService);
 
-  // ---- Backend ping ----
   protected readonly ping = signal<PingResponse | null>(null);
   protected readonly pingError = signal<string | null>(null);
   protected readonly pingLoading = signal(false);
 
-  // ---- Demo data ----
   protected readonly statusDemos: StatusDemo[] = [
     { variant: 'draft', label: 'Draft' },
     { variant: 'applied', label: 'Applied' },
@@ -105,7 +145,7 @@ export class App {
     'kraków',
   ]);
 
-  // ---- Form state — pure signals, no FormBuilder, no FormGroup ----
+  // ---- Form signals ----
   protected readonly company = signal('');
   protected readonly position = signal('');
   protected readonly notes = signal('');
@@ -113,12 +153,11 @@ export class App {
   protected readonly remote = signal(true);
   protected readonly notifyByEmail = signal(false);
   protected readonly attemptedSubmit = signal(false);
+  protected readonly selectedCountry = signal<string | null>('PL');
 
-  // Per-field validators as computed signals.
   protected readonly companyError = computed(() => {
     if (!this.attemptedSubmit() && !this.company()) return false;
-    const v = this.company().trim();
-    return v.length < 2;
+    return this.company().trim().length < 2;
   });
 
   protected readonly positionError = computed(() => {
@@ -130,17 +169,53 @@ export class App {
     () => this.company().trim().length >= 2 && this.position().trim().length > 0,
   );
 
-  // Live snapshot of the whole form — composed from individual signals.
   protected readonly formValue = computed(() => ({
     company: this.company(),
     position: this.position(),
     notes: this.notes(),
     source: this.source(),
+    country: this.selectedCountry(),
     remote: this.remote(),
     notifyByEmail: this.notifyByEmail(),
   }));
 
   protected readonly submitted = signal<unknown | null>(null);
+
+  // ---- Tabs / pagination / table state ----
+  protected readonly activeTab = signal(0);
+  protected readonly currentPage = signal(1);
+  protected readonly sort = signal<DsSortState>({ column: 'appliedAt', direction: 'desc' });
+
+  protected readonly allRows: ApplicationRow[] = [
+    { id: 1, company: 'Acme Corp', position: 'Senior Java Engineer', status: 'intsch', appliedAt: '2026-05-06' },
+    { id: 2, company: 'Globex', position: 'Backend Lead', status: 'applied', appliedAt: '2026-05-04' },
+    { id: 3, company: 'Initech', position: 'Software Engineer II', status: 'ack', appliedAt: '2026-05-02' },
+    { id: 4, company: 'Stark Industries', position: 'Platform Engineer', status: 'offer', appliedAt: '2026-04-28' },
+    { id: 5, company: 'Umbrella', position: 'Java/Kotlin Dev', status: 'rejected', appliedAt: '2026-04-25' },
+    { id: 6, company: 'Tyrell', position: 'Senior SWE', status: 'intdone', appliedAt: '2026-04-22' },
+    { id: 7, company: 'Cyberdyne', position: 'JVM Engineer', status: 'taskrx', appliedAt: '2026-04-20' },
+    { id: 8, company: 'OCP', position: 'Tech Lead', status: 'tasktx', appliedAt: '2026-04-18' },
+    { id: 9, company: 'Soylent', position: 'Senior Backend', status: 'ghosted', appliedAt: '2026-04-15' },
+    { id: 10, company: 'Massive Dynamic', position: 'Staff Engineer', status: 'withdraw', appliedAt: '2026-04-10' },
+  ];
+
+  protected readonly perPage = 5;
+
+  protected readonly sortedRows = computed(() => {
+    const sort = this.sort();
+    if (!sort.column) return this.allRows;
+    const dir = sort.direction === 'asc' ? 1 : -1;
+    return [...this.allRows].sort((a, b) => {
+      const av = (a as unknown as Record<string, string>)[sort.column!];
+      const bv = (b as unknown as Record<string, string>)[sort.column!];
+      return av > bv ? dir : av < bv ? -dir : 0;
+    });
+  });
+
+  protected readonly visibleRows = computed(() => {
+    const start = (this.currentPage() - 1) * this.perPage;
+    return this.sortedRows().slice(start, start + this.perPage);
+  });
 
   protected pingBackend(): void {
     this.pingLoading.set(true);
@@ -156,6 +231,7 @@ export class App {
       .subscribe((res) => {
         this.pingLoading.set(false);
         this.ping.set(res);
+        if (res) this.toast.success('Backend odpowiedział', res.service);
       });
   }
 
@@ -165,8 +241,12 @@ export class App {
 
   protected submit(): void {
     this.attemptedSubmit.set(true);
-    if (!this.formValid()) return;
+    if (!this.formValid()) {
+      this.toast.warning('Popraw błędy w formularzu');
+      return;
+    }
     this.submitted.set(this.formValue());
+    this.toast.success('Aplikacja zapisana lokalnie');
   }
 
   protected reset(): void {
@@ -174,9 +254,34 @@ export class App {
     this.position.set('');
     this.notes.set('');
     this.source.set('justjoin');
+    this.selectedCountry.set('PL');
     this.remote.set(true);
     this.notifyByEmail.set(false);
     this.attemptedSubmit.set(false);
     this.submitted.set(null);
+  }
+
+  protected confirmDelete(row: ApplicationRow): void {
+    const ref = this.modal.open<ConfirmModal, boolean>(ConfirmModal, {
+      data: {
+        title: `Usunąć ${row.company}?`,
+        message: `Aplikacja "${row.position}" zostanie usunięta z lokalnego stanu (demo).`,
+        confirmText: 'Usuń',
+        cancelText: 'Anuluj',
+      },
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) this.toast.error(`Usunięto aplikację ${row.company}`);
+    });
+  }
+
+  protected showToast(variant: ToastKind): void {
+    const messages: Record<ToastKind, string> = {
+      success: 'To poszło dobrze',
+      info: 'Tylko cię informuję',
+      warning: 'Coś jest nie tak',
+      error: 'Coś poszło bardzo źle',
+    };
+    this.toast.show({ variant, message: messages[variant], title: variant.toUpperCase() });
   }
 }

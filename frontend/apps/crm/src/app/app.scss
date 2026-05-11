@@ -331,3 +331,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+.table-wrap {
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  overflow: auto;
+  max-height: 480px;
+  background: var(--bg-surface);
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--sp-3);
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.overlay-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-3);
+}

@@ -1,0 +1,32 @@
+<div [class]="listClasses()" role="tablist" [attr.aria-orientation]="orientation()">
+  @for (tab of tabs(); let i = $index; track i) {
+    <button
+      type="button"
+      [class]="tabClasses(i)"
+      role="tab"
+      [id]="tabId(i)"
+      [attr.aria-controls]="panelId(i)"
+      [attr.aria-selected]="i === active()"
+      [attr.tabindex]="i === active() ? 0 : -1"
+      [disabled]="tab.disabled()"
+      (click)="select(i)"
+      (keydown)="onKeydown($event, i)"
+    >
+      {{ tab.label() }}
+    </button>
+  }
+</div>
+
+@for (tab of tabs(); let i = $index; track i) {
+  <div
+    [id]="panelId(i)"
+    role="tabpanel"
+    [attr.aria-labelledby]="tabId(i)"
+    [hidden]="i !== active()"
+    class="ds-tabs__panel"
+  >
+    @if (i === active() && tab.panel(); as template) {
+      <ng-container *ngTemplateOutlet="template" />
+    }
+  </div>
+}

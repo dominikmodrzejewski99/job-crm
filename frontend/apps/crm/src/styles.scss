@@ -4,3 +4,7 @@
 // Component styles live in their own .scss files and consume the SASS
 // abstracts directly via @use.
 @use '../../../libs/design-system/src/lib/styles' as ds;
+
+// CDK Overlay prebuilt styles — required so overlays from ds-tooltip,
+// ds-menu, ds-modal, ds-toast, and ds-select position correctly.
+@import '@angular/cdk/overlay-prebuilt.css';

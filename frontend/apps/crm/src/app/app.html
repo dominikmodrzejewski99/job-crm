@@ -14,20 +14,10 @@
   </div>
 
   <div class="theme-toggle" role="group" aria-label="Wybór motywu">
-    <button
-      ds-button
-      variant="ghost"
-      size="sm"
-      (click)="themeService.setTheme('light')"
-      [attr.aria-pressed]="themeService.theme() === 'light'"
-    >Jasny</button>
-    <button
-      ds-button
-      variant="ghost"
-      size="sm"
-      (click)="themeService.setTheme('dark')"
-      [attr.aria-pressed]="themeService.theme() === 'dark'"
-    >Ciemny</button>
+    <button ds-button variant="ghost" size="sm" (click)="themeService.setTheme('light')"
+            [attr.aria-pressed]="themeService.theme() === 'light'">Jasny</button>
+    <button ds-button variant="ghost" size="sm" (click)="themeService.setTheme('dark')"
+            [attr.aria-pressed]="themeService.theme() === 'dark'">Ciemny</button>
   </div>
 </header>
 
@@ -38,83 +28,276 @@
       <span class="kicker-dot" aria-hidden="true"></span>
       Internal · Portfolio
     </span>
-    <h1 class="t-display">
-      Job hunting<br />
-      jak deploy.
-    </h1>
+    <h1 class="t-display">Job hunting<br />jak deploy.</h1>
     <p class="lead t-lg text-2">
-      Single-user CRM do śledzenia aplikacji o pracę. Status, follow-up,
-      integracja z JustJoinIT i NoFluffJobs, przypomnienia mailem.
-      Frontend w Angular 21, backend w Spring Boot 3.
+      Single-user CRM do śledzenia aplikacji o pracę. Frontend w Angular 21
+      (signals, standalone, własny design system na Angular CDK),
+      backend w Spring Boot 3.
     </p>
 
     <div class="cta">
-      <button ds-button variant="primary" size="md" (click)="pingBackend()" [loading]="pingLoading()">
+      <button ds-button variant="primary" size="md" (click)="pingBackend()" [loading]="pingLoading()"
+              dsTooltip="GET /api/v1/ping przez nginx proxy → Spring Boot" dsTooltipPosition="bottom">
         Sprawdź backend
       </button>
       <a ds-button variant="secondary" size="md" href="/swagger-ui.html" target="_blank" rel="noopener">
         OpenAPI docs
       </a>
-      <a ds-button variant="ghost" size="md" href="https://github.com/dominikmodrzejewski99/job-crm" target="_blank" rel="noopener">
-        GitHub
-      </a>
+      <a ds-button variant="ghost" size="md" href="https://github.com/dominikmodrzejewski99/job-crm"
+         target="_blank" rel="noopener">GitHub</a>
     </div>
 
     @if (ping(); as pong) {
       <div class="ping-card surface r-lg">
-        <div class="ping-line">
-          <span class="text-3 t-xs">status</span>
-          <code>{{ pong.status }}</code>
-        </div>
-        <div class="ping-line">
-          <span class="text-3 t-xs">service</span>
-          <code>{{ pong.service }}</code>
-        </div>
-        <div class="ping-line">
-          <span class="text-3 t-xs">timestamp</span>
-          <code>{{ pong.timestamp }}</code>
-        </div>
+        <div class="ping-line"><span class="text-3 t-xs">status</span><code>{{ pong.status }}</code></div>
+        <div class="ping-line"><span class="text-3 t-xs">service</span><code>{{ pong.service }}</code></div>
+        <div class="ping-line"><span class="text-3 t-xs">timestamp</span><code>{{ pong.timestamp }}</code></div>
       </div>
     } @else if (pingError(); as err) {
       <div class="ping-card surface r-lg ping-card--error">
-        <span class="text-3 t-xs">error</span>
-        <code>{{ err }}</code>
+        <span class="text-3 t-xs">error</span><code>{{ err }}</code>
       </div>
     }
   </section>
 
-  <!-- ============ STATS PREVIEW ============ -->
+  <!-- ============ TABS WITH SHOWCASE INSIDE ============ -->
   <section class="showcase">
     <header class="showcase-header">
-      <h2 class="t-xl">Dashboard preview</h2>
-      <span class="text-3 t-sm">tak wygląda jak masz aplikacje w bazie</span>
+      <h2 class="t-xl">Design system showcase</h2>
+      <span class="text-3 t-sm">21 komponentów Angular CDK · signal-based · własny SASS</span>
     </header>
-    <div class="stat-grid">
-      <ds-stat-card label="Aktywne aplikacje" value="47" delta="+12% / 7d" deltaTone="positive" />
-      <ds-stat-card label="Follow-up dziś" value="5" delta="2 zaległe" deltaTone="negative" />
-      <ds-stat-card label="Response rate 30d" value="34%" delta="bez zmian" deltaTone="neutral" />
-      <ds-stat-card label="Rozmowy w tym tyg." value="3" delta="+1 vs prev" deltaTone="positive" />
-    </div>
+
+    <ds-tabs [(active)]="activeTab">
+      <!-- ===== Tab 1: Dashboard ===== -->
+      <ds-tab label="Dashboard">
+        <ng-template>
+          <div class="stat-grid">
+            <ds-stat-card label="Aktywne aplikacje" value="47" delta="+12% / 7d" deltaTone="positive" />
+            <ds-stat-card label="Follow-up dziś" value="5" delta="2 zaległe" deltaTone="negative" />
+            <ds-stat-card label="Response rate 30d" value="34%" delta="bez zmian" deltaTone="neutral" />
+            <ds-stat-card label="Rozmowy w tym tyg." value="3" delta="+1 vs prev" deltaTone="positive" />
+          </div>
+          <div class="badge-row" style="margin-top: 16px;">
+            @for (s of statusDemos; track s.variant) {
+              <ds-badge [variant]="s.variant" dot>{{ s.label }}</ds-badge>
+            }
+          </div>
+        </ng-template>
+      </ds-tab>
+
+      <!-- ===== Tab 2: Application table ===== -->
+      <ds-tab label="Aplikacje">
+        <ng-template>
+          <div class="table-wrap">
+            <table ds-table>
+              <thead>
+                <tr>
+                  <th ds-sort-header="company" [(sort)]="sort">Firma</th>
+                  <th ds-sort-header="position" [(sort)]="sort">Stanowisko</th>
+                  <th>Status</th>
+                  <th ds-sort-header="appliedAt" [(sort)]="sort">Aplikowano</th>
+                  <th style="width: 1px;">Akcje</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of visibleRows(); track row.id) {
+                  <tr>
+                    <td>{{ row.company }}</td>
+                    <td>{{ row.position }}</td>
+                    <td><ds-badge [variant]="row.status" dot>{{ row.status }}</ds-badge></td>
+                    <td><code>{{ row.appliedAt }}</code></td>
+                    <td>
+                      <button ds-button variant="ghost" size="sm"
+                              [dsMenuTrigger]="rowMenu" aria-label="Więcej akcji">⋯</button>
+                      <ds-menu #rowMenu>
+                        <button ds-menu-item dsTooltip="Wyślij follow-up email">📧 Wyślij follow-up</button>
+                        <button ds-menu-item>📌 Snooze 3 dni</button>
+                        <hr ds-menu-divider />
+                        <button ds-menu-item class="is-danger" (click)="confirmDelete(row)">
+                          🗑 Usuń aplikację
+                        </button>
+                      </ds-menu>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination-row">
+            <span class="text-3 t-sm">
+              {{ visibleRows().length }} z {{ allRows.length }} aplikacji
+            </span>
+            <ds-pagination [(page)]="currentPage" [total]="allRows.length" [perPage]="perPage" />
+          </div>
+        </ng-template>
+      </ds-tab>
+
+      <!-- ===== Tab 3: New application form ===== -->
+      <ds-tab label="Dodaj aplikację">
+        <ng-template>
+          <form (submit)="$event.preventDefault(); submit()" class="form-grid">
+            <ds-input [(value)]="company" label="Firma" placeholder="np. Acme Corp" required
+                      [error]="companyError()" errorText="Podaj nazwę firmy (min. 2 znaki)"
+                      helperText="Pełna nazwa pracodawcy" />
+
+            <ds-input [(value)]="position" label="Stanowisko" placeholder="np. Senior Java Engineer"
+                      required [error]="positionError()" errorText="Pole wymagane" />
+
+            <div class="form-grid__full">
+              <ds-select [(value)]="selectedCountry" label="Kraj">
+                <ds-option [value]="'PL'">Polska</ds-option>
+                <ds-option [value]="'DE'">Niemcy</ds-option>
+                <ds-option [value]="'UK'">Wielka Brytania</ds-option>
+                <ds-option [value]="'US'">USA</ds-option>
+                <ds-option [value]="'REMOTE'">Pełna zdalna</ds-option>
+              </ds-select>
+            </div>
+
+            <div class="form-grid__full">
+              <ds-textarea [(value)]="notes" label="Notatki"
+                           placeholder="Co warto zapamiętać przed rozmową…"
+                           helperText="Opcjonalne — np. nazwiska rekruterów, pytania do zadania"
+                           [rows]="3" />
+            </div>
+
+            <div class="form-grid__full">
+              <div class="field-cluster">
+                <span class="field-cluster__label" id="source-label">Źródło aplikacji</span>
+                <ds-radio-group [(value)]="source" aria-labelledby="source-label"
+                                style="flex-direction: row; gap: 16px;">
+                  <ds-radio [value]="'justjoin'" label="JustJoinIT" />
+                  <ds-radio [value]="'nofluff'" label="NoFluffJobs" />
+                  <ds-radio [value]="'referral'" label="Polecenie" />
+                  <ds-radio [value]="'other'" label="Inne" />
+                </ds-radio-group>
+              </div>
+            </div>
+
+            <div class="form-grid__full toggles">
+              <ds-checkbox [(checked)]="remote" label="Praca w pełni zdalna" />
+              <ds-switch [(checked)]="notifyByEmail" label="Powiadom mnie mailem o follow-upach" />
+            </div>
+
+            <div class="form-grid__full form-actions">
+              <button type="button" ds-button variant="ghost" size="md" (click)="reset()">Wyczyść</button>
+              <button type="submit" ds-button variant="primary" size="md" [disabled]="!formValid()">
+                Zapisz aplikację
+              </button>
+            </div>
+          </form>
+
+          <div class="form-result">
+            <div class="text-3 t-xs">Live signal state (computed)</div>
+            <pre class="form-result__code">{{ formValue() | json }}</pre>
+            @if (submitted(); as data) {
+              <div class="text-3 t-xs" style="margin-top: 12px;">Last submitted</div>
+              <pre class="form-result__code">{{ data | json }}</pre>
+            }
+          </div>
+        </ng-template>
+      </ds-tab>
+
+      <!-- ===== Tab 4: Overlay primitives ===== -->
+      <ds-tab label="Overlay & feedback">
+        <ng-template>
+          <div class="overlay-grid">
+            <ds-card>
+              <ds-card-header>
+                <h3 class="t-md" style="margin:0;font-weight:600;">Tooltips</h3>
+              </ds-card-header>
+              <ds-card-body>
+                <div class="loading-row" style="flex-wrap: wrap;">
+                  <button ds-button variant="secondary" size="sm" dsTooltip="Pozycja: top (default)">Top</button>
+                  <button ds-button variant="secondary" size="sm" dsTooltip="Bottom" dsTooltipPosition="bottom">Bottom</button>
+                  <button ds-button variant="secondary" size="sm" dsTooltip="Left" dsTooltipPosition="left">Left</button>
+                  <button ds-button variant="secondary" size="sm" dsTooltip="Right" dsTooltipPosition="right">Right</button>
+                </div>
+              </ds-card-body>
+            </ds-card>
+
+            <ds-card>
+              <ds-card-header>
+                <h3 class="t-md" style="margin:0;font-weight:600;">Toasts</h3>
+              </ds-card-header>
+              <ds-card-body>
+                <div class="loading-row" style="flex-wrap: wrap; gap: 8px;">
+                  <button ds-button variant="secondary" size="sm" (click)="showToast('success')">Success</button>
+                  <button ds-button variant="secondary" size="sm" (click)="showToast('info')">Info</button>
+                  <button ds-button variant="secondary" size="sm" (click)="showToast('warning')">Warning</button>
+                  <button ds-button variant="secondary" size="sm" (click)="showToast('error')">Error</button>
+                </div>
+              </ds-card-body>
+            </ds-card>
+
+            <ds-card>
+              <ds-card-header>
+                <h3 class="t-md" style="margin:0;font-weight:600;">Menu &amp; Modal</h3>
+              </ds-card-header>
+              <ds-card-body>
+                <div class="loading-row" style="gap: 12px; flex-wrap: wrap;">
+                  <button ds-button variant="secondary" size="sm" [dsMenuTrigger]="demoMenu">Otwórz menu ⌄</button>
+                  <ds-menu #demoMenu>
+                    <button ds-menu-item>Edytuj profil</button>
+                    <button ds-menu-item>Ustawienia</button>
+                    <hr ds-menu-divider />
+                    <button ds-menu-item>Pomoc</button>
+                    <button ds-menu-item class="is-danger">Wyloguj</button>
+                  </ds-menu>
+
+                  <button ds-button variant="danger" size="sm"
+                          (click)="confirmDelete(allRows[0])">Usuń aplikację (modal)</button>
+                </div>
+              </ds-card-body>
+            </ds-card>
+
+            <ds-card>
+              <ds-card-header>
+                <h3 class="t-md" style="margin:0;font-weight:600;">Loading states</h3>
+              </ds-card-header>
+              <ds-card-body>
+                <div class="loading-row" style="margin-bottom: 12px;">
+                  <ds-spinner [size]="14" />
+                  <span class="text-2 t-sm">Inline spinner</span>
+                </div>
+                <div class="skeleton-stack">
+                  <ds-skeleton width="60%" height="14px" />
+                  <ds-skeleton width="40%" height="12px" />
+                  <ds-skeleton width="80%" height="12px" />
+                </div>
+              </ds-card-body>
+            </ds-card>
+          </div>
+        </ng-template>
+      </ds-tab>
+
+      <!-- ===== Tab 5: Empty state ===== -->
+      <ds-tab label="Empty state">
+        <ng-template>
+          <ds-empty
+            title="Nie masz jeszcze żadnej aplikacji"
+            description="Dodaj swoją pierwszą aplikację o pracę — ręcznie albo importem z JustJoinIT / NoFluffJobs."
+          >
+            <svg ds-empty-icon viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+              <line x1="9" y1="15" x2="15" y2="15" />
+            </svg>
+            <button ds-empty-actions ds-button variant="secondary" size="md">Importuj</button>
+            <button ds-empty-actions ds-button variant="primary" size="md">Dodaj aplikację</button>
+          </ds-empty>
+        </ng-template>
+      </ds-tab>
+    </ds-tabs>
   </section>
 
-  <!-- ============ STATUS BADGES ============ -->
+  <!-- ============ APPLICATION CARD DEMO ============ -->
   <section class="showcase">
     <header class="showcase-header">
-      <h2 class="t-xl">Application status</h2>
-      <span class="text-3 t-sm">11 wartości z enuma backendowego</span>
-    </header>
-    <div class="badge-row">
-      @for (s of statusDemos; track s.variant) {
-        <ds-badge [variant]="s.variant" dot>{{ s.label }}</ds-badge>
-      }
-    </div>
-  </section>
-
-  <!-- ============ CARD + AVATAR + CHIPS ============ -->
-  <section class="showcase">
-    <header class="showcase-header">
-      <h2 class="t-xl">Aplikacja — preview</h2>
-      <span class="text-3 t-sm">card / avatar / chip / badge w akcji</span>
+      <h2 class="t-xl">Aplikacja — single view</h2>
+      <span class="text-3 t-sm">card / avatar / chip / badge / button</span>
     </header>
 
     <ds-card>
@@ -151,142 +334,6 @@
     </ds-card>
   </section>
 
-  <!-- ============ LOADING STATES ============ -->
-  <section class="showcase">
-    <header class="showcase-header">
-      <h2 class="t-xl">Loading states</h2>
-      <span class="text-3 t-sm">spinner + skeleton</span>
-    </header>
-
-    <div class="loading-grid">
-      <ds-card>
-        <ds-card-body>
-          <div class="loading-row">
-            <ds-spinner [size]="14" />
-            <span class="text-2 t-sm">Inline spinner — pasek statusu, akcja w toku</span>
-          </div>
-          <div class="loading-row" style="margin-top: 12px;">
-            <ds-spinner [size]="28" />
-            <span class="text-2 t-sm">Większy, np. ładowanie sekcji</span>
-          </div>
-        </ds-card-body>
-      </ds-card>
-
-      <ds-card>
-        <ds-card-body>
-          <div class="skeleton-stack">
-            <ds-skeleton width="60%" height="14px" />
-            <ds-skeleton width="40%" height="12px" />
-            <ds-skeleton width="80%" height="12px" />
-          </div>
-        </ds-card-body>
-      </ds-card>
-    </div>
-  </section>
-
-  <!-- ============ EMPTY STATE ============ -->
-  <section class="showcase">
-    <header class="showcase-header">
-      <h2 class="t-xl">Empty state</h2>
-      <span class="text-3 t-sm">jak wygląda nim coś dodasz</span>
-    </header>
-
-    <ds-empty
-      title="Nie masz jeszcze żadnej aplikacji"
-      description="Dodaj swoją pierwszą aplikację o pracę — ręcznie albo importem z JustJoinIT / NoFluffJobs."
-    >
-      <svg ds-empty-icon viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="12" y1="18" x2="12" y2="12" />
-        <line x1="9" y1="15" x2="15" y2="15" />
-      </svg>
-      <button ds-empty-actions ds-button variant="secondary" size="md">
-        Importuj z job board
-      </button>
-      <button ds-empty-actions ds-button variant="primary" size="md">
-        Dodaj aplikację
-      </button>
-    </ds-empty>
-  </section>
-
-  <!-- ============ FORM DEMO ============ -->
-  <section class="showcase">
-    <header class="showcase-header">
-      <h2 class="t-xl">Dodaj aplikację (demo)</h2>
-      <span class="text-3 t-sm">reactive form · ds-input · ds-textarea · ds-checkbox · ds-switch · ds-radio</span>
-    </header>
-
-    <ds-card>
-      <ds-card-body>
-        <form (submit)="$event.preventDefault(); submit()" class="form-grid">
-          <ds-input
-            [(value)]="company"
-            label="Firma"
-            placeholder="np. Acme Corp"
-            required
-            [error]="companyError()"
-            errorText="Podaj nazwę firmy (min. 2 znaki)"
-            helperText="Pełna nazwa pracodawcy"
-          />
-
-          <ds-input
-            [(value)]="position"
-            label="Stanowisko"
-            placeholder="np. Senior Java Engineer"
-            required
-            [error]="positionError()"
-            errorText="Pole wymagane"
-          />
-
-          <div class="form-grid__full">
-            <ds-textarea
-              [(value)]="notes"
-              label="Notatki"
-              placeholder="Co warto zapamiętać przed rozmową…"
-              helperText="Opcjonalne — np. nazwiska rekruterów, pytania do zadania"
-              [rows]="3"
-            />
-          </div>
-
-          <div class="form-grid__full">
-            <div class="field-cluster">
-              <span class="field-cluster__label" id="source-label">Źródło aplikacji</span>
-              <ds-radio-group [(value)]="source" aria-labelledby="source-label" style="flex-direction: row; gap: 16px;">
-                <ds-radio [value]="'justjoin'" label="JustJoinIT" />
-                <ds-radio [value]="'nofluff'" label="NoFluffJobs" />
-                <ds-radio [value]="'referral'" label="Polecenie" />
-                <ds-radio [value]="'other'" label="Inne" />
-              </ds-radio-group>
-            </div>
-          </div>
-
-          <div class="form-grid__full toggles">
-            <ds-checkbox [(checked)]="remote" label="Praca w pełni zdalna" />
-            <ds-switch [(checked)]="notifyByEmail" label="Powiadom mnie mailem o follow-upach" />
-          </div>
-
-          <div class="form-grid__full form-actions">
-            <button type="button" ds-button variant="ghost" size="md" (click)="reset()">Wyczyść</button>
-            <button type="submit" ds-button variant="primary" size="md" [disabled]="!formValid()">
-              Zapisz aplikację
-            </button>
-          </div>
-        </form>
-
-        <div class="form-result">
-          <div class="text-3 t-xs">Live signal state (computed from individual signals)</div>
-          <pre class="form-result__code">{{ formValue() | json }}</pre>
-          @if (submitted(); as data) {
-            <div class="text-3 t-xs" style="margin-top: 12px;">Last submitted</div>
-            <pre class="form-result__code">{{ data | json }}</pre>
-          }
-        </div>
-      </ds-card-body>
-    </ds-card>
-  </section>
-
   <!-- ============ ROADMAP ============ -->
   <section class="phases">
     <h2 class="t-xl">Roadmap</h2>
@@ -298,14 +345,14 @@
           <div class="phase-meta text-3 t-sm">Spring Boot + Angular + Postgres w jednym <code>docker compose up</code></div>
         </div>
       </li>
-      <li class="phase phase--current">
+      <li class="phase phase--done">
         <span class="phase-num">02</span>
         <div>
           <div class="phase-title">Design system v0</div>
-          <div class="phase-meta text-3 t-sm">Tokens · theme · button · badge · card · chip · avatar · spinner · skeleton · empty · stat-card</div>
+          <div class="phase-meta text-3 t-sm">21 komponentów, SASS abstracts, signal-based forms, CDK Overlay</div>
         </div>
       </li>
-      <li class="phase">
+      <li class="phase phase--current">
         <span class="phase-num">03</span>
         <div>
           <div class="phase-title">Backend CRUD Application</div>
