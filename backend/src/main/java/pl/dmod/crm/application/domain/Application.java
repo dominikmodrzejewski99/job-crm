@@ -74,6 +74,9 @@ public class Application {
     @Column(name = "next_follow_up_at")
     private Instant nextFollowUpAt;
 
+    @Column(name = "next_follow_up_reminder_sent_at")
+    private Instant nextFollowUpReminderSentAt;
+
     @Column(name = "archived", nullable = false)
     private boolean archived;
 
@@ -150,6 +153,9 @@ public class Application {
 
     public Instant getNextFollowUpAt() { return nextFollowUpAt; }
     public void setNextFollowUpAt(Instant nextFollowUpAt) { this.nextFollowUpAt = nextFollowUpAt; }
+
+    public Instant getNextFollowUpReminderSentAt() { return nextFollowUpReminderSentAt; }
+    public void setNextFollowUpReminderSentAt(Instant ts) { this.nextFollowUpReminderSentAt = ts; }
 
     public boolean isArchived() { return archived; }
     public void setArchived(boolean archived) { this.archived = archived; }

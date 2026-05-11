@@ -79,11 +79,51 @@
       <ds-tab label="Dashboard">
         <ng-template>
           <div class="stat-grid">
-            <ds-stat-card label="Aktywne aplikacje" value="47" delta="+12% / 7d" deltaTone="positive" />
-            <ds-stat-card label="Follow-up dziś" value="5" delta="2 zaległe" deltaTone="negative" />
-            <ds-stat-card label="Response rate 30d" value="34%" delta="bez zmian" deltaTone="neutral" />
-            <ds-stat-card label="Rozmowy w tym tyg." value="3" delta="+1 vs prev" deltaTone="positive" />
+            <ds-stat-card label="Aktywne aplikacje" [value]="applications().length" />
+            <ds-stat-card label="Follow-up do 7 dni" [value]="followUps().length" />
+            <ds-stat-card label="Response rate 30d" value="—" />
+            <ds-stat-card label="Rozmowy w tym tyg." value="—" />
           </div>
+
+          <ds-card class="followup-card">
+            <ds-card-header>
+              <h3 class="overlay-card__title">Do zrobienia (najbliższe 7 dni)</h3>
+              <span class="text-3 t-sm">scheduler skanuje co 5 min · maile lądują w MailHog (localhost:8025)</span>
+            </ds-card-header>
+            <ds-card-body>
+              @if (followUpsLoading()) {
+                <div class="skeleton-stack">
+                  <ds-skeleton width="60%" height="14px" />
+                  <ds-skeleton width="80%" height="14px" />
+                </div>
+              } @else if (followUps().length === 0) {
+                <div class="text-3 t-sm">Brak nadchodzących follow-upów. Ustaw <code>nextFollowUpAt</code> dla aplikacji.</div>
+              } @else {
+                <ul class="followup-list">
+                  @for (item of followUps(); track item.id) {
+                    <li class="followup-item" [class.is-overdue]="isFollowUpOverdue(item.nextFollowUpAt!)">
+                      <ds-avatar size="sm" [initials]="item.companyName.charAt(0)" [alt]="item.companyName" />
+                      <div class="followup-item__body">
+                        <div class="followup-item__line">
+                          <strong>{{ item.companyName }}</strong> · {{ item.position }}
+                        </div>
+                        <div class="text-3 t-sm">
+                          {{ item.nextFollowUpAt }}
+                          @if (isFollowUpOverdue(item.nextFollowUpAt!)) { · zaległe }
+                        </div>
+                      </div>
+                      <ds-badge [variant]="statusToBadgeFn(item.currentStatus)" dot>{{ item.currentStatus }}</ds-badge>
+                      <div class="followup-item__actions">
+                        <button ds-button variant="ghost" size="sm" (click)="followUpSnooze(item.id, 3)">+3d</button>
+                        <button ds-button variant="primary" size="sm" (click)="followUpDone(item.id)">Done</button>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+            </ds-card-body>
+          </ds-card>
+
           <div class="badge-row badge-row--spaced">
             @for (s of statusDemos; track s.variant) {
               <ds-badge [variant]="s.variant" dot>{{ s.label }}</ds-badge>
@@ -340,11 +380,11 @@
           <div class="phase-meta text-3 t-sm">Spring Security stateless, BCrypt, JWT HS256, per-user isolation, /login + /register</div>
         </div>
       </li>
-      <li class="phase phase--current">
+      <li class="phase phase--done">
         <span class="phase-num">05</span>
         <div>
           <div class="phase-title">Follow-up reminders + email</div>
-          <div class="phase-meta text-3 t-sm"><code>&#64;Scheduled</code> + JavaMailSender</div>
+          <div class="phase-meta text-3 t-sm"><code>&#64;Scheduled</code> co 5 min · JavaMailSender → MailHog (localhost:8025) · widget dashboard</div>
         </div>
       </li>
     </ol>

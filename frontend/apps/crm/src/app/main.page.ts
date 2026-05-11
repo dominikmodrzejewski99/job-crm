@@ -45,6 +45,7 @@ import { DsTooltip } from '@frontend/design-system/tooltip';
 
 import { ApplicationApi } from './api/application-api';
 import { ApiApplication, statusToBadge } from './api/application-types';
+import { FollowUpApi } from './api/follow-up-api';
 import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { AuthService } from './auth/auth.service';
 import { ConfirmModal } from './confirm-modal';
@@ -107,9 +108,13 @@ export class MainPage {
   private readonly modal = inject(DsModalService);
   private readonly toast = inject(DsToastService);
   private readonly api = inject(ApplicationApi);
+  private readonly followUpApi = inject(FollowUpApi);
   private readonly router = inject(Router);
   protected readonly auth = inject(AuthService);
   protected readonly themeService = inject(ThemeService);
+
+  protected readonly followUps = signal<ApiApplication[]>([]);
+  protected readonly followUpsLoading = signal(true);
 
   protected readonly ping = signal<PingResponse | null>(null);
   protected readonly pingError = signal<string | null>(null);
@@ -195,7 +200,50 @@ export class MainPage {
 
   constructor() {
     this.loadApplications();
+    this.loadFollowUps();
   }
+
+  private loadFollowUps(): void {
+    this.followUpsLoading.set(true);
+    this.followUpApi
+      .upcoming(7)
+      .pipe(
+        catchError(() => {
+          this.followUpsLoading.set(false);
+          return of([] as ApiApplication[]);
+        }),
+      )
+      .subscribe((items) => {
+        this.followUps.set(items);
+        this.followUpsLoading.set(false);
+      });
+  }
+
+  protected followUpDone(id: string): void {
+    this.followUpApi.markDone(id).subscribe({
+      next: () => {
+        this.followUps.update((list) => list.filter((a) => a.id !== id));
+        this.toast.success('Follow-up odhaczony');
+      },
+      error: () => this.toast.error('Nie udało się zaktualizować'),
+    });
+  }
+
+  protected followUpSnooze(id: string, days: number): void {
+    this.followUpApi.snooze(id, days).subscribe({
+      next: () => {
+        this.followUps.update((list) => list.filter((a) => a.id !== id));
+        this.toast.info(`Odłożone o ${days} dni`);
+      },
+      error: () => this.toast.error('Nie udało się odłożyć'),
+    });
+  }
+
+  protected isFollowUpOverdue(timestamp: string): boolean {
+    return new Date(timestamp).getTime() < Date.now();
+  }
+
+  protected statusToBadgeFn = statusToBadge;
 
   private loadApplications(): void {
     this.applicationsLoading.set(true);

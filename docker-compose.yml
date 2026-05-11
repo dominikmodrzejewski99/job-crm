@@ -20,6 +20,14 @@ services:
       retries: 10
       start_period: 5s
 
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: crm-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP — backend reaches it via mailhog:1025 inside compose
+      - "8025:8025"   # Web UI at http://localhost:8025 to inspect sent emails
+
   backend:
     build:
       context: ./backend
@@ -29,12 +37,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      mailhog:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: dev
       DB_URL: jdbc:postgresql://postgres:5432/crm
       DB_USER: crm
       DB_PASSWORD: crm
       SERVER_PORT: 8080
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
     ports:
       - "8080:8080"
 

@@ -52,3 +52,16 @@ jobtrack:
       secret: ${JWT_SECRET:dev-only-please-change-me-to-something-long-32+chars}
       validity: PT1H
       issuer: jobtrack
+  followup:
+    initial-delay-ms: 30000
+    fixed-delay-ms: 300000   # 5 minutes between scans
+    from: ${MAIL_FROM:noreply@jobtrack.local}
+
+spring.mail:
+  host: ${MAIL_HOST:mailhog}
+  port: ${MAIL_PORT:1025}
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  properties:
+    mail.smtp.auth: false
+    mail.smtp.starttls.enable: false
