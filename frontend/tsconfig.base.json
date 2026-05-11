@@ -37,7 +37,8 @@
       "@frontend/design-system/modal": ["./libs/design-system/src/lib/components/modal/public-api.ts"],
       "@frontend/design-system/toast": ["./libs/design-system/src/lib/components/toast/public-api.ts"],
       "@frontend/design-system/select": ["./libs/design-system/src/lib/components/select/public-api.ts"],
-      "@frontend/design-system/theme": ["./libs/design-system/src/lib/theme/public-api.ts"]
+      "@frontend/design-system/theme": ["./libs/design-system/src/lib/theme/public-api.ts"],
+      "@frontend/design-system/i18n": ["./libs/design-system/src/lib/i18n/public-api.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

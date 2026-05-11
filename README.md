@@ -365,4 +365,22 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 - [x] Faza 6: Job board integration (Spring RestClient → JustJoinIT + NoFluffJobs, 6h crawler, dedup, save-as-application, ag-grid UI)
 - [x] Faza 7: Stats + dashboard (`/api/v1/stats/dashboard` agregacje, custom SVG funnel + weekly chart + status bars)
 - [x] Faza 8: CI/CD + deploy (GitHub Actions backend-ci + frontend-ci, render.yaml blueprint, vercel.json z /api rewrites, application-prod.yml)
-- [ ] Faza 10: Polish (i18n, PWA, dark mode, a11y audit)
+- [x] Faza 9: Polish — i18n PL/EN (signal-based `I18nService` + `tr` pipe), PWA (manifest + service worker, cache-first dla assets / network-first dla `/api`), a11y audit (`@axe-core/playwright` e2e, fail na critical/serious)
+
+---
+
+## Wszystkie 9 faz roadmapy zamknięte 🎉
+
+Repo zawiera kompletny stack od pustego folderu do production-ready aplikacji:
+
+- **Backend**: Spring Boot 3.4 / Java 21 — JPA + Flyway (6 migracji), Spring Security stateless + JWT, Spring Mail (`@Scheduled` reminders), Spring RestClient (crawler JJIT/NFJ), springdoc OpenAPI, ProblemDetail, Testcontainers, integration + service tests
+- **Frontend**: Angular 21 zoneless / Nx monorepo — własny design system z 21 komponentami (SASS abstracts + signal forms + Angular CDK overlay), AG Grid dla data tables, signal-based state, custom SVG dashboard charts, i18n PL/EN, PWA (offline)
+- **DevOps**: Docker Compose (postgres + backend + frontend + mailhog), GitHub Actions CI (dwa workflowy), Render blueprint + Vercel rewrites = zero CORS w prod
+
+### Co dalej (gdyby były kolejne fazy)
+
+- **Faza 10**: rate limiting (`bucket4j`), refresh tokens, password reset flow
+- **Faza 11**: Storybook dla `libs/design-system` + visual regression
+- **Faza 12**: monitoring — Prometheus + Grafana + Sentry dla frontend errors
+- **Faza 13**: AI integration — auto-summarize job offers, suggest follow-up timing
+- **Faza 14**: mobile — Capacitor wrap albo Flutter rewrite

@@ -54,6 +54,7 @@ import { DashboardStats } from './api/stats-types';
 import { DashboardFunnel } from './dashboard/funnel';
 import { DashboardStatusBars } from './dashboard/status-bars';
 import { DashboardWeeklyChart } from './dashboard/weekly-chart';
+import { I18nService, TrPipe } from '@frontend/design-system/i18n';
 import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { AuthService } from './auth/auth.service';
 import { ConfirmModal } from './confirm-modal';
@@ -110,6 +111,7 @@ type ToastKind = 'success' | 'info' | 'warning' | 'error';
     DashboardFunnel,
     DashboardStatusBars,
     DashboardWeeklyChart,
+    TrPipe,
   ],
   templateUrl: './main.page.html',
   styleUrl: './main.page.scss',
@@ -126,6 +128,7 @@ export class MainPage {
   private readonly router = inject(Router);
   protected readonly auth = inject(AuthService);
   protected readonly themeService = inject(ThemeService);
+  protected readonly i18n = inject(I18nService);
 
   protected readonly followUps = signal<ApiApplication[]>([]);
   protected readonly followUpsLoading = signal(true);

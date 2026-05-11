@@ -1,0 +1,27 @@
+{
+  "name": "JobTrack — CRM aplikacji o pracę",
+  "short_name": "JobTrack",
+  "description": "Personal CRM for tracking job applications, follow-ups and offers from JustJoinIT + NoFluffJobs.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a10",
+  "theme_color": "#5b4dee",
+  "lang": "pl",
+  "categories": ["productivity", "business"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

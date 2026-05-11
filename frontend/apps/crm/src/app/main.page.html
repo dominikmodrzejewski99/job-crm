@@ -14,18 +14,26 @@
   </div>
 
   <div class="header-end">
-    <div class="theme-toggle" role="group" aria-label="Wybór motywu">
+    <div class="theme-toggle" role="group" [attr.aria-label]="'theme.light' | tr">
       <button ds-button variant="ghost" size="sm" (click)="themeService.setTheme('light')"
-              [attr.aria-pressed]="themeService.theme() === 'light'">Jasny</button>
+              [attr.aria-pressed]="themeService.theme() === 'light'">{{ 'theme.light' | tr }}</button>
       <button ds-button variant="ghost" size="sm" (click)="themeService.setTheme('dark')"
-              [attr.aria-pressed]="themeService.theme() === 'dark'">Ciemny</button>
+              [attr.aria-pressed]="themeService.theme() === 'dark'">{{ 'theme.dark' | tr }}</button>
+    </div>
+
+    <div class="theme-toggle" role="group" [attr.aria-label]="'language' | tr">
+      <button ds-button variant="ghost" size="sm" (click)="i18n.setLocale('pl')"
+              [attr.aria-pressed]="i18n.locale() === 'pl'">PL</button>
+      <button ds-button variant="ghost" size="sm" (click)="i18n.setLocale('en')"
+              [attr.aria-pressed]="i18n.locale() === 'en'">EN</button>
     </div>
 
     @if (auth.user(); as currentUser) {
       <div class="user-menu">
         <ds-avatar size="sm" [initials]="currentUser.displayName || currentUser.email" [alt]="currentUser.email" />
         <span class="user-menu__email">{{ currentUser.email }}</span>
-        <button ds-button variant="ghost" size="sm" (click)="logout()" aria-label="Wyloguj">Wyloguj</button>
+        <button ds-button variant="ghost" size="sm" (click)="logout()"
+                [attr.aria-label]="'auth.logout' | tr">{{ 'auth.logout' | tr }}</button>
       </div>
     }
   </div>
