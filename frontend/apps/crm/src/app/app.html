@@ -220,27 +220,29 @@
 
     <ds-card>
       <ds-card-body>
-        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+        <form (submit)="$event.preventDefault(); submit()" class="form-grid">
           <ds-input
-            formControlName="company"
+            [(value)]="company"
             label="Firma"
             placeholder="np. Acme Corp"
             required
+            [error]="companyError()"
             errorText="Podaj nazwę firmy (min. 2 znaki)"
             helperText="Pełna nazwa pracodawcy"
           />
 
           <ds-input
-            formControlName="position"
+            [(value)]="position"
             label="Stanowisko"
             placeholder="np. Senior Java Engineer"
             required
+            [error]="positionError()"
             errorText="Pole wymagane"
           />
 
           <div class="form-grid__full">
             <ds-textarea
-              formControlName="notes"
+              [(value)]="notes"
               label="Notatki"
               placeholder="Co warto zapamiętać przed rozmową…"
               helperText="Opcjonalne — np. nazwiska rekruterów, pytania do zadania"
@@ -251,7 +253,7 @@
           <div class="form-grid__full">
             <div class="field-cluster">
               <span class="field-cluster__label" id="source-label">Źródło aplikacji</span>
-              <ds-radio-group formControlName="source" aria-labelledby="source-label" style="flex-direction: row; gap: 16px;">
+              <ds-radio-group [(value)]="source" aria-labelledby="source-label" style="flex-direction: row; gap: 16px;">
                 <ds-radio [value]="'justjoin'" label="JustJoinIT" />
                 <ds-radio [value]="'nofluff'" label="NoFluffJobs" />
                 <ds-radio [value]="'referral'" label="Polecenie" />
@@ -261,22 +263,26 @@
           </div>
 
           <div class="form-grid__full toggles">
-            <ds-checkbox formControlName="remote" label="Praca w pełni zdalna" />
-            <ds-switch formControlName="notifyByEmail" label="Powiadom mnie mailem o follow-upach" />
+            <ds-checkbox [(checked)]="remote" label="Praca w pełni zdalna" />
+            <ds-switch [(checked)]="notifyByEmail" label="Powiadom mnie mailem o follow-upach" />
           </div>
 
           <div class="form-grid__full form-actions">
             <button type="button" ds-button variant="ghost" size="md" (click)="reset()">Wyczyść</button>
-            <button type="submit" ds-button variant="primary" size="md">Zapisz aplikację</button>
+            <button type="submit" ds-button variant="primary" size="md" [disabled]="!formValid()">
+              Zapisz aplikację
+            </button>
           </div>
         </form>
 
-        @if (submitted(); as data) {
-          <div class="form-result">
-            <div class="text-3 t-xs">Submitted value</div>
+        <div class="form-result">
+          <div class="text-3 t-xs">Live signal state (computed from individual signals)</div>
+          <pre class="form-result__code">{{ formValue() | json }}</pre>
+          @if (submitted(); as data) {
+            <div class="text-3 t-xs" style="margin-top: 12px;">Last submitted</div>
             <pre class="form-result__code">{{ data | json }}</pre>
-          </div>
-        }
+          }
+        </div>
       </ds-card-body>
     </ds-card>
   </section>

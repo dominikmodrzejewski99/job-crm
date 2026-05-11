@@ -3,10 +3,11 @@ import {
   Component,
   ElementRef,
   ViewChild,
-  afterNextRender,
   computed,
+  effect,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -22,6 +23,9 @@ let nextId = 0;
   host: { class: 'ds-field' },
 })
 export class DsTextarea implements ControlValueAccessor {
+  /** Two-way bound value. Use `[(value)]="mySignal"` for signal-based forms. */
+  readonly value = model<string>('');
+
   readonly label = input<string>('');
   readonly placeholder = input<string>('');
   readonly helperText = input<string>('');
@@ -42,6 +46,7 @@ export class DsTextarea implements ControlValueAccessor {
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private writingFromFormApi = false;
 
   protected readonly showError = computed(() => {
     const override = this.errorOverride();
@@ -61,13 +66,24 @@ export class DsTextarea implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    effect(() => {
+      const v = this.value();
+      const el = this.inputEl?.nativeElement;
+      if (el && el.value !== v) {
+        el.value = v;
+      }
+      if (!this.writingFromFormApi) {
+        this.onChange(v);
+      }
+    });
   }
 
   writeValue(value: unknown): void {
-    afterNextRender(() => {
-      if (this.inputEl?.nativeElement) {
-        this.inputEl.nativeElement.value = value == null ? '' : String(value);
-      }
+    this.writingFromFormApi = true;
+    this.value.set(value == null ? '' : String(value));
+    queueMicrotask(() => {
+      this.writingFromFormApi = false;
     });
   }
 
@@ -84,7 +100,7 @@ export class DsTextarea implements ControlValueAccessor {
   }
 
   protected onInput(event: Event): void {
-    this.onChange((event.target as HTMLTextAreaElement).value);
+    this.value.set((event.target as HTMLTextAreaElement).value);
   }
 
   protected onBlur(): void {

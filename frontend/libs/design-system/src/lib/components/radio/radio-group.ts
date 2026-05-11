@@ -4,8 +4,10 @@ import {
   Component,
   ContentChildren,
   QueryList,
+  effect,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -34,13 +36,15 @@ let nextGroupId = 0;
   ],
 })
 export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
+  /** Two-way bound selected value. Use `[(value)]="mySignal"`. */
+  readonly value = model<unknown>(null);
+
   readonly labelledBy = input<string | null>(null, { alias: 'aria-labelledby' });
 
   readonly name = `ds-radio-group-${++nextGroupId}`;
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
 
-  protected readonly value = signal<unknown>(null);
   protected readonly disabled = signal(false);
 
   @ContentChildren(DsRadio, { descendants: true })
@@ -48,22 +52,35 @@ export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private writingFromFormApi = false;
 
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    effect(() => {
+      this.value();
+      // Trigger CD on radio children whenever selection changes.
+      this.radios?.forEach((radio) => radio.syncFromGroup());
+      if (!this.writingFromFormApi) {
+        this.onChange(this.value());
+      }
+    });
   }
 
   ngAfterContentInit(): void {
-    this.syncRadios();
-    this.radios?.changes.subscribe(() => this.syncRadios());
+    this.radios?.changes.subscribe(() => {
+      this.radios?.forEach((r) => r.syncFromGroup());
+    });
   }
 
-  // ---- ControlValueAccessor ----
   writeValue(value: unknown): void {
+    this.writingFromFormApi = true;
     this.value.set(value);
-    this.syncRadios();
+    queueMicrotask(() => {
+      this.writingFromFormApi = false;
+    });
   }
 
   registerOnChange(fn: (value: unknown) => void): void {
@@ -76,15 +93,12 @@ export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled.set(isDisabled);
-    this.syncRadios();
   }
 
   // ---- API consumed by DsRadio children ----
   select(value: unknown): void {
     if (this.disabled()) return;
     this.value.set(value);
-    this.syncRadios();
-    this.onChange(value);
     this.onTouched();
   }
 
@@ -94,9 +108,5 @@ export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
 
   isDisabled(): boolean {
     return this.disabled();
-  }
-
-  private syncRadios(): void {
-    this.radios?.forEach((radio) => radio.syncFromGroup());
   }
 }

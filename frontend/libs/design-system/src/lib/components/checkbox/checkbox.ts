@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -28,12 +30,14 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
   },
 })
 export class DsCheckbox implements ControlValueAccessor {
+  /** Two-way bound checked state. Use `[(checked)]="mySignal"`. */
+  readonly checked = model<boolean>(false);
+
   readonly label = input<string>('');
   readonly indeterminate = input(false, { transform: (v: boolean | string) => v === '' || v === true });
 
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
 
-  protected readonly checked = signal(false);
   protected readonly disabled = signal(false);
 
   protected readonly ariaChecked = computed(() => {
@@ -43,15 +47,27 @@ export class DsCheckbox implements ControlValueAccessor {
 
   private onChange: (value: boolean) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private writingFromFormApi = false;
 
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    effect(() => {
+      const v = this.checked();
+      if (!this.writingFromFormApi) {
+        this.onChange(v);
+      }
+    });
   }
 
   writeValue(value: unknown): void {
+    this.writingFromFormApi = true;
     this.checked.set(value === true);
+    queueMicrotask(() => {
+      this.writingFromFormApi = false;
+    });
   }
 
   registerOnChange(fn: (value: boolean) => void): void {
@@ -69,9 +85,7 @@ export class DsCheckbox implements ControlValueAccessor {
   protected toggle(event?: Event): void {
     if (this.disabled()) return;
     event?.preventDefault();
-    const next = !this.checked();
-    this.checked.set(next);
-    this.onChange(next);
+    this.checked.update((v) => !v);
   }
 
   protected onBlur(): void {

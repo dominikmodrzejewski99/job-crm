@@ -3,15 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   signal,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { catchError, of } from 'rxjs';
 
@@ -47,12 +42,13 @@ interface StatusDemo {
   label: string;
 }
 
+type Source = 'justjoin' | 'nofluff' | 'referral' | 'other';
+
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterModule,
-    ReactiveFormsModule,
     JsonPipe,
     DsButton,
     DsBadge,
@@ -79,13 +75,14 @@ interface StatusDemo {
 })
 export class App {
   private readonly http = inject(HttpClient);
-  private readonly fb = inject(FormBuilder);
   protected readonly themeService = inject(ThemeService);
 
+  // ---- Backend ping ----
   protected readonly ping = signal<PingResponse | null>(null);
   protected readonly pingError = signal<string | null>(null);
   protected readonly pingLoading = signal(false);
 
+  // ---- Demo data ----
   protected readonly statusDemos: StatusDemo[] = [
     { variant: 'draft', label: 'Draft' },
     { variant: 'applied', label: 'Applied' },
@@ -108,14 +105,40 @@ export class App {
     'kraków',
   ]);
 
-  protected readonly form: FormGroup = this.fb.nonNullable.group({
-    company: ['', [Validators.required, Validators.minLength(2)]],
-    position: ['', Validators.required],
-    notes: [''],
-    source: ['justjoin', Validators.required],
-    remote: [true],
-    notifyByEmail: [false],
+  // ---- Form state — pure signals, no FormBuilder, no FormGroup ----
+  protected readonly company = signal('');
+  protected readonly position = signal('');
+  protected readonly notes = signal('');
+  protected readonly source = signal<Source>('justjoin');
+  protected readonly remote = signal(true);
+  protected readonly notifyByEmail = signal(false);
+  protected readonly attemptedSubmit = signal(false);
+
+  // Per-field validators as computed signals.
+  protected readonly companyError = computed(() => {
+    if (!this.attemptedSubmit() && !this.company()) return false;
+    const v = this.company().trim();
+    return v.length < 2;
   });
+
+  protected readonly positionError = computed(() => {
+    if (!this.attemptedSubmit() && !this.position()) return false;
+    return this.position().trim().length === 0;
+  });
+
+  protected readonly formValid = computed(
+    () => this.company().trim().length >= 2 && this.position().trim().length > 0,
+  );
+
+  // Live snapshot of the whole form — composed from individual signals.
+  protected readonly formValue = computed(() => ({
+    company: this.company(),
+    position: this.position(),
+    notes: this.notes(),
+    source: this.source(),
+    remote: this.remote(),
+    notifyByEmail: this.notifyByEmail(),
+  }));
 
   protected readonly submitted = signal<unknown | null>(null);
 
@@ -141,22 +164,19 @@ export class App {
   }
 
   protected submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    this.submitted.set(this.form.getRawValue());
+    this.attemptedSubmit.set(true);
+    if (!this.formValid()) return;
+    this.submitted.set(this.formValue());
   }
 
   protected reset(): void {
-    this.form.reset({
-      company: '',
-      position: '',
-      notes: '',
-      source: 'justjoin',
-      remote: true,
-      notifyByEmail: false,
-    });
+    this.company.set('');
+    this.position.set('');
+    this.notes.set('');
+    this.source.set('justjoin');
+    this.remote.set(true);
+    this.notifyByEmail.set(false);
+    this.attemptedSubmit.set(false);
     this.submitted.set(null);
   }
 }

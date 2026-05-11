@@ -2,12 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Optional,
   ViewChild,
-  afterNextRender,
   computed,
+  effect,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -23,6 +23,9 @@ let nextId = 0;
   host: { class: 'ds-field' },
 })
 export class DsInput implements ControlValueAccessor {
+  /** Two-way bound value. Use `[(value)]="mySignal"` for signal-based forms. */
+  readonly value = model<string>('');
+
   readonly type = input<'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'>('text');
   readonly label = input<string>('');
   readonly placeholder = input<string>('');
@@ -34,7 +37,6 @@ export class DsInput implements ControlValueAccessor {
 
   @ViewChild('control', { static: true }) private readonly inputEl!: ElementRef<HTMLInputElement>;
 
-  // Wired to NgControl in the constructor below.
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
 
   protected readonly inputId = `ds-input-${++nextId}`;
@@ -42,10 +44,11 @@ export class DsInput implements ControlValueAccessor {
   protected readonly errorId = `${this.inputId}-error`;
 
   protected readonly disabled = signal(false);
-  private readonly touched = signal(false);
+  protected readonly touched = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private writingFromFormApi = false;
 
   protected readonly showError = computed(() => {
     const override = this.errorOverride();
@@ -65,14 +68,26 @@ export class DsInput implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    // Mirror the model signal into the native input and notify CVA.
+    effect(() => {
+      const v = this.value();
+      const el = this.inputEl?.nativeElement;
+      if (el && el.value !== v) {
+        el.value = v;
+      }
+      if (!this.writingFromFormApi) {
+        this.onChange(v);
+      }
+    });
   }
 
   // ---- ControlValueAccessor ----
   writeValue(value: unknown): void {
-    afterNextRender(() => {
-      if (this.inputEl?.nativeElement) {
-        this.inputEl.nativeElement.value = value == null ? '' : String(value);
-      }
+    this.writingFromFormApi = true;
+    this.value.set(value == null ? '' : String(value));
+    queueMicrotask(() => {
+      this.writingFromFormApi = false;
     });
   }
 
@@ -90,8 +105,7 @@ export class DsInput implements ControlValueAccessor {
 
   // ---- DOM handlers ----
   protected onInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.onChange(value);
+    this.value.set((event.target as HTMLInputElement).value);
   }
 
   protected onBlur(): void {
