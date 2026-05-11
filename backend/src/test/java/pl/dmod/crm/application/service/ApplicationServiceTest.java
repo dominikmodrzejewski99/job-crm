@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,14 +21,23 @@ import pl.dmod.crm.application.domain.ApplicationSource;
 import pl.dmod.crm.application.domain.ApplicationStatus;
 import pl.dmod.crm.application.repository.ApplicationRepository;
 import pl.dmod.crm.shared.exception.ResourceNotFoundException;
+import pl.dmod.crm.shared.security.CurrentUserService;
 
 class ApplicationServiceTest {
 
+    private static final UUID CURRENT_USER = UUID.randomUUID();
+
     private final ApplicationRepository repository = mock(ApplicationRepository.class);
-    private final ApplicationService service = new ApplicationService(repository, new ApplicationMapper());
+    private final CurrentUserService currentUser = mock(CurrentUserService.class);
+    private final ApplicationService service =
+            new ApplicationService(repository, new ApplicationMapper(), currentUser);
+
+    ApplicationServiceTest() {
+        when(currentUser.requireUserId()).thenReturn(CURRENT_USER);
+    }
 
     @Test
-    void create_persists_entity_with_applied_status_when_none_provided() {
+    void create_persists_entity_with_applied_status_and_current_user() {
         CreateApplicationRequest req = new CreateApplicationRequest(
                 "Acme", "Senior Java", null, ApplicationSource.JUSTJOIN,
                 "Kraków", true, null, null, "PLN",
@@ -59,15 +66,21 @@ class ApplicationServiceTest {
     }
 
     @Test
+    void getById_throws_when_application_belongs_to_other_user() {
+        UUID id = UUID.randomUUID();
+        Application other = new Application();
+        other.setId(id);
+        other.setUserId(UUID.randomUUID()); // different user
+        when(repository.findById(id)).thenReturn(Optional.of(other));
+
+        assertThatThrownBy(() -> service.getById(id))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
     void update_only_applies_non_null_fields() {
         UUID id = UUID.randomUUID();
-        Application existing = new Application();
-        existing.setId(id);
-        existing.setCompanyName("Old Co");
-        existing.setPosition("Old Position");
-        existing.setSource(ApplicationSource.OTHER);
-        existing.setAppliedAt(LocalDate.of(2026, 4, 1));
-        existing.setCurrentStatus(ApplicationStatus.APPLIED);
+        Application existing = ownedApplication(id);
 
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.save(any(Application.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -77,20 +90,13 @@ class ApplicationServiceTest {
         ApplicationDto dto = service.update(id, req);
 
         assertThat(dto.companyName()).isEqualTo("New Co");
-        assertThat(dto.position()).isEqualTo("Old Position"); // unchanged
+        assertThat(dto.position()).isEqualTo("Engineer"); // unchanged
     }
 
     @Test
-    void changeStatus_moves_application_to_target_state() {
+    void changeStatus_moves_owned_application_to_target_state() {
         UUID id = UUID.randomUUID();
-        Application existing = new Application();
-        existing.setId(id);
-        existing.setCurrentStatus(ApplicationStatus.APPLIED);
-        existing.setCompanyName("X");
-        existing.setPosition("Y");
-        existing.setSource(ApplicationSource.OTHER);
-        existing.setAppliedAt(LocalDate.now());
-
+        Application existing = ownedApplication(id);
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.save(any(Application.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -99,21 +105,33 @@ class ApplicationServiceTest {
     }
 
     @Test
-    void delete_throws_when_id_unknown_and_does_not_call_repo() {
+    void delete_throws_when_id_unknown() {
         UUID id = UUID.randomUUID();
-        when(repository.existsById(id)).thenReturn(false);
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.delete(id))
                 .isInstanceOf(ResourceNotFoundException.class);
-        verify(repository, never()).deleteById(any());
     }
 
     @Test
-    void delete_calls_repo_when_id_present() {
+    void delete_removes_owned_application() {
         UUID id = UUID.randomUUID();
-        when(repository.existsById(id)).thenReturn(true);
+        Application existing = ownedApplication(id);
+        when(repository.findById(id)).thenReturn(Optional.of(existing));
 
         service.delete(id);
-        verify(repository, times(1)).deleteById(id);
+        verify(repository).delete(existing);
+    }
+
+    private Application ownedApplication(UUID id) {
+        Application a = new Application();
+        a.setId(id);
+        a.setUserId(CURRENT_USER);
+        a.setCompanyName("Old Co");
+        a.setPosition("Engineer");
+        a.setSource(ApplicationSource.OTHER);
+        a.setAppliedAt(LocalDate.of(2026, 4, 1));
+        a.setCurrentStatus(ApplicationStatus.APPLIED);
+        return a;
     }
 }

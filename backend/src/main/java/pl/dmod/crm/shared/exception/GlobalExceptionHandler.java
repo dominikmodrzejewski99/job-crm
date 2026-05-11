@@ -6,10 +6,12 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import pl.dmod.crm.auth.service.AuthService;
 
 /**
  * Translates uncaught service / web-layer exceptions into RFC 7807
@@ -45,6 +47,27 @@ public class GlobalExceptionHandler {
         ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
                 "Malformed request: " + ex.getMessage());
         body.setTitle("Bad request");
+        return body;
+    }
+
+    @ExceptionHandler(AuthService.EmailAlreadyTakenException.class)
+    public ProblemDetail handleEmailTaken(AuthService.EmailAlreadyTakenException ex) {
+        ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        body.setTitle("Email already taken");
+        return body;
+    }
+
+    @ExceptionHandler(AuthService.InvalidCredentialsException.class)
+    public ProblemDetail handleInvalidCredentials(AuthService.InvalidCredentialsException ex) {
+        ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        body.setTitle("Invalid credentials");
+        return body;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDenied(AccessDeniedException ex) {
+        ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        body.setTitle("Forbidden");
         return body;
     }
 

@@ -33,6 +33,9 @@ public class Application {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
     @Column(name = "company_name", nullable = false, length = 200)
     private String companyName;
 
@@ -108,6 +111,9 @@ public class Application {
     // ---- Getters / setters ----
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
+
+    public UUID getUserId() { return userId; }
+    public void setUserId(UUID userId) { this.userId = userId; }
 
     public String getCompanyName() { return companyName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }

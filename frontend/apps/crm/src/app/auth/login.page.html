@@ -1,0 +1,50 @@
+<section class="auth-card">
+  <header class="auth-header">
+    <div class="auth-brand">
+      <div class="auth-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7l5 5-5 5" />
+          <path d="M12 19h8" />
+        </svg>
+      </div>
+      <span class="brand-name">JobTrack</span>
+    </div>
+    <h1 class="auth-title">Zaloguj się</h1>
+    <p class="auth-subtitle">Twoje aplikacje o pracę w jednym miejscu.</p>
+  </header>
+
+  <form (submit)="$event.preventDefault(); submit()" class="auth-form">
+    <ds-input
+      [(value)]="email"
+      label="Email"
+      placeholder="ty@example.com"
+      type="email"
+      autocomplete="email"
+      required
+      [error]="emailError()"
+      errorText="Podaj poprawny email"
+    />
+
+    <ds-input
+      [(value)]="password"
+      label="Hasło"
+      type="password"
+      autocomplete="current-password"
+      required
+      [error]="passwordError()"
+      errorText="Min. 8 znaków"
+    />
+
+    <div class="auth-actions">
+      <button ds-button type="submit" variant="primary" size="md"
+              [loading]="loading()" [disabled]="!formValid() && attempted()">
+        Zaloguj się
+      </button>
+    </div>
+  </form>
+
+  <div class="auth-footer">
+    Nie masz konta? <a routerLink="/register">Zarejestruj się</a>
+  </div>
+</section>

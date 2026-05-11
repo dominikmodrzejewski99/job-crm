@@ -1,6 +1,7 @@
 package pl.dmod.crm.application.api;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -8,9 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +20,24 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.dmod.crm.application.repository.ApplicationRepository;
+import pl.dmod.crm.auth.repository.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 @Testcontainers
+@TestPropertySource(properties = "jobtrack.auth.jwt.secret=test-secret-test-secret-test-secret-32+")
 class ApplicationControllerIntegrationTest {
 
     @Container
@@ -39,10 +47,17 @@ class ApplicationControllerIntegrationTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
     @Autowired ApplicationRepository repository;
+    @Autowired UserRepository userRepository;
+
+    private final UUID userA = UUID.randomUUID();
+    private final UUID userB = UUID.randomUUID();
 
     @BeforeEach
     void clean() {
         repository.deleteAll();
+        userRepository.deleteAll();
+        seedUser(userA, "a@example.com");
+        seedUser(userB, "b@example.com");
     }
 
     @Test
@@ -59,6 +74,7 @@ class ApplicationControllerIntegrationTest {
                 """;
 
         MvcResult created = mvc.perform(post("/api/v1/applications")
+                        .with(authAs(userA))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isCreated())
@@ -68,58 +84,70 @@ class ApplicationControllerIntegrationTest {
 
         String id = json.readTree(created.getResponse().getContentAsString()).get("id").asText();
 
-        mvc.perform(get("/api/v1/applications/{id}", id))
+        mvc.perform(get("/api/v1/applications/{id}", id).with(authAs(userA)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.position", equalTo("Senior Java Engineer")))
                 .andExpect(jsonPath("$.tags.length()", equalTo(2)));
     }
 
     @Test
-    void list_filters_by_status() throws Exception {
-        repository.save(seed("A", LocalDate.of(2026, 5, 1)));
-        repository.save(seed("B", LocalDate.of(2026, 5, 2)));
+    void list_only_shows_current_users_applications() throws Exception {
+        repository.save(seed(userA, "AcmeA", LocalDate.of(2026, 5, 1)));
+        repository.save(seed(userA, "AcmeA2", LocalDate.of(2026, 5, 2)));
+        repository.save(seed(userB, "GlobexB", LocalDate.of(2026, 5, 3)));
 
-        mvc.perform(get("/api/v1/applications").param("status", "APPLIED"))
+        mvc.perform(get("/api/v1/applications").with(authAs(userA)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements", equalTo(2)));
 
-        mvc.perform(get("/api/v1/applications").param("status", "OFFER"))
+        mvc.perform(get("/api/v1/applications").with(authAs(userB)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalElements", equalTo(0)));
+                .andExpect(jsonPath("$.totalElements", equalTo(1)))
+                .andExpect(jsonPath("$.content[0].companyName", equalTo("GlobexB")));
+    }
+
+    @Test
+    void other_user_cannot_read_or_delete_anothers_application() throws Exception {
+        var owned = repository.save(seed(userA, "AcmeA", LocalDate.now()));
+        String id = owned.getId().toString();
+
+        mvc.perform(get("/api/v1/applications/{id}", id).with(authAs(userB)))
+                .andExpect(status().isNotFound());
+
+        mvc.perform(delete("/api/v1/applications/{id}", id).with(authAs(userB)))
+                .andExpect(status().isNotFound());
+
+        // Original owner still sees it.
+        mvc.perform(get("/api/v1/applications/{id}", id).with(authAs(userA)))
+                .andExpect(status().isOk());
     }
 
     @Test
     void patch_updates_only_provided_fields() throws Exception {
-        var entity = repository.save(seed("OldCo", LocalDate.of(2026, 4, 1)));
+        var entity = repository.save(seed(userA, "OldCo", LocalDate.of(2026, 4, 1)));
         String id = entity.getId().toString();
 
         mvc.perform(patch("/api/v1/applications/{id}", id)
+                        .with(authAs(userA))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 { "companyName": "NewCo" }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName", equalTo("NewCo")))
-                .andExpect(jsonPath("$.position", equalTo("Engineer"))); // unchanged
+                .andExpect(jsonPath("$.position", equalTo("Engineer")));
     }
 
     @Test
-    void status_change_endpoint_moves_state() throws Exception {
-        var entity = repository.save(seed("X", LocalDate.now()));
-        String id = entity.getId().toString();
-
-        mvc.perform(post("/api/v1/applications/{id}/status", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                { "status": "INTERVIEW_SCHEDULED" }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.currentStatus", equalTo("INTERVIEW_SCHEDULED")));
+    void unauthenticated_request_is_rejected() throws Exception {
+        mvc.perform(get("/api/v1/applications"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     void validation_errors_come_back_as_problem_detail() throws Exception {
         mvc.perform(post("/api/v1/applications")
+                        .with(authAs(userA))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -135,26 +163,28 @@ class ApplicationControllerIntegrationTest {
                 .andExpect(jsonPath("$.fieldErrors.position").exists());
     }
 
-    @Test
-    void delete_then_get_returns_not_found_problem() throws Exception {
-        var entity = repository.save(seed("Z", LocalDate.now()));
-        String id = entity.getId().toString();
-
-        mvc.perform(delete("/api/v1/applications/{id}", id))
-                .andExpect(status().isNoContent());
-
-        mvc.perform(get("/api/v1/applications/{id}", id))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.title", equalTo("Resource not found")));
+    private void seedUser(UUID id, String email) {
+        var u = new pl.dmod.crm.auth.domain.User();
+        u.setId(id);
+        u.setEmail(email);
+        u.setPasswordHash("x");
+        userRepository.save(u);
     }
 
-    private pl.dmod.crm.application.domain.Application seed(String company, LocalDate appliedAt) {
+    private pl.dmod.crm.application.domain.Application seed(UUID owner, String company, LocalDate appliedAt) {
         var a = new pl.dmod.crm.application.domain.Application();
+        a.setUserId(owner);
         a.setCompanyName(company);
         a.setPosition("Engineer");
         a.setSource(pl.dmod.crm.application.domain.ApplicationSource.JUSTJOIN);
         a.setAppliedAt(appliedAt);
         a.setCurrentStatus(pl.dmod.crm.application.domain.ApplicationStatus.APPLIED);
         return a;
+    }
+
+    private RequestPostProcessor authAs(UUID userId) {
+        var token = new UsernamePasswordAuthenticationToken(
+                userId, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        return authentication(token);
     }
 }

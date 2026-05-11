@@ -44,3 +44,11 @@ springdoc:
 logging:
   level:
     pl.dmod.crm: DEBUG
+
+jobtrack:
+  auth:
+    jwt:
+      # Must be at least 32 characters for HS256. Override via env in prod.
+      secret: ${JWT_SECRET:dev-only-please-change-me-to-something-long-32+chars}
+      validity: PT1H
+      issuer: jobtrack

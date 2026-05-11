@@ -1,0 +1,85 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--sp-5);
+  background: var(--bg-canvas);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  padding: var(--sp-6);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.auth-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--brand-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sh-1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.auth-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-1);
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: var(--text-3);
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.auth-footer {
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+}
+
+.auth-footer a {
+  color: var(--brand-500);
+}
