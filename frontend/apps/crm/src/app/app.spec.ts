@@ -11,11 +11,10 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('renders the JobTrack hero', async () => {
+  it('hosts a router-outlet for child routes', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand-name')?.textContent).toContain('JobTrack');
-    expect(compiled.querySelector('h1')?.textContent).toContain('Job hunting');
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });
