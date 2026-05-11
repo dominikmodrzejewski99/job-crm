@@ -34,6 +34,10 @@ yarn-error.log*
 *.swo
 .DS_Store
 
+# --- Tooling state ---
+.claude/scheduled_tasks.lock
+.claude/projects/
+
 # --- Env / secrets ---
 .env
 .env.local

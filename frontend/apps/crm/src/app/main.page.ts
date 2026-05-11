@@ -274,12 +274,15 @@ export class MainPage {
     this.jobOfferApi.refreshCrawler().subscribe({
       next: (report) => {
         this.crawlerRunning.set(false);
-        this.toast.success(`Crawler: +${report.inserted} nowych, ~${report.updated} odświeżonych`);
+        this.toast.success(
+          this.i18n.translate('toast.crawler.success'),
+          `+${report.inserted} / ~${report.updated}`,
+        );
         this.loadJobOffers();
       },
       error: () => {
         this.crawlerRunning.set(false);
-        this.toast.error('Crawler się wywalił — sprawdź logi backendu');
+        this.toast.error(this.i18n.translate('toast.crawler.error'));
       },
     });
   }
@@ -288,9 +291,9 @@ export class MainPage {
     this.jobOfferApi.saveAsApplication(offerId).subscribe({
       next: (created) => {
         this.applications.update((list) => [created, ...list]);
-        this.toast.success(`Zapisano ${created.companyName} jako aplikację`);
+        this.toast.success(this.i18n.translate('toast.jobOffer.savedAsApplication'), created.companyName);
       },
-      error: () => this.toast.error('Nie udało się zapisać oferty'),
+      error: () => this.toast.error(this.i18n.translate('toast.jobOffer.saveFailed')),
     });
   }
 
@@ -314,9 +317,9 @@ export class MainPage {
     this.followUpApi.markDone(id).subscribe({
       next: () => {
         this.followUps.update((list) => list.filter((a) => a.id !== id));
-        this.toast.success('Follow-up odhaczony');
+        this.toast.success(this.i18n.translate('toast.followUp.done'));
       },
-      error: () => this.toast.error('Nie udało się zaktualizować'),
+      error: () => this.toast.error(this.i18n.translate('toast.followUp.doneFailed')),
     });
   }
 
@@ -324,9 +327,9 @@ export class MainPage {
     this.followUpApi.snooze(id, days).subscribe({
       next: () => {
         this.followUps.update((list) => list.filter((a) => a.id !== id));
-        this.toast.info(`Odłożone o ${days} dni`);
+        this.toast.info(this.i18n.translate('toast.followUp.snoozed'), `+${days}d`);
       },
-      error: () => this.toast.error('Nie udało się odłożyć'),
+      error: () => this.toast.error(this.i18n.translate('toast.followUp.snoozeFailed')),
     });
   }
 
@@ -343,8 +346,9 @@ export class MainPage {
       .list()
       .pipe(
         catchError((err) => {
-          this.applicationsError.set(err?.message ?? 'Nie udało się pobrać aplikacji');
-          this.toast.error('Nie udało się pobrać aplikacji');
+          const msg = this.i18n.translate('toast.applications.loadFailed');
+          this.applicationsError.set(err?.message ?? msg);
+          this.toast.error(msg);
           return of({ content: [], totalElements: 0, totalPages: 0, number: 0, size: 0, empty: true });
         }),
       )
@@ -368,7 +372,7 @@ export class MainPage {
       .subscribe((res) => {
         this.pingLoading.set(false);
         this.ping.set(res);
-        if (res) this.toast.success('Backend odpowiedział', res.service);
+        if (res) this.toast.success(this.i18n.translate('toast.backend.ok'), res.service);
       });
   }
 
@@ -379,7 +383,7 @@ export class MainPage {
   protected submit(): void {
     this.attemptedSubmit.set(true);
     if (!this.formValid()) {
-      this.toast.warning('Popraw błędy w formularzu');
+      this.toast.warning(this.i18n.translate('toast.form.fixErrors'));
       return;
     }
     const v = this.formValue();
@@ -397,10 +401,10 @@ export class MainPage {
         next: (created) => {
           this.applications.update((list) => [created, ...list]);
           this.submitted.set(this.formValue());
-          this.toast.success('Aplikacja zapisana');
+          this.toast.success(this.i18n.translate('toast.application.saved'));
           this.reset();
         },
-        error: () => this.toast.error('Backend odrzucił aplikację'),
+        error: () => this.toast.error(this.i18n.translate('toast.application.saveFailed')),
       });
   }
 
@@ -441,9 +445,9 @@ export class MainPage {
       this.api.delete(id).subscribe({
         next: () => {
           this.applications.update((list) => list.filter((a) => a.id !== id));
-          this.toast.success(`Usunięto ${app.companyName}`);
+          this.toast.success(this.i18n.translate('toast.applications.deleted'), app.companyName);
         },
-        error: () => this.toast.error('Nie udało się usunąć aplikacji'),
+        error: () => this.toast.error(this.i18n.translate('toast.applications.deleteFailed')),
       });
     });
   }
@@ -458,7 +462,7 @@ export class MainPage {
     if (first) {
       this.confirmDeleteById(first.id);
     } else {
-      this.toast.info('Brak aplikacji do usunięcia — najpierw dodaj jedną');
+      this.toast.info(this.i18n.translate('toast.applications.deleteEmpty'));
     }
   }
 
