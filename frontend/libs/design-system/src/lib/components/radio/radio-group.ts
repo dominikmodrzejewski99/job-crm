@@ -1,10 +1,9 @@
 import {
-  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
-  ContentChildren,
-  QueryList,
+  contentChildren,
   effect,
+  forwardRef,
   inject,
   input,
   model,
@@ -17,7 +16,6 @@ let nextGroupId = 0;
 
 @Component({
   selector: 'ds-radio-group',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-content />`,
   host: {
@@ -35,7 +33,7 @@ let nextGroupId = 0;
     `,
   ],
 })
-export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
+export class DsRadioGroup implements ControlValueAccessor {
   /** Two-way bound selected value. Use `[(value)]="mySignal"`. */
   readonly value = model<unknown>(null);
 
@@ -47,8 +45,9 @@ export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
 
   protected readonly disabled = signal(false);
 
-  @ContentChildren(DsRadio, { descendants: true })
-  private radios?: QueryList<DsRadio>;
+  // Signal-based content query — handles forward references between
+  // ds-radio (child) and ds-radio-group (parent) without circular DI issues.
+  protected readonly radios = contentChildren(forwardRef(() => DsRadio), { descendants: true });
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
@@ -60,18 +59,12 @@ export class DsRadioGroup implements ControlValueAccessor, AfterContentInit {
     }
 
     effect(() => {
-      this.value();
-      // Trigger CD on radio children whenever selection changes.
-      this.radios?.forEach((radio) => radio.syncFromGroup());
+      const v = this.value();
+      // Mark every child stale so isSelected() computed re-evaluates.
+      this.radios().forEach((r) => r.syncFromGroup());
       if (!this.writingFromFormApi) {
-        this.onChange(this.value());
+        this.onChange(v);
       }
-    });
-  }
-
-  ngAfterContentInit(): void {
-    this.radios?.changes.subscribe(() => {
-      this.radios?.forEach((r) => r.syncFromGroup());
     });
   }
 

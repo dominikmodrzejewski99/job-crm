@@ -16,7 +16,6 @@ let nextId = 0;
 
 @Component({
   selector: 'ds-textarea',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './textarea.html',
   styleUrl: './textarea.scss',

@@ -16,7 +16,6 @@ import {
  */
 @Component({
   selector: 'ds-tab',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
   host: { hidden: 'true' },

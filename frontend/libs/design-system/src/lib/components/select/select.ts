@@ -24,7 +24,6 @@ export interface DsOptionLike<T = unknown> {
 
 @Component({
   selector: 'ds-option',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content />',
   styles: [':host { display: none; }'],
@@ -45,7 +44,6 @@ let nextId = 0;
 
 @Component({
   selector: 'ds-select',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select.html',
   styleUrl: './select.scss',

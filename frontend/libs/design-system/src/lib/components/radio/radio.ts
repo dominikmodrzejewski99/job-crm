@@ -11,7 +11,6 @@ import { DsRadioGroup } from './radio-group';
 
 @Component({
   selector: 'ds-radio',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './radio.html',
   styleUrl: './radio.scss',

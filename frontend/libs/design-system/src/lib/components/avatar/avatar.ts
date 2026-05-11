@@ -4,7 +4,6 @@ export type DsAvatarSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'ds-avatar',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avatar.html',
   styleUrl: './avatar.scss',

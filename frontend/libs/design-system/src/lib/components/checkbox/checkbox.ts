@@ -12,7 +12,6 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'ds-checkbox',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './checkbox.html',
   styleUrl: './checkbox.scss',

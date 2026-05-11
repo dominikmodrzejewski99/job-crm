@@ -5,13 +5,12 @@ import {
   Component,
   Directive,
   ElementRef,
-  EventEmitter,
-  Output,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 
@@ -28,7 +27,6 @@ import {
  */
 @Component({
   selector: 'ds-menu',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-template>
@@ -41,12 +39,11 @@ import {
 })
 export class DsMenu {
   @ViewChild(TemplateRef, { static: true }) templateRef!: TemplateRef<unknown>;
-  @Output() readonly closed = new EventEmitter<void>();
+  readonly closed = output<void>();
 }
 
 @Component({
   selector: 'button[ds-menu-item], a[ds-menu-item]',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-content />`,
   styleUrls: ['./menu.scss'],
@@ -60,7 +57,6 @@ export class DsMenuItem {}
 
 @Component({
   selector: 'hr[ds-menu-divider]',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '',
   styleUrls: ['./menu.scss'],
@@ -73,7 +69,6 @@ export class DsMenuDivider {}
 
 @Directive({
   selector: '[dsMenuTrigger]',
-  standalone: true,
   host: {
     '(click)': 'toggle()',
     '[attr.aria-expanded]': 'isOpen()',

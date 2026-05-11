@@ -74,7 +74,6 @@ type ToastKind = 'success' | 'info' | 'warning' | 'error';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
     RouterModule,
     JsonPipe,
@@ -200,6 +199,7 @@ export class App {
   ];
 
   protected readonly perPage = 5;
+  protected readonly Math = Math;
 
   protected readonly sortedRows = computed(() => {
     const sort = this.sort();

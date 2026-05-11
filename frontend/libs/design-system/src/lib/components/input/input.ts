@@ -16,7 +16,6 @@ let nextId = 0;
 
 @Component({
   selector: 'ds-input',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './input.html',
   styleUrl: './input.scss',

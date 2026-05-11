@@ -25,7 +25,6 @@ export type DsBadgeVariant =
 
 @Component({
   selector: 'ds-badge',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './badge.html',
   styleUrl: './badge.scss',

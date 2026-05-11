@@ -25,7 +25,6 @@ interface ActiveToast extends DsToastOptions {
 
 @Component({
   selector: 'ds-toast-stack',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @for (toast of items(); track toast.id) {

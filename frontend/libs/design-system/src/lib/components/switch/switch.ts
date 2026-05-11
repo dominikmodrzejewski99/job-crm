@@ -11,7 +11,6 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'ds-switch',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './switch.html',
   styleUrl: './switch.scss',

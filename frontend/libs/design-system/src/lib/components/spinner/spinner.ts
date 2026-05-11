@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'ds-spinner',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './spinner.html',
   styleUrl: './spinner.scss',

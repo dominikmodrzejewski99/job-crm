@@ -86,7 +86,6 @@ export class DsModalService {
  */
 @Component({
   selector: 'ds-modal',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="ds-modal__header">

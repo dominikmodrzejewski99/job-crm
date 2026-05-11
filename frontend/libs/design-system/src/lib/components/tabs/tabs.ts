@@ -15,7 +15,6 @@ export type DsTabsOrientation = 'horizontal' | 'vertical';
 
 @Component({
   selector: 'ds-tabs',
-  standalone: true,
   imports: [NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tabs.html',

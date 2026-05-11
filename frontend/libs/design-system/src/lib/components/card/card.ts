@@ -6,7 +6,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
  */
 @Component({
   selector: 'ds-card',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './card.html',
   styleUrl: './card.scss',
@@ -16,7 +15,6 @@ export class DsCard {}
 
 @Component({
   selector: 'ds-card-header',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './card.html',
   styleUrls: ['./card.scss'],
@@ -26,7 +24,6 @@ export class DsCardHeader {}
 
 @Component({
   selector: 'ds-card-body',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './card.html',
   styleUrls: ['./card.scss'],
@@ -36,7 +33,6 @@ export class DsCardBody {}
 
 @Component({
   selector: 'ds-card-footer',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './card.html',
   styleUrls: ['./card.scss'],

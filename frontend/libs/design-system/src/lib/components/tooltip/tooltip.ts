@@ -13,7 +13,6 @@ export type DsTooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
 @Component({
   selector: 'ds-tooltip-host',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `{{ text }}`,
   styleUrl: './tooltip.scss',
@@ -25,7 +24,6 @@ export class DsTooltipHost {
 
 @Directive({
   selector: '[dsTooltip]',
-  standalone: true,
   exportAs: 'dsTooltip',
   host: {
     '(mouseenter)': 'show()',

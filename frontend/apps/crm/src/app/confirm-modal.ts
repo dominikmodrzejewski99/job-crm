@@ -11,7 +11,6 @@ interface ConfirmData {
 
 @Component({
   selector: 'confirm-modal',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DsModal, DsButton],
   template: `

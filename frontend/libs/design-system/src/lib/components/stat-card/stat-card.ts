@@ -4,7 +4,6 @@ export type DsStatDeltaTone = 'positive' | 'negative' | 'neutral';
 
 @Component({
   selector: 'ds-stat-card',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './stat-card.html',
   styleUrl: './stat-card.scss',

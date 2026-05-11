@@ -6,60 +6,84 @@ table[ds-table] {
   border-spacing: 0;
   font-size: 13px;
   color: var(--text-1);
+  font-family: inherit;
 
-  thead th {
-    position: sticky;
-    top: 0;
-    background: var(--bg-subtle);
-    z-index: 1;
-    text-align: left;
-    font-weight: 500;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--text-3);
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border-1);
-
-    &[ds-sort-header] {
-      cursor: pointer;
-      user-select: none;
-      transition: color 120ms;
-
-      &:hover {
-        color: var(--text-1);
-      }
-
-      &[data-sort-active='true'] {
-        color: var(--brand-500);
-      }
-    }
-  }
-
-  tbody td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border-1);
-    vertical-align: middle;
-  }
-
-  tbody tr {
-    transition: background 80ms;
-
-    &:hover td {
+  thead {
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
       background: var(--bg-subtle);
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-1);
+      white-space: nowrap;
+      user-select: none;
+
+      &:first-child { padding-left: a.$sp-4; }
+      &:last-child { padding-right: a.$sp-4; }
+    }
+  }
+
+  tbody {
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-1);
+      vertical-align: middle;
+      color: var(--text-1);
+
+      &:first-child { padding-left: a.$sp-4; }
+      &:last-child { padding-right: a.$sp-4; }
     }
 
-    &[data-selected='true'] td {
-      background: rgba(91, 77, 238, 0.06);
+    tr {
+      transition: background 80ms;
 
-      [data-theme='dark'] & {
-        background: rgba(122, 106, 255, 0.10);
+      &:hover td {
+        background: var(--bg-subtle);
+      }
+
+      &:last-child td {
+        border-bottom: none;
+      }
+
+      &[data-selected='true'] td {
+        background: rgba(91, 77, 238, 0.06);
+
+        [data-theme='dark'] & {
+          background: rgba(122, 106, 255, 0.10);
+        }
+
+        &:first-child {
+          box-shadow: inset 2px 0 0 var(--brand-500);
+        }
       }
     }
+  }
+}
 
-    &[data-selected='true'] td:first-child {
-      box-shadow: inset 2px 0 0 var(--brand-500);
-    }
+// Sortable header: clickable, always shows indicator chevrons, brand-colored when active.
+th[ds-sort-header] {
+  cursor: pointer;
+  transition: color 120ms;
+
+  &:hover {
+    color: var(--text-1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+
+  &[data-sort-active='true'] {
+    color: var(--brand-500);
   }
 }
 
@@ -67,7 +91,7 @@ table[ds-table] {
   display: inline-flex;
   vertical-align: middle;
   margin-left: 4px;
-  opacity: 0.5;
+  opacity: 0.35;
   transition: opacity 120ms, transform 120ms;
 
   th[data-sort-active='true'] & {

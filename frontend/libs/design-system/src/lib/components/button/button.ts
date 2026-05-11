@@ -5,7 +5,6 @@ export type DsButtonSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'button[ds-button]',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './button.html',
   styleUrl: './button.scss',

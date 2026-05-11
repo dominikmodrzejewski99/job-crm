@@ -8,7 +8,6 @@ import {
 
 @Component({
   selector: 'ds-pagination',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pagination.html',
   styleUrl: './pagination.scss',
