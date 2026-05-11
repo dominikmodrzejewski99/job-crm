@@ -341,7 +341,7 @@ Trigger: push do `main` → GitHub Actions → deploy.
 - [x] Faza 3: Backend CRUD Application (JPA, Flyway, OpenAPI, Testcontainers, ProblemDetail)
 - [x] Faza 4: Auth multi-user + JWT (Spring Security stateless, BCrypt, per-user data isolation, login/register UI)
 - [x] Faza 5: Follow-up reminders + email (@EnableScheduling, JavaMailSender → MailHog dev, /api/v1/follow-ups, dashboard widget)
-- [ ] Faza 7: Job board integration (JustJoinIT + NoFluffJobs)
+- [x] Faza 6: Job board integration (Spring RestClient → JustJoinIT + NoFluffJobs, 6h crawler, dedup, save-as-application, ag-grid UI)
 - [ ] Faza 8: Stats + dashboard
 - [ ] Faza 9: CI/CD + deploy
 - [ ] Faza 10: Polish (i18n, PWA, dark mode, a11y audit)
