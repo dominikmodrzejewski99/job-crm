@@ -1,0 +1,9 @@
+// Design system entrypoint. Consumers import this once in their app's global
+// stylesheet (e.g. apps/crm/src/styles.scss) to receive tokens, base styles,
+// typography, and utility classes.
+
+@use 'tokens';
+@use 'themes';
+@use 'base';
+@use 'typography';
+@use 'utilities';

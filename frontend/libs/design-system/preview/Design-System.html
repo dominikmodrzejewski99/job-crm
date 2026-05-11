@@ -1,0 +1,1801 @@
+<!doctype html>
+<html lang="pl" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JobTrack — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: ['class', '[data-theme="dark"]'],
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    /* Neutrals — light theme (cool slate, very subtle warmth) */
+    --n-0:  #ffffff;
+    --n-50: #f7f7f8;
+    --n-100:#eeeef0;
+    --n-200:#e3e3e7;
+    --n-300:#c9c9d0;
+    --n-400:#9a9aa6;
+    --n-500:#6c6c79;
+    --n-600:#48485a;
+    --n-700:#2d2d3a;
+    --n-800:#1c1c26;
+    --n-900:#0e0e14;
+
+    /* Brand — a saturated indigo/violet, Linear-adjacent but distinct */
+    --brand-50:  #efeeff;
+    --brand-100: #ddd9ff;
+    --brand-200: #c0b8ff;
+    --brand-300: #9b8eff;
+    --brand-400: #7a6aff;
+    --brand-500: #5b4dee;    /* primary action */
+    --brand-600: #4a3edc;
+    --brand-700: #3b31b3;
+    --brand-800: #2d2685;
+
+    /* Semantic */
+    --success-400: #4ade80;
+    --success-500: #16a34a;
+    --success-600: #15803d;
+    --warning-400: #fbbf24;
+    --warning-500: #d97706;
+    --warning-600: #b45309;
+    --danger-400:  #f87171;
+    --danger-500:  #dc2626;
+    --danger-600:  #b91c1c;
+    --info-400:    #38bdf8;
+    --info-500:    #0284c7;
+    --info-600:    #0369a1;
+
+    /* Status colors per ApplicationStatus enum.
+       Pair = { dot, fg-on-tinted-bg, tinted-bg, tinted-bg-strong } */
+    --st-draft-fg:   #6c6c79; --st-draft-bg:   rgba(108,108,121,.12);
+    --st-applied-fg: #5b4dee; --st-applied-bg: rgba(91,77,238,.14);
+    --st-ack-fg:     #0ea5e9; --st-ack-bg:     rgba(14,165,233,.14);
+    --st-intsch-fg:  #a855f7; --st-intsch-bg:  rgba(168,85,247,.14);
+    --st-intdone-fg: #8b5cf6; --st-intdone-bg: rgba(139,92,246,.14);
+    --st-taskrx-fg:  #f59e0b; --st-taskrx-bg:  rgba(245,158,11,.14);
+    --st-tasktx-fg:  #65a30d; --st-tasktx-bg:  rgba(101,163,13,.14);
+    --st-offer-fg:   #16a34a; --st-offer-bg:   rgba(22,163,74,.16);
+    --st-rejected-fg:#dc2626; --st-rejected-bg:rgba(220,38,38,.14);
+    --st-withdraw-fg:#48485a; --st-withdraw-bg:rgba(72,72,90,.14);
+    --st-ghosted-fg: #9a9aa6; --st-ghosted-bg: rgba(154,154,166,.12);
+
+    /* Spacing scale — 4px base, 8 steps */
+    --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+    --sp-5: 24px;  --sp-6: 32px;  --sp-7: 48px;  --sp-8: 64px;
+
+    /* Radius */
+    --r-sm: 4px;  --r-md: 6px;  --r-lg: 10px;  --r-xl: 16px;
+
+    /* Shadows — light theme */
+    --sh-1: 0 1px 2px rgba(15,15,25,.06), 0 1px 1px rgba(15,15,25,.04);
+    --sh-2: 0 2px 4px rgba(15,15,25,.06), 0 4px 8px rgba(15,15,25,.06);
+    --sh-3: 0 4px 12px rgba(15,15,25,.08), 0 8px 24px rgba(15,15,25,.08);
+    --sh-4: 0 8px 20px rgba(15,15,25,.10), 0 24px 48px rgba(15,15,25,.16);
+
+    /* Semantic surfaces (light) */
+    --bg-canvas:  #fafafb;
+    --bg-surface: #ffffff;
+    --bg-subtle:  #f4f4f6;
+    --bg-muted:   #eeeef0;
+    --border-1:   #e7e7eb;
+    --border-2:   #d8d8de;
+    --text-1:     #0e0e14;
+    --text-2:     #48485a;
+    --text-3:     #6c6c79;
+    --text-4:     #9a9aa6;
+    --ring:       rgba(91,77,238,.45);
+  }
+
+  [data-theme="dark"] {
+    --bg-canvas:  #0a0a10;
+    --bg-surface: #111118;
+    --bg-subtle:  #15151d;
+    --bg-muted:   #1c1c26;
+    --border-1:   #23232f;
+    --border-2:   #2d2d3a;
+    --text-1:     #f3f3f6;
+    --text-2:     #c9c9d0;
+    --text-3:     #9a9aa6;
+    --text-4:     #6c6c79;
+    --ring:       rgba(122,106,255,.55);
+
+    --sh-1: 0 1px 2px rgba(0,0,0,.5);
+    --sh-2: 0 2px 6px rgba(0,0,0,.45), 0 1px 2px rgba(0,0,0,.4);
+    --sh-3: 0 6px 16px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.35);
+    --sh-4: 0 12px 32px rgba(0,0,0,.6), 0 4px 12px rgba(0,0,0,.45);
+
+    /* Slightly desaturate status bg tints for dark so they don't glow */
+    --st-draft-bg:   rgba(154,154,166,.10);
+    --st-applied-bg: rgba(122,106,255,.16);
+    --st-ack-bg:     rgba(56,189,248,.14);
+    --st-intsch-bg:  rgba(192,132,252,.16);
+    --st-intdone-bg: rgba(167,139,250,.16);
+    --st-taskrx-bg:  rgba(251,191,36,.14);
+    --st-tasktx-bg:  rgba(132,204,22,.14);
+    --st-offer-bg:   rgba(74,222,128,.16);
+    --st-rejected-bg:rgba(248,113,113,.14);
+    --st-withdraw-bg:rgba(154,154,166,.10);
+    --st-ghosted-bg: rgba(154,154,166,.08);
+
+    --st-draft-fg:   #9a9aa6;
+    --st-applied-fg: #a89bff;
+    --st-ack-fg:     #7dd3fc;
+    --st-intsch-fg:  #d8b4fe;
+    --st-intdone-fg: #c4b5fd;
+    --st-taskrx-fg:  #fcd34d;
+    --st-tasktx-fg:  #bef264;
+    --st-offer-fg:   #86efac;
+    --st-rejected-fg:#fca5a5;
+    --st-withdraw-fg:#9a9aa6;
+    --st-ghosted-fg: #6c6c79;
+  }
+
+  html, body { background: var(--bg-canvas); color: var(--text-1); }
+  body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-feature-settings: 'cv11','ss01','ss03'; -webkit-font-smoothing: antialiased; }
+
+  /* Typography scale — 7 sizes */
+  .t-xs   { font-size: 11px; line-height: 16px; letter-spacing: .02em; }
+  .t-sm   { font-size: 12px; line-height: 18px; }
+  .t-base { font-size: 13px; line-height: 20px; }
+  .t-md   { font-size: 14px; line-height: 22px; }
+  .t-lg   { font-size: 16px; line-height: 24px; letter-spacing: -.005em; }
+  .t-xl   { font-size: 20px; line-height: 28px; letter-spacing: -.01em; }
+  .t-2xl  { font-size: 28px; line-height: 36px; letter-spacing: -.02em; }
+  .t-display { font-size: 40px; line-height: 48px; letter-spacing: -.025em; font-weight: 600; }
+
+  /* Tokens helpers */
+  .surface  { background: var(--bg-surface); border: 1px solid var(--border-1); }
+  .subtle   { background: var(--bg-subtle); }
+  .muted    { background: var(--bg-muted); }
+  .border-1 { border-color: var(--border-1); }
+  .border-2 { border-color: var(--border-2); }
+  .text-1   { color: var(--text-1); }
+  .text-2   { color: var(--text-2); }
+  .text-3   { color: var(--text-3); }
+  .text-4   { color: var(--text-4); }
+  .shadow-1 { box-shadow: var(--sh-1); }
+  .shadow-2 { box-shadow: var(--sh-2); }
+  .shadow-3 { box-shadow: var(--sh-3); }
+  .shadow-4 { box-shadow: var(--sh-4); }
+  .r-sm { border-radius: var(--r-sm); } .r-md { border-radius: var(--r-md); }
+  .r-lg { border-radius: var(--r-lg); } .r-xl { border-radius: var(--r-xl); }
+
+  /* Focus ring — visible, WCAG-friendly */
+  :where(button, a, input, select, textarea, [role="button"], [role="tab"], [role="checkbox"], [role="switch"], [role="menuitem"]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px;
+         font-weight:500; border-radius: var(--r-md); border:1px solid transparent;
+         transition: background .12s ease, color .12s ease, border-color .12s ease, box-shadow .12s ease, transform .04s ease;
+         white-space: nowrap; user-select: none; }
+  .btn:active:not(:disabled) { transform: translateY(0.5px); }
+  .btn:disabled, .btn[aria-disabled="true"] { opacity:.5; cursor:not-allowed; pointer-events:none; }
+  .btn-sm { height:28px; padding:0 10px; font-size:12px; line-height:1; }
+  .btn-md { height:32px; padding:0 12px; font-size:13px; line-height:1; }
+  .btn-lg { height:40px; padding:0 16px; font-size:14px; line-height:1; }
+  .btn-sm svg { width:14px; height:14px; }
+  .btn-md svg { width:14px; height:14px; }
+  .btn-lg svg { width:16px; height:16px; }
+
+  .btn-primary   { background: var(--brand-500); color:#fff; border-color: var(--brand-600); box-shadow: var(--sh-1), inset 0 1px 0 rgba(255,255,255,.08); }
+  .btn-primary:hover:not(:disabled){ background: var(--brand-600); }
+  .btn-primary:active:not(:disabled){ background: var(--brand-700); }
+
+  .btn-secondary { background: var(--bg-surface); color: var(--text-1); border-color: var(--border-2); }
+  .btn-secondary:hover:not(:disabled){ background: var(--bg-subtle); }
+  .btn-secondary:active:not(:disabled){ background: var(--bg-muted); }
+
+  .btn-ghost     { background: transparent; color: var(--text-2); }
+  .btn-ghost:hover:not(:disabled){ background: var(--bg-subtle); color: var(--text-1); }
+  .btn-ghost:active:not(:disabled){ background: var(--bg-muted); }
+
+  .btn-danger    { background: var(--danger-500); color:#fff; border-color: var(--danger-600); box-shadow: var(--sh-1), inset 0 1px 0 rgba(255,255,255,.08); }
+  .btn-danger:hover:not(:disabled){ background: var(--danger-600); }
+
+  .btn-icon { padding: 0; width: auto; }
+  .btn-sq-sm { width:28px; height:28px; padding:0; }
+  .btn-sq-md { width:32px; height:32px; padding:0; }
+  .btn-sq-lg { width:40px; height:40px; padding:0; }
+
+  /* ---------- INPUTS ---------- */
+  .field { display:flex; flex-direction:column; gap:6px; }
+  .field-label { font-size:12px; font-weight:500; color: var(--text-2); display:flex; align-items:center; gap:4px; }
+  .field-label .req { color: var(--danger-500); }
+  .field-helper { font-size:11px; color: var(--text-3); }
+  .field-error  { font-size:11px; color: var(--danger-500); display:flex; align-items:center; gap:4px; }
+
+  .input { display:flex; align-items:center; gap:8px;
+           height:32px; padding:0 10px; border-radius: var(--r-md);
+           background: var(--bg-surface); border:1px solid var(--border-2);
+           color: var(--text-1); font-size:13px; line-height:1;
+           transition: border-color .12s, box-shadow .12s, background .12s; }
+  .input input, .input select { background:transparent; border:none; outline:none; color:inherit; flex:1; min-width:0; font: inherit; }
+  .input:hover { border-color: var(--n-400); }
+  [data-theme="dark"] .input:hover { border-color: #3a3a48; }
+  .input:focus-within { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
+  .input.is-error { border-color: var(--danger-500); }
+  .input.is-error:focus-within { box-shadow: 0 0 0 3px rgba(220,38,38,.25); }
+  .input.is-disabled, .input:has(input:disabled), .input:has(select:disabled) { background: var(--bg-muted); color: var(--text-4); cursor:not-allowed; }
+  .input.is-disabled svg { color: var(--text-4); }
+  .input svg { width:14px; height:14px; color: var(--text-3); flex:none; }
+  .input .prefix-text { color: var(--text-3); font-size:13px; }
+
+  .textarea { width:100%; min-height: 88px; padding: 8px 10px; resize: vertical;
+              background: var(--bg-surface); border:1px solid var(--border-2);
+              border-radius: var(--r-md); color: var(--text-1); font: inherit; font-size:13px; line-height:20px;
+              transition: border-color .12s, box-shadow .12s; }
+  .textarea:hover { border-color: var(--n-400); }
+  [data-theme="dark"] .textarea:hover { border-color:#3a3a48; }
+  .textarea:focus { outline: none; border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring); }
+
+  /* ---------- CHECKBOX / RADIO ---------- */
+  .check, .radio { width:16px; height:16px; border:1.5px solid var(--border-2);
+                   background: var(--bg-surface); display:inline-flex; align-items:center; justify-content:center;
+                   transition: background .12s, border-color .12s, box-shadow .12s; cursor:pointer; }
+  .check { border-radius: 4px; }
+  .radio { border-radius: 999px; }
+  .check:hover, .radio:hover { border-color: var(--brand-400); }
+  .check[aria-checked="true"], .radio[aria-checked="true"] { background: var(--brand-500); border-color: var(--brand-500); }
+  .check[aria-checked="true"] svg { width:11px; height:11px; color:#fff; }
+  .radio[aria-checked="true"]::after { content:""; width:6px; height:6px; border-radius:999px; background:#fff; }
+  .check[aria-checked="mixed"] { background: var(--brand-500); border-color: var(--brand-500); }
+  .check[aria-checked="mixed"]::after { content:""; width:8px; height:2px; background:#fff; border-radius:1px; }
+  .check[aria-disabled="true"], .radio[aria-disabled="true"] { opacity:.45; cursor:not-allowed; }
+
+  /* ---------- SWITCH ---------- */
+  .switch { position:relative; width:32px; height:18px; border-radius:999px;
+            background: var(--border-2); transition: background .15s; cursor:pointer; flex:none; }
+  .switch::after { content:""; position:absolute; top:2px; left:2px; width:14px; height:14px;
+                   background:#fff; border-radius:999px; transition: transform .15s; box-shadow: var(--sh-1); }
+  .switch[aria-checked="true"] { background: var(--brand-500); }
+  .switch[aria-checked="true"]::after { transform: translateX(14px); }
+  .switch[aria-disabled="true"] { opacity:.5; cursor:not-allowed; }
+
+  /* ---------- BADGE ---------- */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:2px 7px;
+           font-size:11px; font-weight:500; border-radius: 999px; line-height:16px;
+           border:1px solid transparent; white-space:nowrap; }
+  .badge-dot { width:6px; height:6px; border-radius:999px; flex:none; }
+  .badge-solid { color:#fff; }
+  .badge-neutral { background: var(--bg-muted); color: var(--text-2); }
+  .badge-outline { background: transparent; border-color: var(--border-2); color: var(--text-2); }
+
+  /* Status badge variants */
+  .st { background: var(--st-bg); color: var(--st-fg); }
+  .st-draft   { --st-bg: var(--st-draft-bg);   --st-fg: var(--st-draft-fg); }
+  .st-applied { --st-bg: var(--st-applied-bg); --st-fg: var(--st-applied-fg); }
+  .st-ack     { --st-bg: var(--st-ack-bg);     --st-fg: var(--st-ack-fg); }
+  .st-intsch  { --st-bg: var(--st-intsch-bg);  --st-fg: var(--st-intsch-fg); }
+  .st-intdone { --st-bg: var(--st-intdone-bg); --st-fg: var(--st-intdone-fg); }
+  .st-taskrx  { --st-bg: var(--st-taskrx-bg);  --st-fg: var(--st-taskrx-fg); }
+  .st-tasktx  { --st-bg: var(--st-tasktx-bg);  --st-fg: var(--st-tasktx-fg); }
+  .st-offer   { --st-bg: var(--st-offer-bg);   --st-fg: var(--st-offer-fg); }
+  .st-rejected{ --st-bg: var(--st-rejected-bg);--st-fg: var(--st-rejected-fg); }
+  .st-withdraw{ --st-bg: var(--st-withdraw-bg);--st-fg: var(--st-withdraw-fg); }
+  .st-ghosted { --st-bg: var(--st-ghosted-bg); --st-fg: var(--st-ghosted-fg); }
+
+  /* ---------- CHIP ---------- */
+  .chip { display:inline-flex; align-items:center; gap:6px; padding:3px 4px 3px 10px;
+          background: var(--bg-subtle); border:1px solid var(--border-1);
+          border-radius: 999px; font-size:12px; color: var(--text-1); }
+  .chip button.chip-x { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center;
+                        border-radius:999px; color: var(--text-3); background:transparent; border:none; cursor:pointer; }
+  .chip button.chip-x:hover { background: var(--bg-muted); color: var(--text-1); }
+  .chip svg { width:12px; height:12px; }
+
+  /* ---------- CARD ---------- */
+  .card { background: var(--bg-surface); border:1px solid var(--border-1); border-radius: var(--r-lg);
+          box-shadow: var(--sh-1); display:flex; flex-direction:column; }
+  .card-header, .card-footer { padding: 12px 16px; }
+  .card-header { border-bottom: 1px solid var(--border-1); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .card-body { padding: 16px; }
+  .card-footer { border-top: 1px solid var(--border-1); display:flex; align-items:center; justify-content:flex-end; gap:8px; background: var(--bg-canvas); border-bottom-left-radius: var(--r-lg); border-bottom-right-radius: var(--r-lg); }
+
+  /* ---------- TABS ---------- */
+  .tabs-h { display:flex; border-bottom:1px solid var(--border-1); gap:0; }
+  .tab-h { position:relative; padding:8px 12px; font-size:13px; color: var(--text-3);
+           background:transparent; border:none; cursor:pointer; transition: color .12s; }
+  .tab-h:hover { color: var(--text-1); }
+  .tab-h[aria-selected="true"] { color: var(--text-1); font-weight: 500; }
+  .tab-h[aria-selected="true"]::after { content:""; position:absolute; left:8px; right:8px; bottom:-1px; height:2px; background: var(--brand-500); border-radius:2px; }
+
+  .tabs-v { display:flex; flex-direction:column; gap:2px; }
+  .tab-v { padding:6px 10px; font-size:13px; color: var(--text-3); background:transparent; border:none; cursor:pointer;
+           border-radius: var(--r-md); text-align:left; display:flex; align-items:center; gap:8px; }
+  .tab-v svg { width:14px; height:14px; }
+  .tab-v:hover { color: var(--text-1); background: var(--bg-subtle); }
+  .tab-v[aria-selected="true"] { color: var(--text-1); background: var(--bg-muted); font-weight:500; }
+
+  /* ---------- MENU ---------- */
+  .menu { background: var(--bg-surface); border:1px solid var(--border-1); border-radius: var(--r-lg);
+          box-shadow: var(--sh-3); padding:4px; min-width: 200px; }
+  .menu-item { display:flex; align-items:center; gap:8px; width:100%; padding:6px 8px;
+               font-size:13px; color: var(--text-1); background:transparent; border:none; cursor:pointer;
+               border-radius: var(--r-sm); text-align:left; }
+  .menu-item:hover { background: var(--bg-subtle); }
+  .menu-item .shortcut { margin-left:auto; font-size:11px; color: var(--text-4); font-family:'JetBrains Mono', monospace; }
+  .menu-item svg { width:14px; height:14px; color: var(--text-3); }
+  .menu-item.is-danger { color: var(--danger-500); }
+  .menu-item.is-danger svg { color: var(--danger-500); }
+  .menu-divider { height:1px; background: var(--border-1); margin: 4px 0; }
+  .menu-label { padding:6px 8px 4px; font-size:11px; color: var(--text-4); text-transform:uppercase; letter-spacing:.04em; }
+
+  /* ---------- TOOLTIP ---------- */
+  .tooltip { background: var(--n-900); color: #fff; padding:5px 8px; border-radius: var(--r-sm); font-size:12px;
+             box-shadow: var(--sh-3); position:relative; }
+  [data-theme="dark"] .tooltip { background: var(--n-700); }
+  .tooltip::after { content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+                    border:5px solid transparent; border-top-color: var(--n-900); }
+  [data-theme="dark"] .tooltip::after { border-top-color: var(--n-700); }
+
+  /* ---------- TOAST ---------- */
+  .toast { display:flex; gap:10px; padding:12px 14px; min-width: 320px; max-width: 420px;
+           background: var(--bg-surface); border:1px solid var(--border-1); border-radius: var(--r-lg);
+           box-shadow: var(--sh-3); align-items: flex-start; }
+  .toast .toast-icon { width:18px; height:18px; flex:none; margin-top:1px; }
+  .toast.toast-success .toast-icon { color: var(--success-500); }
+  .toast.toast-info    .toast-icon { color: var(--info-500); }
+  .toast.toast-warning .toast-icon { color: var(--warning-500); }
+  .toast.toast-error   .toast-icon { color: var(--danger-500); }
+  [data-theme="dark"] .toast.toast-success .toast-icon { color: var(--success-400); }
+  [data-theme="dark"] .toast.toast-info    .toast-icon { color: var(--info-400); }
+  [data-theme="dark"] .toast.toast-warning .toast-icon { color: var(--warning-400); }
+  [data-theme="dark"] .toast.toast-error   .toast-icon { color: var(--danger-400); }
+
+  /* ---------- AVATAR ---------- */
+  .avatar { display:inline-flex; align-items:center; justify-content:center; border-radius:999px;
+            background: var(--bg-muted); color: var(--text-1); font-weight:500; overflow:hidden;
+            border:1px solid var(--border-1); flex:none; }
+  .avatar-sm { width:24px; height:24px; font-size:10px; }
+  .avatar-md { width:32px; height:32px; font-size:12px; }
+  .avatar-lg { width:48px; height:48px; font-size:16px; }
+  .avatar img { width:100%; height:100%; object-fit:cover; }
+
+  /* ---------- TABLE ---------- */
+  .tbl { width:100%; border-collapse: separate; border-spacing: 0; font-size:13px; color: var(--text-1); }
+  .tbl thead th { position:sticky; top:0; background: var(--bg-subtle); z-index:1;
+                  text-align:left; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+                  color: var(--text-3); padding: 8px 12px; border-bottom:1px solid var(--border-1); }
+  .tbl thead th.sortable { cursor:pointer; user-select:none; }
+  .tbl thead th.sortable:hover { color: var(--text-1); }
+  .tbl thead th .sort-ic { display:inline-flex; vertical-align:middle; margin-left:4px; opacity:.5; }
+  .tbl thead th.sorted .sort-ic { opacity:1; color: var(--brand-500); }
+  .tbl tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border-1); vertical-align:middle; }
+  .tbl tbody tr:hover td { background: var(--bg-subtle); }
+  .tbl tbody tr.is-selected td { background: rgba(91,77,238,.06); }
+  [data-theme="dark"] .tbl tbody tr.is-selected td { background: rgba(122,106,255,.10); }
+  .tbl tbody tr.is-selected td:first-child { box-shadow: inset 2px 0 0 var(--brand-500); }
+
+  /* ---------- SKELETON ---------- */
+  .skel { background: linear-gradient(90deg, var(--bg-muted) 0%, var(--bg-subtle) 50%, var(--bg-muted) 100%);
+          background-size: 200% 100%; animation: skel 1.4s linear infinite; border-radius: var(--r-sm); }
+  @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* Spinner */
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Section frame */
+  .section { background: var(--bg-surface); border:1px solid var(--border-1); border-radius: var(--r-xl); padding: 24px; }
+  .section + .section { margin-top: 24px; }
+
+  .swatch { display:flex; flex-direction:column; gap:6px; }
+  .swatch .chip-color { height: 56px; border-radius: var(--r-md); border:1px solid var(--border-1); }
+  .swatch .meta { display:flex; justify-content:space-between; font-size:11px; color: var(--text-3); font-family:'JetBrains Mono', monospace; }
+  .swatch .meta strong { color: var(--text-1); font-weight:500; }
+
+  /* Dotted ruler for spacing */
+  .ruler { position:relative; height: 28px; display:flex; align-items:center; }
+  .ruler .bar { background: var(--brand-500); height: 12px; border-radius: 3px; }
+  .ruler .lbl { margin-left:10px; font-size:11px; color: var(--text-3); font-family:'JetBrains Mono', monospace; }
+
+  /* Code chip */
+  code, .code { font-family:'JetBrains Mono', monospace; font-size:11px; padding:1px 5px;
+                background: var(--bg-muted); color: var(--text-2); border-radius: 4px; border:1px solid var(--border-1); }
+
+  /* Pagination */
+  .pg-btn { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; padding:0 8px;
+            border:1px solid var(--border-1); background: var(--bg-surface); color: var(--text-2);
+            border-radius: var(--r-sm); font-size:12px; cursor:pointer; transition: background .12s, color .12s, border-color .12s; }
+  .pg-btn:hover:not([disabled]):not(.is-active) { background: var(--bg-subtle); color: var(--text-1); }
+  .pg-btn.is-active { background: var(--brand-500); color:#fff; border-color: var(--brand-600); }
+  .pg-btn[disabled] { opacity:.4; cursor:not-allowed; }
+
+  /* Backdrop */
+  .backdrop { background: rgba(0,0,0,.45); backdrop-filter: blur(4px); }
+  [data-theme="dark"] .backdrop { background: rgba(0,0,0,.55); }
+
+  /* small icon */
+  .ic-12 { width:12px; height:12px; }
+  .ic-14 { width:14px; height:14px; }
+  .ic-16 { width:16px; height:16px; }
+  .ic-20 { width:20px; height:20px; }
+
+  /* status row in token table */
+  .token-row { display:grid; grid-template-columns: 32px 1fr 1fr 1fr; align-items:center; padding: 6px 0; }
+  .token-row + .token-row { border-top: 1px solid var(--border-1); }
+
+  /* nav rail */
+  .toc a { display:block; padding:4px 8px; border-radius: 4px; font-size:12px; color: var(--text-3); }
+  .toc a:hover { color: var(--text-1); background: var(--bg-subtle); }
+
+  /* Subgrid for component variant displays */
+  .demo-grid { display:grid; gap: 12px; }
+  .demo-card { background: var(--bg-canvas); border: 1px dashed var(--border-1); border-radius: var(--r-md); padding: 16px;
+               display:flex; flex-wrap:wrap; align-items:center; gap: 12px; }
+  .demo-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-4);
+                font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
+
+  /* Subtle scrollbar */
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; border: 2px solid var(--bg-canvas); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-4); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============ TOP BAR ============ -->
+<header class="sticky top-0 z-40" style="background: color-mix(in srgb, var(--bg-canvas) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-1);">
+  <div class="max-w-[1280px] mx-auto px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <!-- Mark -->
+      <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background: var(--brand-500); box-shadow: var(--sh-1), inset 0 1px 0 rgba(255,255,255,.15);">
+        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l5 5-5 5"/><path d="M12 19h8"/></svg>
+      </div>
+      <div class="flex flex-col leading-tight">
+        <span class="t-md font-semibold">JobTrack</span>
+        <span class="t-xs text-3">Design System v0.1</span>
+      </div>
+      <span class="badge badge-neutral ml-2">Pre-release</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="t-sm text-3 hidden md:inline">Motyw</span>
+      <!-- Theme toggle -->
+      <div class="flex items-center p-0.5 r-md border border-1" style="background: var(--bg-surface); border-color: var(--border-1);">
+        <button id="theme-light" class="btn btn-ghost btn-sm" aria-label="Tryb jasny" style="height:24px; padding: 0 8px;">
+          <i data-lucide="sun" class="ic-14"></i><span class="t-sm">Light</span>
+        </button>
+        <button id="theme-dark" class="btn btn-ghost btn-sm" aria-label="Tryb ciemny" style="height:24px; padding: 0 8px;">
+          <i data-lucide="moon" class="ic-14"></i><span class="t-sm">Dark</span>
+        </button>
+      </div>
+      <a href="https://github.com" class="btn btn-secondary btn-sm" target="_blank" rel="noopener">
+        <i data-lucide="github" class="ic-14"></i> Repo
+      </a>
+      <button class="btn btn-primary btn-sm">
+        <i data-lucide="rocket" class="ic-14"></i> Użyj w projekcie
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1280px] mx-auto px-6 py-10">
+
+  <!-- ============ HERO ============ -->
+  <section class="mb-10">
+    <div class="grid md:grid-cols-[1fr_320px] gap-8 items-end">
+      <div>
+        <div class="badge st st-applied mb-3">
+          <span class="badge-dot" style="background: var(--st-applied-fg);"></span>
+          Internal · CRM dla aplikacji o pracę
+        </div>
+        <h1 class="t-display text-1 mb-3" style="max-width: 640px; text-wrap: balance;">Design System dla developerów,<br/>którzy traktują job hunting jak deploy.</h1>
+        <p class="t-lg text-2" style="max-width: 600px; text-wrap: pretty;">
+          Spójny zestaw tokenów i komponentów dla single-user CRM do śledzenia aplikacji o pracę.
+          Gęsto, czytelnie, w stylu Linear / Notion / Vercel. Inter, ciemny motyw default,
+          jeden brand color, jeden kolor statusu na każdy etap rekrutacji.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-5">
+          <a href="#tokens" class="btn btn-secondary btn-md"><i data-lucide="palette" class="ic-14"></i> Tokeny</a>
+          <a href="#components" class="btn btn-secondary btn-md"><i data-lucide="component" class="ic-14"></i> Komponenty</a>
+          <a href="#composition" class="btn btn-secondary btn-md"><i data-lucide="layout-grid" class="ic-14"></i> Kompozycje</a>
+        </div>
+      </div>
+      <!-- mini stat cards as hero illustration -->
+      <div class="grid grid-cols-2 gap-3" aria-hidden="true">
+        <div class="card p-0"><div class="card-body" style="padding:14px;">
+          <div class="t-xs text-3 uppercase tracking-wider">Aplikacje</div>
+          <div class="t-2xl font-semibold mt-1">47</div>
+          <div class="t-xs mt-2 flex items-center gap-1" style="color: var(--success-500);"><i data-lucide="trending-up" class="ic-12"></i> +12% w 7d</div>
+        </div></div>
+        <div class="card p-0"><div class="card-body" style="padding:14px;">
+          <div class="t-xs text-3 uppercase tracking-wider">Follow-up</div>
+          <div class="t-2xl font-semibold mt-1">5</div>
+          <div class="t-xs mt-2 flex items-center gap-1" style="color: var(--warning-500);"><i data-lucide="clock-3" class="ic-12"></i> dziś do zrobienia</div>
+        </div></div>
+        <div class="card p-0 col-span-2"><div class="card-body" style="padding:14px;">
+          <div class="t-xs text-3 uppercase tracking-wider mb-2">Pipeline</div>
+          <div class="flex gap-1">
+            <span class="badge st st-applied"><span class="badge-dot" style="background:var(--st-applied-fg);"></span>23 Applied</span>
+            <span class="badge st st-intsch"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>4 Interview</span>
+            <span class="badge st st-offer"><span class="badge-dot" style="background:var(--st-offer-fg);"></span>1 Offer</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOC ============ -->
+  <nav class="section mb-10" aria-label="Spis sekcji">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="t-lg font-semibold">Spis treści</h2>
+      <span class="t-xs text-4">Tailwind v3 · Inter · Lucide</span>
+    </div>
+    <div class="grid md:grid-cols-4 gap-x-6 gap-y-1 toc">
+      <div>
+        <div class="t-xs text-4 uppercase tracking-wider mb-1 px-2">Fundamenty</div>
+        <a href="#colors">01 · Paleta kolorów</a>
+        <a href="#typography">02 · Typografia</a>
+        <a href="#spacing">03 · Spacing & layout</a>
+        <a href="#radius">04 · Border radius</a>
+        <a href="#shadow">05 · Elevation / shadow</a>
+        <a href="#status">06 · Application status</a>
+      </div>
+      <div>
+        <div class="t-xs text-4 uppercase tracking-wider mb-1 px-2">Akcje & formularze</div>
+        <a href="#buttons">07 · Buttons</a>
+        <a href="#inputs">08 · Inputs</a>
+        <a href="#select">09 · Select / Combobox</a>
+        <a href="#choice">10 · Checkbox & Radio</a>
+        <a href="#textarea">11 · Textarea</a>
+        <a href="#switch">12 · Switch</a>
+      </div>
+      <div>
+        <div class="t-xs text-4 uppercase tracking-wider mb-1 px-2">Feedback</div>
+        <a href="#badges">13 · Badge</a>
+        <a href="#chips">14 · Tag / Chip</a>
+        <a href="#card">15 · Card</a>
+        <a href="#modal">16 · Modal</a>
+        <a href="#toast">17 · Toast</a>
+        <a href="#tooltip">18 · Tooltip</a>
+      </div>
+      <div>
+        <div class="t-xs text-4 uppercase tracking-wider mb-1 px-2">Nawigacja & dane</div>
+        <a href="#menu">19 · Dropdown menu</a>
+        <a href="#tabs">20 · Tabs</a>
+        <a href="#pagination">21 · Pagination</a>
+        <a href="#avatar">22 · Avatar</a>
+        <a href="#empty">23 · Empty state</a>
+        <a href="#loading">24 · Spinner & skeleton</a>
+        <a href="#table">25 · Table</a>
+        <a href="#stats">26 · Stat card</a>
+        <a href="#composition">★ · Composition examples</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====================================================== -->
+  <!--                    FUNDAMENTS                          -->
+  <!-- ====================================================== -->
+  <h2 id="tokens" class="t-2xl font-semibold mb-4 mt-12">Fundamenty</h2>
+
+  <!-- 01 COLORS -->
+  <section id="colors" class="section">
+    <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+      <div>
+        <h3 class="t-xl font-semibold">01 · Paleta kolorów</h3>
+        <p class="t-md text-2 mt-1" style="max-width: 640px;">
+          Neutralna skala 9 stopni, jeden nasycony brand color, 4 kolory semantyczne.
+          Większość interfejsu używa neutrali — kolor pojawia się tam, gdzie jest decyzja, status lub uwaga użytkownika.
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <code>--n-*</code><code>--brand-*</code><code>--success / warning / danger / info</code>
+      </div>
+    </div>
+
+    <div class="demo-label">Neutral scale</div>
+    <div class="grid grid-cols-3 md:grid-cols-9 gap-2 mb-6">
+      <div class="swatch"><div class="chip-color" style="background:#ffffff"></div><div class="meta"><strong>0</strong><span>#ffffff</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#f7f7f8"></div><div class="meta"><strong>50</strong><span>#f7f7f8</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#eeeef0"></div><div class="meta"><strong>100</strong><span>#eeeef0</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#e3e3e7"></div><div class="meta"><strong>200</strong><span>#e3e3e7</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#c9c9d0"></div><div class="meta"><strong>300</strong><span>#c9c9d0</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#9a9aa6"></div><div class="meta"><strong>400</strong><span>#9a9aa6</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#6c6c79"></div><div class="meta"><strong>500</strong><span>#6c6c79</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#2d2d3a"></div><div class="meta"><strong>700</strong><span>#2d2d3a</span></div></div>
+      <div class="swatch"><div class="chip-color" style="background:#0e0e14"></div><div class="meta"><strong>900</strong><span>#0e0e14</span></div></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <div class="demo-label">Brand (Indigo / Violet)</div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="swatch"><div class="chip-color" style="background:#efeeff"></div><div class="meta"><strong>50</strong><span>tinted bg</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#9b8eff"></div><div class="meta"><strong>300</strong><span>hover ghost</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#5b4dee;color:#fff;"></div><div class="meta"><strong>500</strong><span>primary</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#3b31b3"></div><div class="meta"><strong>700</strong><span>pressed</span></div></div>
+        </div>
+        <p class="t-sm text-3 mt-3">Używaj <code>--brand-500</code> tylko dla głównej akcji w widoku. Reszta interfejsu pozostaje monochromatyczna.</p>
+      </div>
+      <div>
+        <div class="demo-label">Semantic</div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="swatch"><div class="chip-color" style="background:#16a34a"></div><div class="meta"><strong>success</strong><span>500</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#d97706"></div><div class="meta"><strong>warning</strong><span>500</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#dc2626"></div><div class="meta"><strong>danger</strong><span>500</span></div></div>
+          <div class="swatch"><div class="chip-color" style="background:#0284c7"></div><div class="meta"><strong>info</strong><span>500</span></div></div>
+        </div>
+        <p class="t-sm text-3 mt-3">Kolory semantyczne tylko jako feedback (toast, walidacja, status systemu). Nie używaj jako akcentu dekoracyjnego.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 TYPOGRAPHY -->
+  <section id="typography" class="section">
+    <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+      <div>
+        <h3 class="t-xl font-semibold">02 · Typografia</h3>
+        <p class="t-md text-2 mt-1" style="max-width: 640px;">
+          Jeden krój — <strong>Inter</strong> z włączonymi cv11/ss01. Skala 7 rozmiarów (+ display).
+          Wartości optymalizowane pod gęsty UI: domyślnie 13&nbsp;px, dialog 14&nbsp;px, tabela 13&nbsp;px.
+        </p>
+      </div>
+      <code>font-family: 'Inter'</code>
+    </div>
+
+    <div class="space-y-3">
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-xs · 11/16</code><span class="t-xs">Label / micro-copy w UI — uppercase, timestampy w tabeli.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-sm · 12/18</code><span class="t-sm">Helper text, sekundarna treść formularzy, breadcrumbs.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-base · 13/20</code><span class="t-base">Domyślny rozmiar UI: tabele, listy, większość przycisków, body w cardach.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-md · 14/22</code><span class="t-md">Body w modalach, intro w empty states, opisy w settings.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-lg · 16/24</code><span class="t-lg">Tytuły sekcji, h3 w cardach.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-xl · 20/28</code><span class="t-xl">Tytuły modali, h2 w widokach.</span></div>
+      <div class="flex items-baseline gap-6 pb-3 border-b border-1"><code class="w-28 flex-none">t-2xl · 28/36</code><span class="t-2xl">Liczby w stat-cardach, page header.</span></div>
+      <div class="flex items-baseline gap-6"><code class="w-28 flex-none">t-display · 40/48</code><span class="t-display">Hero / empty state title.</span></div>
+    </div>
+  </section>
+
+  <!-- 03 SPACING -->
+  <section id="spacing" class="section">
+    <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+      <div>
+        <h3 class="t-xl font-semibold">03 · Spacing & layout</h3>
+        <p class="t-md text-2 mt-1" style="max-width: 640px;">Base 4 px, 8 stopni. Wewnątrz cardów używaj 12–16, między sekcjami 24–32, padding container 24–48.</p>
+      </div>
+      <code>--sp-1 … --sp-8</code>
+    </div>
+
+    <div class="space-y-2">
+      <div class="ruler"><div class="bar" style="width: 4px"></div><span class="lbl">sp-1 · 4 px — wewnętrzny gap ikony</span></div>
+      <div class="ruler"><div class="bar" style="width: 8px"></div><span class="lbl">sp-2 · 8 px — między inputami w wierszu</span></div>
+      <div class="ruler"><div class="bar" style="width: 12px"></div><span class="lbl">sp-3 · 12 px — padding card-header</span></div>
+      <div class="ruler"><div class="bar" style="width: 16px"></div><span class="lbl">sp-4 · 16 px — padding card-body, gap pomiędzy polami formularza</span></div>
+      <div class="ruler"><div class="bar" style="width: 24px"></div><span class="lbl">sp-5 · 24 px — padding sekcji, gap pomiędzy cardami</span></div>
+      <div class="ruler"><div class="bar" style="width: 32px"></div><span class="lbl">sp-6 · 32 px — między sekcjami strony</span></div>
+      <div class="ruler"><div class="bar" style="width: 48px"></div><span class="lbl">sp-7 · 48 px — padding strony top/bottom</span></div>
+      <div class="ruler"><div class="bar" style="width: 64px"></div><span class="lbl">sp-8 · 64 px — empty state, hero spacing</span></div>
+    </div>
+  </section>
+
+  <!-- 04 RADIUS + 05 SHADOW -->
+  <div class="grid md:grid-cols-2 gap-6 mt-6" style="margin-top:24px;">
+    <section id="radius" class="section" style="margin-top:0">
+      <h3 class="t-xl font-semibold">04 · Border radius</h3>
+      <p class="t-md text-2 mt-1 mb-5">Niewielkie, „inżynierskie" zaokrąglenia. Pełne 999 px tylko dla badge / avatar.</p>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-sm border border-2"></div><code>--r-sm 4</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-md border border-2"></div><code>--r-md 6</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-lg border border-2"></div><code>--r-lg 10</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-xl border border-2"></div><code>--r-xl 16</code></div>
+      </div>
+    </section>
+
+    <section id="shadow" class="section" style="margin-top:0">
+      <h3 class="t-xl font-semibold">05 · Elevation / shadow</h3>
+      <p class="t-md text-2 mt-1 mb-5">4 poziomy. Karta = sh-1, dropdown = sh-2, popover/modal floating = sh-3, modal pełen ekran = sh-4.</p>
+      <div class="grid grid-cols-4 gap-3" style="background: var(--bg-canvas); padding: 12px; border-radius: var(--r-md);">
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-md surface shadow-1"></div><code>sh-1</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-md surface shadow-2"></div><code>sh-2</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-md surface shadow-3"></div><code>sh-3</code></div>
+        <div class="flex flex-col items-center gap-2"><div class="w-full h-16 r-md surface shadow-4"></div><code>sh-4</code></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 06 STATUS TOKENS -->
+  <section id="status" class="section">
+    <div class="flex items-start justify-between mb-4 gap-4 flex-wrap">
+      <div>
+        <h3 class="t-xl font-semibold">06 · Application status</h3>
+        <p class="t-md text-2 mt-1" style="max-width: 640px;">
+          Każdy status z <code>ApplicationStatus</code> ma własny <em>dot color</em>, tinted background i foreground.
+          Te trzy są używane konsekwentnie w badge, kolumnie status w tabeli, w timeline'ach.
+        </p>
+      </div>
+      <code>--st-*-fg / --st-*-bg</code>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-x-8">
+      <!-- left col -->
+      <div>
+        <div class="token-row" style="padding-bottom: 4px;"><div></div><div class="t-xs text-4 uppercase tracking-wider">Status</div><div class="t-xs text-4 uppercase tracking-wider">Badge</div><div class="t-xs text-4 uppercase tracking-wider">Użycie</div></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-draft-fg);"></span><code>DRAFT</code><span class="badge st st-draft"><span class="badge-dot" style="background: var(--st-draft-fg);"></span>Szkic</span><span class="t-xs text-3">Wpis utworzony, nie wysłany</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-applied-fg);"></span><code>APPLIED</code><span class="badge st st-applied"><span class="badge-dot" style="background: var(--st-applied-fg);"></span>Aplikowano</span><span class="t-xs text-3">CV poszło</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-ack-fg);"></span><code>ACK_RECEIVED</code><span class="badge st st-ack"><span class="badge-dot" style="background: var(--st-ack-fg);"></span>Potwierdzone</span><span class="t-xs text-3">Auto-reply od ATS</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-intsch-fg);"></span><code>INTERVIEW_SCHEDULED</code><span class="badge st st-intsch"><span class="badge-dot" style="background: var(--st-intsch-fg);"></span>Rozmowa: termin</span><span class="t-xs text-3">Mam slot w kalendarzu</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-intdone-fg);"></span><code>INTERVIEW_DONE</code><span class="badge st st-intdone"><span class="badge-dot" style="background: var(--st-intdone-fg);"></span>Po rozmowie</span><span class="t-xs text-3">Czekam na decyzję</span></div>
+      </div>
+      <div>
+        <div class="token-row" style="padding-bottom: 4px;"><div></div><div class="t-xs text-4 uppercase tracking-wider">Status</div><div class="t-xs text-4 uppercase tracking-wider">Badge</div><div class="t-xs text-4 uppercase tracking-wider">Użycie</div></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-taskrx-fg);"></span><code>TASK_RECEIVED</code><span class="badge st st-taskrx"><span class="badge-dot" style="background: var(--st-taskrx-fg);"></span>Zadanie</span><span class="t-xs text-3">Recruiter wysłał taskę</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-tasktx-fg);"></span><code>TASK_SUBMITTED</code><span class="badge st st-tasktx"><span class="badge-dot" style="background: var(--st-tasktx-fg);"></span>Zadanie oddane</span><span class="t-xs text-3">Wysłałem rozwiązanie</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-offer-fg);"></span><code>OFFER</code><span class="badge st st-offer"><span class="badge-dot" style="background: var(--st-offer-fg);"></span>Oferta</span><span class="t-xs text-3">🎉 — finalne kolory</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-rejected-fg);"></span><code>REJECTED</code><span class="badge st st-rejected"><span class="badge-dot" style="background: var(--st-rejected-fg);"></span>Odrzucono</span><span class="t-xs text-3">No to next</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-withdraw-fg);"></span><code>WITHDRAWN</code><span class="badge st st-withdraw"><span class="badge-dot" style="background: var(--st-withdraw-fg);"></span>Wycofane</span><span class="t-xs text-3">Sam się wycofałem</span></div>
+        <div class="token-row"><span class="badge-dot" style="background: var(--st-ghosted-fg);"></span><code>GHOSTED</code><span class="badge st st-ghosted"><span class="badge-dot" style="background: var(--st-ghosted-fg);"></span>Ghosted</span><span class="t-xs text-3">14+ dni ciszy</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!--                    COMPONENTS                          -->
+  <!-- ====================================================== -->
+  <h2 id="components" class="t-2xl font-semibold mb-4 mt-12">Komponenty</h2>
+
+  <!-- 07 BUTTON -->
+  <section id="buttons" class="section">
+    <h3 class="t-xl font-semibold">07 · Buttons</h3>
+    <p class="t-md text-2 mt-1 mb-5" style="max-width: 720px;">
+      Cztery warianty (<code>primary</code>, <code>secondary</code>, <code>ghost</code>, <code>danger</code>), trzy rozmiary (sm 28, md 32, lg 40 px).
+      Tylko <strong>jeden</strong> primary na widok. Reszta zawsze secondary / ghost.
+    </p>
+
+    <div class="demo-label">Warianty (md)</div>
+    <div class="demo-card">
+      <button class="btn btn-primary btn-md">Dodaj aplikację</button>
+      <button class="btn btn-secondary btn-md">Anuluj</button>
+      <button class="btn btn-ghost btn-md">Zobacz historię</button>
+      <button class="btn btn-danger btn-md">Usuń</button>
+    </div>
+
+    <div class="demo-label mt-4">Rozmiary</div>
+    <div class="demo-card">
+      <button class="btn btn-primary btn-sm">Small · 28</button>
+      <button class="btn btn-primary btn-md">Medium · 32</button>
+      <button class="btn btn-primary btn-lg">Large · 40</button>
+    </div>
+
+    <div class="demo-label mt-4">Z ikoną i loading</div>
+    <div class="demo-card">
+      <button class="btn btn-primary btn-md"><i data-lucide="plus" class="ic-14"></i>Nowa aplikacja</button>
+      <button class="btn btn-secondary btn-md"><i data-lucide="filter" class="ic-14"></i>Filtruj <span class="badge badge-neutral" style="font-size:10px; padding: 1px 6px;">3</span></button>
+      <button class="btn btn-secondary btn-md">Eksportuj<i data-lucide="chevron-down" class="ic-14"></i></button>
+      <button class="btn btn-primary btn-md" disabled><i data-lucide="loader-2" class="ic-14 spin"></i>Zapisywanie…</button>
+      <!-- Icon-only -->
+      <button class="btn btn-secondary btn-sq-md" aria-label="Więcej opcji"><i data-lucide="more-horizontal" class="ic-14"></i></button>
+      <button class="btn btn-ghost btn-sq-md" aria-label="Edytuj"><i data-lucide="pencil" class="ic-14"></i></button>
+    </div>
+
+    <div class="demo-label mt-4">Stany — default, hover, active, focus, disabled (tylko primary, reszta analogicznie)</div>
+    <div class="demo-card">
+      <button class="btn btn-primary btn-md">Default</button>
+      <button class="btn btn-primary btn-md" style="background: var(--brand-600);">Hover</button>
+      <button class="btn btn-primary btn-md" style="background: var(--brand-700);">Active</button>
+      <button class="btn btn-primary btn-md" style="outline:2px solid var(--ring); outline-offset:2px;">Focus</button>
+      <button class="btn btn-primary btn-md" disabled>Disabled</button>
+    </div>
+
+    <div class="demo-label mt-4">Mini-kompozycja: pasek akcji nad tabelą</div>
+    <div class="demo-card" style="justify-content:space-between;">
+      <div class="flex gap-2">
+        <button class="btn btn-primary btn-md"><i data-lucide="plus" class="ic-14"></i>Nowa aplikacja</button>
+        <button class="btn btn-secondary btn-md"><i data-lucide="upload" class="ic-14"></i>Import z JJIT</button>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost btn-sq-md" aria-label="Wyświetlanie"><i data-lucide="layout-list" class="ic-14"></i></button>
+        <button class="btn btn-ghost btn-sq-md" aria-label="Odśwież"><i data-lucide="refresh-cw" class="ic-14"></i></button>
+        <button class="btn btn-ghost btn-sq-md" aria-label="Więcej"><i data-lucide="more-horizontal" class="ic-14"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 INPUTS -->
+  <section id="inputs" class="section">
+    <h3 class="t-xl font-semibold">08 · Inputs</h3>
+    <p class="t-md text-2 mt-1 mb-5" style="max-width: 720px;">
+      Wysokość 32 px (md). Każde pole ma <code>&lt;label&gt;</code> związane <code>for/id</code>.
+      Helper text 11/16, error 11/16 z ikoną.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="field">
+        <label for="i-1" class="field-label">Firma <span class="req">*</span></label>
+        <div class="input">
+          <i data-lucide="building-2"></i>
+          <input id="i-1" type="text" value="Allegro" placeholder="np. Allegro" />
+        </div>
+        <span class="field-helper">Nazwa firmy z ogłoszenia.</span>
+      </div>
+
+      <div class="field">
+        <label for="i-2" class="field-label">Stanowisko</label>
+        <div class="input">
+          <input id="i-2" type="text" placeholder="np. Senior Backend Engineer" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="i-3" class="field-label">Stawka (PLN/mc)</label>
+        <div class="input">
+          <span class="prefix-text">PLN</span>
+          <input id="i-3" type="number" value="22000" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="i-4" class="field-label">Data aplikacji</label>
+        <div class="input">
+          <i data-lucide="calendar"></i>
+          <input id="i-4" type="date" value="2026-05-08" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="i-5" class="field-label">Email rekrutera</label>
+        <!-- focus state, demo -->
+        <div class="input" style="border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--ring);">
+          <i data-lucide="mail"></i>
+          <input id="i-5" type="email" value="anna@allegro.com" />
+        </div>
+        <span class="field-helper t-xs" style="color: var(--brand-500);">Stan: focus</span>
+      </div>
+
+      <div class="field">
+        <label for="i-6" class="field-label">Numer telefonu</label>
+        <div class="input is-error">
+          <i data-lucide="phone"></i>
+          <input id="i-6" type="tel" value="+48 1234" />
+        </div>
+        <span class="field-error"><i data-lucide="alert-circle" class="ic-12"></i> Numer wygląda na niekompletny.</span>
+      </div>
+
+      <div class="field">
+        <label for="i-7" class="field-label">Disabled</label>
+        <div class="input is-disabled">
+          <i data-lucide="lock"></i>
+          <input id="i-7" type="text" value="Pole zablokowane" disabled />
+        </div>
+        <span class="field-helper">Stan: disabled.</span>
+      </div>
+
+      <div class="field">
+        <label for="i-8" class="field-label">Read-only / hover</label>
+        <div class="input" style="border-color: var(--n-400);">
+          <input id="i-8" type="text" value="Stan: hover" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="i-9" class="field-label">Source URL</label>
+        <div class="input">
+          <span class="prefix-text">https://</span>
+          <input id="i-9" type="text" value="justjoin.it/offer/allegro-be-go" />
+        </div>
+        <span class="field-helper">Pełny link do ogłoszenia.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 SELECT / COMBOBOX -->
+  <section id="select" class="section">
+    <h3 class="t-xl font-semibold">09 · Select / Combobox</h3>
+    <p class="t-md text-2 mt-1 mb-5" style="max-width: 720px;">
+      Natywny <code>&lt;select&gt;</code> dla prostych enumów; combobox (custom) dla statusów z ikonami i dla wyszukiwania firm.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- closed select -->
+      <div>
+        <div class="demo-label">Closed</div>
+        <div class="field" style="max-width: 280px;">
+          <label for="sel-1" class="field-label">Status aplikacji</label>
+          <div class="input">
+            <span class="badge-dot" style="background: var(--st-applied-fg);"></span>
+            <select id="sel-1" class="appearance-none cursor-pointer pr-6">
+              <option>APPLIED — Aplikowano</option>
+              <option>ACK_RECEIVED — Potwierdzone</option>
+              <option>INTERVIEW_SCHEDULED — Rozmowa</option>
+            </select>
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- open combobox -->
+      <div>
+        <div class="demo-label">Open (combobox)</div>
+        <div style="max-width: 320px; position: relative;">
+          <label for="cb-1" class="field-label mb-1">Wybierz status</label>
+          <div class="input">
+            <i data-lucide="search"></i>
+            <input id="cb-1" type="text" value="inter" placeholder="Szukaj statusu…" />
+            <i data-lucide="chevron-up"></i>
+          </div>
+          <!-- ARIA: this would have role="listbox" and items role="option" with aria-selected -->
+          <div class="menu mt-1" role="listbox" aria-label="Statusy" style="position: relative;">
+            <div class="menu-label">Wyniki</div>
+            <button class="menu-item" role="option"><span class="badge-dot" style="background: var(--st-intsch-fg);"></span>INTERVIEW_SCHEDULED <span class="t-xs text-4">Rozmowa: termin</span></button>
+            <button class="menu-item" role="option" aria-selected="true" style="background: var(--bg-subtle);"><span class="badge-dot" style="background: var(--st-intdone-fg);"></span>INTERVIEW_DONE <span class="t-xs text-4">Po rozmowie</span><i data-lucide="check" class="ic-14" style="margin-left:auto; color: var(--brand-500);"></i></button>
+            <div class="menu-divider"></div>
+            <button class="menu-item" role="option"><i data-lucide="plus" class="ic-14"></i>Dodaj własny status</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 CHECKBOX + RADIO -->
+  <section id="choice" class="section">
+    <h3 class="t-xl font-semibold">10 · Checkbox & Radio</h3>
+    <p class="t-md text-2 mt-1 mb-5" style="max-width: 720px;">
+      16 × 16 px, focus ring 2 px. Checkbox obsługuje stan <code>mixed</code> (parent checkbox w tabeli).
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="demo-card" style="flex-direction:column; align-items:flex-start;">
+        <div class="demo-label" style="margin-bottom:0;">Checkbox</div>
+        <label class="flex items-center gap-2 cursor-pointer"><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span><span class="t-base">Pokaż tylko aktywne</span></label>
+        <label class="flex items-center gap-2 cursor-pointer"><span class="check" role="checkbox" aria-checked="true" tabindex="0"><i data-lucide="check"></i></span><span class="t-base">Wyślij follow-up automatycznie po 7 dniach</span></label>
+        <label class="flex items-center gap-2 cursor-pointer"><span class="check" role="checkbox" aria-checked="mixed" tabindex="0"></span><span class="t-base">Zaznacz wszystkie (mixed)</span></label>
+        <label class="flex items-center gap-2"><span class="check" role="checkbox" aria-checked="false" aria-disabled="true"></span><span class="t-base text-4">Wyłączone (disabled)</span></label>
+      </div>
+      <div class="demo-card" style="flex-direction:column; align-items:flex-start;">
+        <div class="demo-label" style="margin-bottom:0;">Radio</div>
+        <!-- ARIA: group of radios should be wrapped in role="radiogroup" with aria-labelledby -->
+        <div role="radiogroup" aria-labelledby="rg-1" class="flex flex-col gap-2">
+          <span id="rg-1" class="t-sm text-3">Częstotliwość przypomnień</span>
+          <label class="flex items-center gap-2 cursor-pointer"><span class="radio" role="radio" aria-checked="false" tabindex="0"></span><span class="t-base">Co 3 dni</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><span class="radio" role="radio" aria-checked="true" tabindex="0"></span><span class="t-base">Co 7 dni</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><span class="radio" role="radio" aria-checked="false" tabindex="0"></span><span class="t-base">Tylko ręcznie</span></label>
+          <label class="flex items-center gap-2"><span class="radio" role="radio" aria-checked="false" aria-disabled="true"></span><span class="t-base text-4">Webhook (premium)</span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 TEXTAREA & 12 SWITCH -->
+  <div class="grid md:grid-cols-2 gap-6" style="margin-top:24px;">
+    <section id="textarea" class="section" style="margin-top:0">
+      <h3 class="t-xl font-semibold">11 · Textarea</h3>
+      <p class="t-md text-2 mt-1 mb-5">Auto-grow opcjonalnie (resize: vertical). Min 88 px.</p>
+      <div class="field">
+        <label for="ta-1" class="field-label">Notatka z rozmowy</label>
+        <textarea id="ta-1" class="textarea" rows="4" placeholder="Co padło, kto był, jakie pytania techniczne…">CTO + Tech Lead, 50 min. Pytania o system design (event sourcing), trochę o Go runtime. Pisali, że dadzą feedback w 5 dni.</textarea>
+        <div class="flex justify-between"><span class="field-helper">Wspiera markdown.</span><span class="field-helper">214 / 2000</span></div>
+      </div>
+    </section>
+
+    <section id="switch" class="section" style="margin-top:0">
+      <h3 class="t-xl font-semibold">12 · Switch / Toggle</h3>
+      <p class="t-md text-2 mt-1 mb-5">Dla binarnych preferencji (on/off, settings). Nie używaj dla destrukcyjnych akcji.</p>
+      <div class="flex flex-col gap-3">
+        <label class="flex items-center justify-between gap-3 cursor-pointer">
+          <div><div class="t-base">Przypomnienia o follow-up</div><div class="t-sm text-3">Powiadomienie 7 dni po wysłaniu CV.</div></div>
+          <span class="switch" role="switch" aria-checked="true" tabindex="0"></span>
+        </label>
+        <label class="flex items-center justify-between gap-3 cursor-pointer">
+          <div><div class="t-base">Auto-import z JustJoinIT</div><div class="t-sm text-3">Wykrywaj nowe ogłoszenia po filtrach.</div></div>
+          <span class="switch" role="switch" aria-checked="false" tabindex="0"></span>
+        </label>
+        <label class="flex items-center justify-between gap-3">
+          <div><div class="t-base text-4">Webhook (premium)</div><div class="t-sm text-4">Wyłączone w tym planie.</div></div>
+          <span class="switch" role="switch" aria-checked="false" aria-disabled="true"></span>
+        </label>
+      </div>
+    </section>
+  </div>
+
+  <!-- 13 BADGES -->
+  <section id="badges" class="section">
+    <h3 class="t-xl font-semibold">13 · Badge</h3>
+    <p class="t-md text-2 mt-1 mb-5">Tinted background + dot + krótka etykieta. Tylko dla statusów i metadanych typu „archived".</p>
+
+    <div class="demo-label">Status — wszystkie 11 wartości <code>ApplicationStatus</code></div>
+    <div class="demo-card">
+      <span class="badge st st-draft"><span class="badge-dot" style="background: var(--st-draft-fg);"></span>Szkic</span>
+      <span class="badge st st-applied"><span class="badge-dot" style="background: var(--st-applied-fg);"></span>Aplikowano</span>
+      <span class="badge st st-ack"><span class="badge-dot" style="background: var(--st-ack-fg);"></span>Potwierdzone</span>
+      <span class="badge st st-intsch"><span class="badge-dot" style="background: var(--st-intsch-fg);"></span>Rozmowa: termin</span>
+      <span class="badge st st-intdone"><span class="badge-dot" style="background: var(--st-intdone-fg);"></span>Po rozmowie</span>
+      <span class="badge st st-taskrx"><span class="badge-dot" style="background: var(--st-taskrx-fg);"></span>Zadanie</span>
+      <span class="badge st st-tasktx"><span class="badge-dot" style="background: var(--st-tasktx-fg);"></span>Zadanie oddane</span>
+      <span class="badge st st-offer"><span class="badge-dot" style="background: var(--st-offer-fg);"></span>Oferta</span>
+      <span class="badge st st-rejected"><span class="badge-dot" style="background: var(--st-rejected-fg);"></span>Odrzucono</span>
+      <span class="badge st st-withdraw"><span class="badge-dot" style="background: var(--st-withdraw-fg);"></span>Wycofane</span>
+      <span class="badge st st-ghosted"><span class="badge-dot" style="background: var(--st-ghosted-fg);"></span>Ghosted</span>
+    </div>
+
+    <div class="demo-label mt-4">Warianty utility</div>
+    <div class="demo-card">
+      <span class="badge badge-neutral">Default</span>
+      <span class="badge badge-outline">Outline</span>
+      <span class="badge badge-solid" style="background: var(--brand-500);">Solid</span>
+      <span class="badge badge-neutral"><i data-lucide="zap" class="ic-12"></i>Auto-import</span>
+      <span class="badge badge-neutral"><span class="badge-dot" style="background: var(--success-500);"></span>Live</span>
+    </div>
+  </section>
+
+  <!-- 14 CHIPS -->
+  <section id="chips" class="section">
+    <h3 class="t-xl font-semibold">14 · Tag / Chip — usuwalny</h3>
+    <p class="t-md text-2 mt-1 mb-5">Filtry aktywne, tagi technologii. Klik na X usuwa wpis.</p>
+    <div class="demo-card">
+      <span class="chip">Go <button class="chip-x" aria-label="Usuń tag Go"><i data-lucide="x"></i></button></span>
+      <span class="chip">PostgreSQL <button class="chip-x" aria-label="Usuń tag PostgreSQL"><i data-lucide="x"></i></button></span>
+      <span class="chip">Remote <button class="chip-x" aria-label="Usuń"><i data-lucide="x"></i></button></span>
+      <span class="chip">Senior <button class="chip-x" aria-label="Usuń"><i data-lucide="x"></i></button></span>
+      <span class="chip" style="background: var(--brand-50); border-color: var(--brand-200); color: var(--brand-700);">≥ 20 000 PLN <button class="chip-x" aria-label="Usuń" style="color: var(--brand-500);"><i data-lucide="x"></i></button></span>
+      <button class="btn btn-ghost btn-sm"><i data-lucide="plus" class="ic-12"></i>Dodaj filtr</button>
+    </div>
+  </section>
+
+  <!-- 15 CARD -->
+  <section id="card" class="section">
+    <h3 class="t-xl font-semibold">15 · Card</h3>
+    <p class="t-md text-2 mt-1 mb-5">Header + body + footer, każdy z osobnym paddingiem. Footer ma subtelnie inne tło.</p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card">
+        <div class="card-header">
+          <div class="flex items-center gap-2">
+            <div class="avatar avatar-sm" style="background: rgba(91,77,238,.12); color: var(--brand-500);">A</div>
+            <div>
+              <div class="t-base font-medium">Allegro</div>
+              <div class="t-xs text-3">Senior Backend Engineer · Remote</div>
+            </div>
+          </div>
+          <span class="badge st st-intsch"><span class="badge-dot" style="background: var(--st-intsch-fg);"></span>Rozmowa: termin</span>
+        </div>
+        <div class="card-body">
+          <div class="grid grid-cols-3 gap-3 t-sm">
+            <div><div class="text-3 t-xs uppercase tracking-wider mb-1">Aplikacja</div><div>8 maja</div></div>
+            <div><div class="text-3 t-xs uppercase tracking-wider mb-1">Stawka</div><div>22 000 PLN</div></div>
+            <div><div class="text-3 t-xs uppercase tracking-wider mb-1">Next step</div><div style="color: var(--warning-500);">11 maja · 14:00</div></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost btn-sm">Notatki</button>
+          <button class="btn btn-secondary btn-sm">Update status</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="t-base font-medium">Ustawienia konta</div>
+          <button class="btn btn-ghost btn-sq-sm" aria-label="Więcej"><i data-lucide="more-horizontal" class="ic-14"></i></button>
+        </div>
+        <div class="card-body flex flex-col gap-3">
+          <label class="flex items-center justify-between gap-3"><span class="t-base">Tryb ciemny</span><span class="switch" role="switch" aria-checked="true"></span></label>
+          <label class="flex items-center justify-between gap-3"><span class="t-base">Powiadomienia email</span><span class="switch" role="switch" aria-checked="true"></span></label>
+          <label class="flex items-center justify-between gap-3"><span class="t-base">Cotygodniowy raport</span><span class="switch" role="switch" aria-checked="false"></span></label>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost btn-sm">Anuluj</button>
+          <button class="btn btn-primary btn-sm">Zapisz zmiany</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 MODAL -->
+  <section id="modal" class="section">
+    <h3 class="t-xl font-semibold">16 · Modal</h3>
+    <p class="t-md text-2 mt-1 mb-5">Header + body + footer + close. Max width 560 px (potwierdzenie) / 720 px (formularz).</p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <!-- Confirmation modal -->
+      <div class="backdrop p-6 rounded-lg" style="border:1px solid var(--border-1);">
+        <div class="card shadow-3 mx-auto" style="max-width: 460px;" role="dialog" aria-modal="true" aria-labelledby="m1-title">
+          <div class="card-header">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-md flex items-center justify-center" style="background: rgba(220,38,38,.12); color: var(--danger-500);"><i data-lucide="trash-2" class="ic-14"></i></div>
+              <div id="m1-title" class="t-base font-medium">Usunąć aplikację Allegro?</div>
+            </div>
+            <button class="btn btn-ghost btn-sq-sm" aria-label="Zamknij"><i data-lucide="x" class="ic-14"></i></button>
+          </div>
+          <div class="card-body">
+            <p class="t-base text-2">Stracisz wszystkie notatki i historię statusów. Tej akcji nie da się cofnąć.</p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost btn-sm">Anuluj</button>
+            <button class="btn btn-danger btn-sm">Usuń aplikację</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form modal -->
+      <div class="backdrop p-6 rounded-lg" style="border:1px solid var(--border-1);">
+        <div class="card shadow-3 mx-auto" style="max-width: 560px;" role="dialog" aria-modal="true" aria-labelledby="m2-title">
+          <div class="card-header">
+            <div id="m2-title" class="t-base font-medium">Nowa aplikacja</div>
+            <button class="btn btn-ghost btn-sq-sm" aria-label="Zamknij"><i data-lucide="x" class="ic-14"></i></button>
+          </div>
+          <div class="card-body grid grid-cols-2 gap-3">
+            <div class="field col-span-2">
+              <label class="field-label">Firma <span class="req">*</span></label>
+              <div class="input"><i data-lucide="building-2"></i><input type="text" placeholder="np. Allegro" /></div>
+            </div>
+            <div class="field col-span-2">
+              <label class="field-label">Stanowisko</label>
+              <div class="input"><input type="text" value="Senior Backend Engineer" /></div>
+            </div>
+            <div class="field">
+              <label class="field-label">Data aplikacji</label>
+              <div class="input"><i data-lucide="calendar"></i><input type="date" value="2026-05-11" /></div>
+            </div>
+            <div class="field">
+              <label class="field-label">Status</label>
+              <div class="input"><span class="badge-dot" style="background: var(--st-applied-fg);"></span><select><option>APPLIED</option><option>DRAFT</option></select><i data-lucide="chevron-down"></i></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost btn-sm">Anuluj</button>
+            <button class="btn btn-secondary btn-sm">Zapisz szkic</button>
+            <button class="btn btn-primary btn-sm">Dodaj aplikację</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 TOAST -->
+  <section id="toast" class="section">
+    <h3 class="t-xl font-semibold">17 · Toast / Notification</h3>
+    <p class="t-md text-2 mt-1 mb-5">Top-right, max 3 jednocześnie, auto-dismiss 5 s (z wyjątkiem error).</p>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div class="toast toast-success" role="status">
+        <i data-lucide="check-circle-2" class="toast-icon"></i>
+        <div class="flex-1">
+          <div class="t-base font-medium">Aplikacja dodana</div>
+          <div class="t-sm text-3">Allegro · Senior Backend Engineer</div>
+        </div>
+        <button class="btn btn-ghost btn-sq-sm" aria-label="Zamknij"><i data-lucide="x" class="ic-14"></i></button>
+      </div>
+      <div class="toast toast-info" role="status">
+        <i data-lucide="info" class="toast-icon"></i>
+        <div class="flex-1">
+          <div class="t-base font-medium">5 nowych ofert w JJIT</div>
+          <div class="t-sm text-3">Pasujących do twoich filtrów.</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;">Zobacz</button>
+      </div>
+      <div class="toast toast-warning" role="status">
+        <i data-lucide="alert-triangle" class="toast-icon"></i>
+        <div class="flex-1">
+          <div class="t-base font-medium">3 aplikacje czekają na follow-up</div>
+          <div class="t-sm text-3">Ostatnia od 9 dni bez odpowiedzi.</div>
+        </div>
+        <button class="btn btn-ghost btn-sq-sm" aria-label="Zamknij"><i data-lucide="x" class="ic-14"></i></button>
+      </div>
+      <div class="toast toast-error" role="alert">
+        <i data-lucide="x-circle" class="toast-icon"></i>
+        <div class="flex-1">
+          <div class="t-base font-medium">Nie udało się zsynchronizować z NoFluffJobs</div>
+          <div class="t-sm text-3">API zwróciło 503. Spróbuj ponownie za chwilę.</div>
+          <div class="flex gap-2 mt-2"><button class="btn btn-secondary btn-sm">Ponów</button><button class="btn btn-ghost btn-sm">Zamknij</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 TOOLTIP -->
+  <section id="tooltip" class="section">
+    <h3 class="t-xl font-semibold">18 · Tooltip</h3>
+    <p class="t-md text-2 mt-1 mb-5">Pojawia się po 600 ms hover. Krótki tekst, nigdy interaktywny.</p>
+    <div class="demo-card" style="padding-top: 56px; padding-bottom: 32px; justify-content: space-around;">
+      <div class="relative">
+        <button class="btn btn-secondary btn-sq-md" aria-label="Skróty klawiszowe" aria-describedby="tt-1"><i data-lucide="keyboard" class="ic-14"></i></button>
+        <!-- ARIA: aria-describedby points to the tooltip's ID -->
+        <div id="tt-1" role="tooltip" class="tooltip absolute" style="bottom: calc(100% + 8px); left:50%; transform: translateX(-50%); white-space: nowrap;">Skróty klawiszowe · <span class="code" style="background: rgba(255,255,255,.1); color:#fff; border-color: rgba(255,255,255,.2);">?</span></div>
+      </div>
+      <div class="relative">
+        <span class="badge st st-ghosted" aria-describedby="tt-2"><span class="badge-dot" style="background:var(--st-ghosted-fg);"></span>Ghosted</span>
+        <div id="tt-2" role="tooltip" class="tooltip absolute" style="bottom: calc(100% + 8px); left:50%; transform: translateX(-50%); white-space: nowrap;">14+ dni bez odpowiedzi</div>
+      </div>
+      <div class="relative">
+        <span class="t-base underline decoration-dotted text-3" aria-describedby="tt-3">retention rate</span>
+        <div id="tt-3" role="tooltip" class="tooltip absolute" style="bottom: calc(100% + 8px); left:50%; transform: translateX(-50%); width: 220px; white-space: normal; text-align:left;">% aplikacji, które przeszły z APPLIED do INTERVIEW_SCHEDULED w 30 dni.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 DROPDOWN MENU -->
+  <section id="menu" class="section">
+    <h3 class="t-xl font-semibold">19 · Dropdown menu</h3>
+    <p class="t-md text-2 mt-1 mb-5">Pop-over uruchamiany przez button. Ikona po lewej, opcjonalny skrót po prawej.</p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div>
+        <div class="demo-label">Row actions</div>
+        <div class="menu" role="menu">
+          <button class="menu-item" role="menuitem"><i data-lucide="eye"></i>Pokaż szczegóły</button>
+          <button class="menu-item" role="menuitem"><i data-lucide="pencil"></i>Edytuj <span class="shortcut">E</span></button>
+          <button class="menu-item" role="menuitem"><i data-lucide="copy"></i>Duplikuj</button>
+          <div class="menu-divider"></div>
+          <button class="menu-item" role="menuitem"><i data-lucide="archive"></i>Archiwizuj</button>
+          <button class="menu-item is-danger" role="menuitem"><i data-lucide="trash-2"></i>Usuń <span class="shortcut">⌫</span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label">Status picker</div>
+        <div class="menu" role="menu">
+          <div class="menu-label">Zmień status</div>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-applied-fg);"></span>APPLIED</button>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-ack-fg);"></span>ACK_RECEIVED</button>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>INTERVIEW_SCHEDULED <i data-lucide="check" class="ic-14" style="margin-left:auto; color: var(--brand-500);"></i></button>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-intdone-fg);"></span>INTERVIEW_DONE</button>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-offer-fg);"></span>OFFER</button>
+          <div class="menu-divider"></div>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-rejected-fg);"></span>REJECTED</button>
+          <button class="menu-item" role="menuitem"><span class="badge-dot" style="background:var(--st-ghosted-fg);"></span>GHOSTED</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-label">Account menu</div>
+        <div class="menu" role="menu">
+          <div class="flex items-center gap-2 px-2 py-2">
+            <div class="avatar avatar-md" style="background: rgba(91,77,238,.12); color: var(--brand-500);">MK</div>
+            <div><div class="t-base">Marcin K.</div><div class="t-xs text-3">marcin@dev.pl</div></div>
+          </div>
+          <div class="menu-divider"></div>
+          <button class="menu-item" role="menuitem"><i data-lucide="settings"></i>Ustawienia <span class="shortcut">⌘,</span></button>
+          <button class="menu-item" role="menuitem"><i data-lucide="keyboard"></i>Skróty <span class="shortcut">?</span></button>
+          <button class="menu-item" role="menuitem"><i data-lucide="palette"></i>Motyw</button>
+          <div class="menu-divider"></div>
+          <button class="menu-item is-danger" role="menuitem"><i data-lucide="log-out"></i>Wyloguj</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 TABS -->
+  <section id="tabs" class="section">
+    <h3 class="t-xl font-semibold">20 · Tabs</h3>
+    <p class="t-md text-2 mt-1 mb-5">Horyzontalne dla widoków, wertykalne dla settings.</p>
+
+    <div class="grid md:grid-cols-[1fr_240px] gap-6 items-start">
+      <div>
+        <div class="demo-label">Horizontal</div>
+        <!-- ARIA: role="tablist", each tab has aria-selected and aria-controls -->
+        <div class="tabs-h" role="tablist" aria-label="Widok aplikacji">
+          <button class="tab-h" role="tab" aria-selected="true">Wszystkie <span class="badge badge-neutral ml-1" style="padding: 0 6px; font-size:10px;">47</span></button>
+          <button class="tab-h" role="tab" aria-selected="false">Aktywne <span class="badge badge-neutral ml-1" style="padding: 0 6px; font-size:10px;">28</span></button>
+          <button class="tab-h" role="tab" aria-selected="false">Follow-up <span class="badge st st-taskrx ml-1" style="padding: 0 6px; font-size:10px;">5</span></button>
+          <button class="tab-h" role="tab" aria-selected="false">Archiwum</button>
+        </div>
+        <div class="t-base text-2 p-4" style="background: var(--bg-subtle); border:1px solid var(--border-1); border-top: none; border-bottom-left-radius: var(--r-md); border-bottom-right-radius: var(--r-md);">
+          47 aplikacji · sortowane wg ostatniej aktywności
+        </div>
+      </div>
+      <div>
+        <div class="demo-label">Vertical (settings)</div>
+        <div class="tabs-v" role="tablist" aria-orientation="vertical">
+          <button class="tab-v" role="tab" aria-selected="true"><i data-lucide="user"></i>Konto</button>
+          <button class="tab-v" role="tab" aria-selected="false"><i data-lucide="bell"></i>Powiadomienia</button>
+          <button class="tab-v" role="tab" aria-selected="false"><i data-lucide="plug"></i>Integracje</button>
+          <button class="tab-v" role="tab" aria-selected="false"><i data-lucide="key-round"></i>API keys</button>
+          <button class="tab-v" role="tab" aria-selected="false"><i data-lucide="receipt"></i>Rozliczenia</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 PAGINATION -->
+  <section id="pagination" class="section">
+    <h3 class="t-xl font-semibold">21 · Pagination</h3>
+    <p class="t-md text-2 mt-1 mb-5">Numerowane strony + prev/next + skok do pierwszej/ostatniej.</p>
+    <div class="demo-card" style="justify-content: space-between;">
+      <span class="t-sm text-3">Wyświetlanie <strong class="text-1">21–40</strong> z <strong class="text-1">147</strong></span>
+      <nav class="flex items-center gap-1" aria-label="Pagination">
+        <button class="pg-btn" disabled aria-label="Pierwsza strona"><i data-lucide="chevrons-left" class="ic-14"></i></button>
+        <button class="pg-btn" aria-label="Poprzednia"><i data-lucide="chevron-left" class="ic-14"></i></button>
+        <button class="pg-btn">1</button>
+        <button class="pg-btn is-active" aria-current="page">2</button>
+        <button class="pg-btn">3</button>
+        <button class="pg-btn">4</button>
+        <span class="pg-btn" style="border:none; background:transparent;">…</span>
+        <button class="pg-btn">8</button>
+        <button class="pg-btn" aria-label="Następna"><i data-lucide="chevron-right" class="ic-14"></i></button>
+        <button class="pg-btn" aria-label="Ostatnia"><i data-lucide="chevrons-right" class="ic-14"></i></button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- 22 AVATAR -->
+  <section id="avatar" class="section">
+    <h3 class="t-xl font-semibold">22 · Avatar</h3>
+    <p class="t-md text-2 mt-1 mb-5">Trzy rozmiary: sm (24), md (32), lg (48). Inicjały jako fallback gdy brak obrazka.</p>
+    <div class="demo-card">
+      <div class="avatar avatar-sm">MK</div>
+      <div class="avatar avatar-md">MK</div>
+      <div class="avatar avatar-lg">MK</div>
+      <div class="avatar avatar-md" style="background: rgba(91,77,238,.12); color: var(--brand-500);">A</div>
+      <div class="avatar avatar-md" style="background: rgba(22,163,74,.14); color: var(--success-500);">G</div>
+      <div class="avatar avatar-md" style="background: rgba(245,158,11,.14); color: var(--warning-500);">N</div>
+      <div class="avatar avatar-md"><img src="https://api.dicebear.com/9.x/personas/svg?seed=marcin" alt="Marcin K." /></div>
+      <div class="avatar avatar-lg"><img src="https://api.dicebear.com/9.x/personas/svg?seed=ada" alt="Ada Z." /></div>
+      <!-- avatar stack -->
+      <div class="flex -space-x-2">
+        <div class="avatar avatar-md ring-2" style="--tw-ring-color: var(--bg-canvas); background: rgba(91,77,238,.12); color: var(--brand-500);">A</div>
+        <div class="avatar avatar-md ring-2" style="--tw-ring-color: var(--bg-canvas); background: rgba(22,163,74,.14); color: var(--success-500);">G</div>
+        <div class="avatar avatar-md ring-2" style="--tw-ring-color: var(--bg-canvas); background: rgba(245,158,11,.14); color: var(--warning-500);">N</div>
+        <div class="avatar avatar-md ring-2" style="--tw-ring-color: var(--bg-canvas);">+4</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 23 EMPTY STATE -->
+  <section id="empty" class="section">
+    <h3 class="t-xl font-semibold">23 · Empty state</h3>
+    <p class="t-md text-2 mt-1 mb-5">Ilustracja (placeholder), nagłówek, krótkie wyjaśnienie, jedno wyraźne CTA + opcjonalne secondary.</p>
+
+    <div class="card" style="background: var(--bg-canvas);">
+      <div class="card-body flex flex-col items-center text-center" style="padding: 56px 24px;">
+        <!-- illustration placeholder: 4 stacked rects suggesting empty table -->
+        <div class="relative mb-5" aria-hidden="true">
+          <div class="absolute inset-0 -m-4 rounded-full" style="background: radial-gradient(circle, rgba(91,77,238,.10), transparent 60%);"></div>
+          <svg viewBox="0 0 120 100" class="relative" style="width: 140px; height: 110px;">
+            <rect x="10" y="14" width="100" height="14" rx="3" fill="var(--bg-muted)"></rect>
+            <rect x="10" y="34" width="100" height="14" rx="3" fill="var(--bg-muted)"></rect>
+            <rect x="10" y="54" width="100" height="14" rx="3" fill="var(--bg-muted)"></rect>
+            <rect x="10" y="74" width="60" height="14" rx="3" fill="var(--bg-muted)"></rect>
+            <circle cx="92" cy="78" r="12" fill="var(--brand-500)"></circle>
+            <path d="M86 78l4 4 8-8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h4 class="t-xl font-semibold mb-1">Jeszcze nie aplikujesz</h4>
+        <p class="t-md text-2" style="max-width: 380px;">Dodaj pierwszą aplikację ręcznie albo zaimportuj listę z JustJoinIT, żeby JobTrack zaczął przypominać o follow-upach.</p>
+        <div class="flex gap-2 mt-5">
+          <button class="btn btn-primary btn-md"><i data-lucide="plus" class="ic-14"></i>Dodaj aplikację</button>
+          <button class="btn btn-secondary btn-md"><i data-lucide="upload" class="ic-14"></i>Importuj z JJIT</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 LOADING -->
+  <section id="loading" class="section">
+    <h3 class="t-xl font-semibold">24 · Spinner & skeleton</h3>
+    <p class="t-md text-2 mt-1 mb-5">Spinner dla &lt; 500 ms akcji w przyciskach, skeleton dla ładowania widoków.</p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="demo-card" style="flex-direction:column; align-items:flex-start;">
+        <div class="demo-label" style="margin-bottom:0;">Spinner</div>
+        <div class="flex items-center gap-6">
+          <i data-lucide="loader-2" class="spin" style="width:14px;height:14px; color: var(--text-3);"></i>
+          <i data-lucide="loader-2" class="spin" style="width:20px;height:20px; color: var(--brand-500);"></i>
+          <i data-lucide="loader-2" class="spin" style="width:28px;height:28px; color: var(--brand-500);"></i>
+          <button class="btn btn-primary btn-md" disabled><i data-lucide="loader-2" class="ic-14 spin"></i>Zapisywanie…</button>
+        </div>
+      </div>
+      <div class="demo-card" style="flex-direction: column; align-items: stretch;">
+        <div class="demo-label">Skeleton — wiersz tabeli</div>
+        <div class="flex flex-col gap-3 w-full">
+          <div class="flex items-center gap-3"><div class="skel" style="width:16px; height:16px; border-radius:4px;"></div><div class="skel" style="width:30%; height:14px;"></div><div class="skel" style="width:20%; height:14px;"></div><div class="skel" style="width:80px; height:18px; border-radius:999px;"></div><div class="skel" style="width:60px; height:14px; margin-left:auto;"></div></div>
+          <div class="flex items-center gap-3"><div class="skel" style="width:16px; height:16px; border-radius:4px;"></div><div class="skel" style="width:40%; height:14px;"></div><div class="skel" style="width:15%; height:14px;"></div><div class="skel" style="width:90px; height:18px; border-radius:999px;"></div><div class="skel" style="width:60px; height:14px; margin-left:auto;"></div></div>
+          <div class="flex items-center gap-3"><div class="skel" style="width:16px; height:16px; border-radius:4px;"></div><div class="skel" style="width:25%; height:14px;"></div><div class="skel" style="width:25%; height:14px;"></div><div class="skel" style="width:70px; height:18px; border-radius:999px;"></div><div class="skel" style="width:60px; height:14px; margin-left:auto;"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 TABLE -->
+  <section id="table" class="section">
+    <h3 class="t-xl font-semibold">25 · Table</h3>
+    <p class="t-md text-2 mt-1 mb-5">Sortowalne nagłówki, sticky header (działa w scroll-containerze), checkbox column, row hover, stan selected.</p>
+
+    <div class="card" style="overflow: hidden;">
+      <div class="card-header" style="padding: 10px 12px;">
+        <div class="flex items-center gap-2 flex-1">
+          <div class="input flex-1" style="max-width: 280px;">
+            <i data-lucide="search"></i><input type="text" placeholder="Szukaj firmy lub stanowiska…" />
+            <span class="code" style="font-size:10px;">⌘K</span>
+          </div>
+          <span class="chip">Status: 3 <button class="chip-x" aria-label="Wyczyść"><i data-lucide="x"></i></button></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="t-sm text-3"><strong class="text-1">2</strong> zaznaczone</span>
+          <button class="btn btn-secondary btn-sm"><i data-lucide="filter" class="ic-14"></i>Filtry</button>
+          <button class="btn btn-primary btn-sm"><i data-lucide="plus" class="ic-14"></i>Nowa</button>
+        </div>
+      </div>
+
+      <div style="max-height: 420px; overflow: auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width: 36px;"><span class="check" role="checkbox" aria-checked="mixed" tabindex="0"></span></th>
+              <th class="sortable sorted">Firma <span class="sort-ic"><i data-lucide="arrow-up" class="ic-12"></i></span></th>
+              <th class="sortable">Stanowisko</th>
+              <th class="sortable">Status</th>
+              <th class="sortable">Aplikacja <span class="sort-ic"><i data-lucide="chevrons-up-down" class="ic-12"></i></span></th>
+              <th class="sortable">Follow-up</th>
+              <th class="sortable">Stawka</th>
+              <th style="width:40px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-selected">
+              <td><span class="check" role="checkbox" aria-checked="true" tabindex="0"><i data-lucide="check"></i></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background: rgba(91,77,238,.12); color: var(--brand-500);">A</div><span class="font-medium">Allegro</span></div></td>
+              <td class="text-2">Senior Backend Engineer</td>
+              <td><span class="badge st st-intsch"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>Rozmowa: termin</span></td>
+              <td class="text-2"><span class="t-sm font-mono">8 maja</span></td>
+              <td><span class="t-sm" style="color: var(--warning-500);">jutro 14:00</span></td>
+              <td class="text-2 font-mono">22 000 PLN</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr class="is-selected">
+              <td><span class="check" role="checkbox" aria-checked="true" tabindex="0"><i data-lucide="check"></i></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background: rgba(22,163,74,.14); color: var(--success-500);">G</div><span class="font-medium">GitLab</span></div></td>
+              <td class="text-2">Staff Engineer · Platform</td>
+              <td><span class="badge st st-offer"><span class="badge-dot" style="background:var(--st-offer-fg);"></span>Oferta</span></td>
+              <td class="text-2"><span class="t-sm font-mono">22 kwi</span></td>
+              <td class="text-4 t-sm">—</td>
+              <td class="text-2 font-mono">$ 165 000</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr>
+              <td><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background: rgba(245,158,11,.14); color: var(--warning-500);">N</div><span class="font-medium">Netguru</span></div></td>
+              <td class="text-2">Backend Engineer (Go)</td>
+              <td><span class="badge st st-taskrx"><span class="badge-dot" style="background:var(--st-taskrx-fg);"></span>Zadanie</span></td>
+              <td class="text-2"><span class="t-sm font-mono">5 maja</span></td>
+              <td><span class="t-sm" style="color: var(--warning-500);">deadline pt</span></td>
+              <td class="text-2 font-mono">18 000 PLN</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr>
+              <td><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background: rgba(14,165,233,.14); color: var(--info-500);">P</div><span class="font-medium">PandaDoc</span></div></td>
+              <td class="text-2">Senior Software Engineer</td>
+              <td><span class="badge st st-applied"><span class="badge-dot" style="background:var(--st-applied-fg);"></span>Aplikowano</span></td>
+              <td class="text-2"><span class="t-sm font-mono">2 maja</span></td>
+              <td class="text-4 t-sm">—</td>
+              <td class="text-2 font-mono">$ 110 000</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr>
+              <td><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm" style="background: rgba(168,85,247,.14); color: #a855f7;">R</div><span class="font-medium">Ramp</span></div></td>
+              <td class="text-2">Software Engineer, Infrastructure</td>
+              <td><span class="badge st st-intdone"><span class="badge-dot" style="background:var(--st-intdone-fg);"></span>Po rozmowie</span></td>
+              <td class="text-2"><span class="t-sm font-mono">28 kwi</span></td>
+              <td><span class="t-sm text-2">7 dni</span></td>
+              <td class="text-2 font-mono">$ 195 000</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr>
+              <td><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">L</div><span class="font-medium">LiveChat</span></div></td>
+              <td class="text-2">Backend Developer</td>
+              <td><span class="badge st st-ghosted"><span class="badge-dot" style="background:var(--st-ghosted-fg);"></span>Ghosted</span></td>
+              <td class="text-2"><span class="t-sm font-mono">14 kwi</span></td>
+              <td class="text-4 t-sm">—</td>
+              <td class="text-2 font-mono">16 000 PLN</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+            <tr>
+              <td><span class="check" role="checkbox" aria-checked="false" tabindex="0"></span></td>
+              <td><div class="flex items-center gap-2"><div class="avatar avatar-sm">B</div><span class="font-medium">Brainly</span></div></td>
+              <td class="text-2">Lead Backend Engineer</td>
+              <td><span class="badge st st-rejected"><span class="badge-dot" style="background:var(--st-rejected-fg);"></span>Odrzucono</span></td>
+              <td class="text-2"><span class="t-sm font-mono">10 kwi</span></td>
+              <td class="text-4 t-sm">—</td>
+              <td class="text-2 font-mono">25 000 PLN</td>
+              <td><button class="btn btn-ghost btn-sq-sm" aria-label="Akcje"><i data-lucide="more-horizontal" class="ic-14"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-footer" style="justify-content: space-between;">
+        <span class="t-sm text-3">Wyświetlanie 1–7 z 47</span>
+        <nav class="flex items-center gap-1" aria-label="Pagination">
+          <button class="pg-btn" aria-label="Poprzednia"><i data-lucide="chevron-left" class="ic-14"></i></button>
+          <button class="pg-btn is-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn" aria-label="Następna"><i data-lucide="chevron-right" class="ic-14"></i></button>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- 26 STAT CARD -->
+  <section id="stats" class="section">
+    <h3 class="t-xl font-semibold">26 · Stat card</h3>
+    <p class="t-md text-2 mt-1 mb-5">Liczba (28 px) + label + delta + opcjonalny sparkline lub mini-progress.</p>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="card"><div class="card-body" style="padding: 14px 16px;">
+        <div class="flex items-center justify-between mb-2"><div class="t-xs text-3 uppercase tracking-wider">Aplikacje (7 d)</div><i data-lucide="send" class="ic-14 text-3"></i></div>
+        <div class="t-2xl font-semibold">12</div>
+        <div class="t-xs mt-1 flex items-center gap-1" style="color: var(--success-500);"><i data-lucide="trending-up" class="ic-12"></i> +33% vs prev week</div>
+      </div></div>
+
+      <div class="card"><div class="card-body" style="padding: 14px 16px;">
+        <div class="flex items-center justify-between mb-2"><div class="t-xs text-3 uppercase tracking-wider">Response rate</div><i data-lucide="reply" class="ic-14 text-3"></i></div>
+        <div class="t-2xl font-semibold">38%</div>
+        <div class="t-xs mt-1 flex items-center gap-1" style="color: var(--danger-500);"><i data-lucide="trending-down" class="ic-12"></i> −4 pp vs prev week</div>
+      </div></div>
+
+      <div class="card"><div class="card-body" style="padding: 14px 16px;">
+        <div class="flex items-center justify-between mb-2"><div class="t-xs text-3 uppercase tracking-wider">Avg. time to interview</div><i data-lucide="clock" class="ic-14 text-3"></i></div>
+        <div class="t-2xl font-semibold">5,4 <span class="t-md text-3 font-normal">dnia</span></div>
+        <div class="t-xs mt-1 flex items-center gap-1 text-3"><i data-lucide="minus" class="ic-12"></i> bez zmian</div>
+      </div></div>
+
+      <div class="card"><div class="card-body" style="padding: 14px 16px;">
+        <div class="flex items-center justify-between mb-2"><div class="t-xs text-3 uppercase tracking-wider">Pipeline value</div><i data-lucide="banknote" class="ic-14 text-3"></i></div>
+        <div class="t-2xl font-semibold">412 k</div>
+        <div class="t-xs mt-1 flex items-center gap-1" style="color: var(--success-500);"><i data-lucide="trending-up" class="ic-12"></i> +18 k PLN/mc</div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ====================================================== -->
+  <!--                COMPOSITION EXAMPLES                    -->
+  <!-- ====================================================== -->
+  <h2 id="composition" class="t-2xl font-semibold mb-4 mt-12">Composition examples</h2>
+  <p class="t-md text-2 mb-5" style="max-width: 720px;">Jak komponenty żyją razem w realnych widokach JobTrack.</p>
+
+  <!-- Example A: Mini form -->
+  <section class="section">
+    <div class="flex items-center justify-between mb-4">
+      <div><h3 class="t-lg font-semibold">A · Quick-add form</h3><p class="t-sm text-3">3 inputy + select + przyciski w stopce. Open w drawer po naciśnięciu <code>N</code>.</p></div>
+      <span class="badge badge-neutral"><i data-lucide="zap" class="ic-12"></i>Inline form</span>
+    </div>
+    <div class="card" style="max-width: 720px;">
+      <div class="card-header">
+        <div class="flex items-center gap-2"><i data-lucide="plus" class="ic-14 text-3"></i><div class="t-base font-medium">Szybkie dodanie aplikacji</div></div>
+        <span class="code">N</span>
+      </div>
+      <div class="card-body grid grid-cols-6 gap-3">
+        <div class="field col-span-3">
+          <label class="field-label">Firma <span class="req">*</span></label>
+          <div class="input"><i data-lucide="building-2"></i><input type="text" value="Vercel" /></div>
+        </div>
+        <div class="field col-span-3">
+          <label class="field-label">Stanowisko</label>
+          <div class="input"><input type="text" value="Senior Frontend Engineer" /></div>
+        </div>
+        <div class="field col-span-2">
+          <label class="field-label">Data</label>
+          <div class="input"><i data-lucide="calendar"></i><input type="date" value="2026-05-11" /></div>
+        </div>
+        <div class="field col-span-2">
+          <label class="field-label">Stawka</label>
+          <div class="input"><span class="prefix-text">$</span><input type="number" value="180000" /></div>
+        </div>
+        <div class="field col-span-2">
+          <label class="field-label">Status</label>
+          <div class="input"><span class="badge-dot" style="background:var(--st-draft-fg);"></span><select><option>DRAFT</option><option>APPLIED</option></select><i data-lucide="chevron-down"></i></div>
+        </div>
+        <div class="col-span-6 flex flex-wrap gap-2">
+          <span class="chip">React <button class="chip-x" aria-label="Usuń"><i data-lucide="x"></i></button></span>
+          <span class="chip">Next.js <button class="chip-x" aria-label="Usuń"><i data-lucide="x"></i></button></span>
+          <span class="chip">Remote <button class="chip-x" aria-label="Usuń"><i data-lucide="x"></i></button></span>
+          <button class="btn btn-ghost btn-sm"><i data-lucide="plus" class="ic-12"></i>Dodaj tag</button>
+        </div>
+      </div>
+      <div class="card-footer">
+        <label class="flex items-center gap-2 mr-auto cursor-pointer"><span class="check" role="checkbox" aria-checked="true"><i data-lucide="check"></i></span><span class="t-sm">Ustaw follow-up za 7 dni</span></label>
+        <button class="btn btn-ghost btn-sm">Anuluj</button>
+        <button class="btn btn-secondary btn-sm">Zapisz szkic</button>
+        <button class="btn btn-primary btn-sm">Dodaj aplikację</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example B: Today's view -->
+  <section class="section">
+    <div class="flex items-center justify-between mb-4">
+      <div><h3 class="t-lg font-semibold">B · „Co dziś trzeba zrobić"</h3><p class="t-sm text-3">Dashboard widget: tabs + skondensowana tabela + stat-cardy w jednym układzie.</p></div>
+      <span class="badge badge-neutral"><i data-lucide="calendar-check" class="ic-12"></i>Daily view</span>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_280px] gap-4">
+      <!-- Today's table -->
+      <div class="card">
+        <div class="card-header" style="padding: 8px 12px;">
+          <div class="tabs-h" role="tablist" style="border:none;">
+            <button class="tab-h" role="tab" aria-selected="true">Dziś <span class="badge st st-taskrx ml-1" style="padding: 0 6px; font-size:10px;">5</span></button>
+            <button class="tab-h" role="tab" aria-selected="false">Ten tydzień</button>
+            <button class="tab-h" role="tab" aria-selected="false">Zaległe <span class="badge st st-rejected ml-1" style="padding: 0 6px; font-size:10px;">2</span></button>
+          </div>
+          <button class="btn btn-ghost btn-sm">Pokaż wszystko <i data-lucide="arrow-right" class="ic-12"></i></button>
+        </div>
+        <table class="tbl">
+          <tbody>
+            <tr>
+              <td style="width:36px;"><i data-lucide="calendar-clock" class="ic-14 text-3"></i></td>
+              <td><div class="font-medium">Allegro</div><div class="t-xs text-3">Rozmowa techniczna · 14:00–14:50</div></td>
+              <td><span class="badge st st-intsch"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>Rozmowa</span></td>
+              <td><button class="btn btn-secondary btn-sm">Przygotuj</button></td>
+            </tr>
+            <tr>
+              <td><i data-lucide="alarm-clock" class="ic-14" style="color: var(--warning-500);"></i></td>
+              <td><div class="font-medium">Netguru</div><div class="t-xs text-3">Deadline na taskę (zostały 2 dni)</div></td>
+              <td><span class="badge st st-taskrx"><span class="badge-dot" style="background:var(--st-taskrx-fg);"></span>Zadanie</span></td>
+              <td><button class="btn btn-secondary btn-sm">Otwórz</button></td>
+            </tr>
+            <tr>
+              <td><i data-lucide="reply" class="ic-14 text-3"></i></td>
+              <td><div class="font-medium">PandaDoc</div><div class="t-xs text-3">Follow-up — 9 dni bez odpowiedzi</div></td>
+              <td><span class="badge st st-applied"><span class="badge-dot" style="background:var(--st-applied-fg);"></span>Aplikowano</span></td>
+              <td><button class="btn btn-primary btn-sm">Wyślij follow-up</button></td>
+            </tr>
+            <tr>
+              <td><i data-lucide="check" class="ic-14" style="color: var(--success-500);"></i></td>
+              <td><div class="font-medium">Ramp</div><div class="t-xs text-3">Update statusu po wczorajszej rozmowie</div></td>
+              <td><span class="badge st st-intdone"><span class="badge-dot" style="background:var(--st-intdone-fg);"></span>Po rozmowie</span></td>
+              <td><button class="btn btn-secondary btn-sm">Dodaj notatkę</button></td>
+            </tr>
+            <tr>
+              <td><i data-lucide="ghost" class="ic-14 text-3"></i></td>
+              <td><div class="font-medium">LiveChat</div><div class="t-xs text-3">14 dni ciszy — oznaczyć jako ghosted?</div></td>
+              <td><span class="badge st st-ghosted"><span class="badge-dot" style="background:var(--st-ghosted-fg);"></span>Ghosted?</span></td>
+              <td><button class="btn btn-ghost btn-sm">Zamknij</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Side stats -->
+      <div class="flex flex-col gap-3">
+        <div class="card"><div class="card-body" style="padding: 14px 16px;">
+          <div class="t-xs text-3 uppercase tracking-wider">Tygodniowo</div>
+          <div class="t-2xl font-semibold mt-1">12 / 15</div>
+          <div class="t-xs text-2 mt-1">aplikacji vs cel</div>
+          <div class="mt-3 h-1.5 rounded-full overflow-hidden" style="background: var(--bg-muted);"><div style="width: 80%; height:100%; background: var(--brand-500); border-radius: 999px;"></div></div>
+        </div></div>
+
+        <div class="card"><div class="card-body" style="padding: 14px 16px;">
+          <div class="t-xs text-3 uppercase tracking-wider mb-2">Pipeline breakdown</div>
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between t-sm"><span class="flex items-center gap-2"><span class="badge-dot" style="background:var(--st-applied-fg);"></span>Aplikowano</span><span class="font-mono text-2">23</span></div>
+            <div class="flex items-center justify-between t-sm"><span class="flex items-center gap-2"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>Rozmowa</span><span class="font-mono text-2">4</span></div>
+            <div class="flex items-center justify-between t-sm"><span class="flex items-center gap-2"><span class="badge-dot" style="background:var(--st-taskrx-fg);"></span>Zadanie</span><span class="font-mono text-2">2</span></div>
+            <div class="flex items-center justify-between t-sm"><span class="flex items-center gap-2"><span class="badge-dot" style="background:var(--st-offer-fg);"></span>Oferta</span><span class="font-mono text-2">1</span></div>
+            <div class="flex items-center justify-between t-sm"><span class="flex items-center gap-2"><span class="badge-dot" style="background:var(--st-ghosted-fg);"></span>Ghosted</span><span class="font-mono text-2">12</span></div>
+          </div>
+        </div></div>
+
+        <div class="toast toast-info" role="status" style="min-width:0;">
+          <i data-lucide="sparkles" class="toast-icon"></i>
+          <div class="flex-1">
+            <div class="t-base font-medium">Tip</div>
+            <div class="t-sm text-3">Naciśnij <span class="code">N</span> żeby szybko dodać aplikację.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example C: Mini search command -->
+  <section class="section">
+    <div class="flex items-center justify-between mb-4">
+      <div><h3 class="t-lg font-semibold">C · Command palette (⌘K)</h3><p class="t-sm text-3">Modal + input + dropdown menu w jednym układzie.</p></div>
+      <span class="badge badge-neutral"><i data-lucide="command" class="ic-12"></i>Power user</span>
+    </div>
+    <div class="backdrop p-6 r-lg" style="border:1px solid var(--border-1);">
+      <div class="mx-auto" style="max-width: 560px;">
+        <div class="card shadow-4" style="padding:0;">
+          <div class="flex items-center gap-2 px-3 py-2 border-b" style="border-color: var(--border-1);">
+            <i data-lucide="search" class="ic-16 text-3"></i>
+            <input type="text" placeholder="Szukaj firmy, statusu, akcji…" value="allegro" class="flex-1 bg-transparent border-none outline-none t-base" />
+            <span class="code">esc</span>
+          </div>
+          <div role="listbox" class="p-1">
+            <div class="menu-label">Aplikacje</div>
+            <button class="menu-item" role="option" aria-selected="true" style="background: var(--bg-subtle);">
+              <div class="avatar avatar-sm" style="background: rgba(91,77,238,.12); color: var(--brand-500);">A</div>
+              <div class="flex-1"><div class="t-base">Allegro</div><div class="t-xs text-3">Senior Backend Engineer · 8 maja</div></div>
+              <span class="badge st st-intsch"><span class="badge-dot" style="background:var(--st-intsch-fg);"></span>Rozmowa</span>
+              <span class="shortcut">↵</span>
+            </button>
+            <button class="menu-item" role="option">
+              <div class="avatar avatar-sm">A</div>
+              <div class="flex-1"><div class="t-base">Allegro Pay</div><div class="t-xs text-3">Engineering Manager · 14 kwi</div></div>
+              <span class="badge st st-rejected"><span class="badge-dot" style="background:var(--st-rejected-fg);"></span>Odrzucono</span>
+            </button>
+            <div class="menu-divider"></div>
+            <div class="menu-label">Akcje</div>
+            <button class="menu-item" role="option"><i data-lucide="plus"></i>Dodaj nową aplikację <span class="shortcut">N</span></button>
+            <button class="menu-item" role="option"><i data-lucide="upload"></i>Importuj z JustJoinIT <span class="shortcut">⌘I</span></button>
+            <button class="menu-item" role="option"><i data-lucide="settings"></i>Ustawienia <span class="shortcut">⌘,</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-12 py-8 text-center">
+    <div class="t-sm text-3">JobTrack Design System · v0.1 · Inter / JetBrains Mono · Lucide icons · Tailwind CDN</div>
+    <div class="t-xs text-4 mt-1">A11y: WCAG AA contrast, visible focus ring, semantic HTML, ARIA na rolach niestandardowych.</div>
+  </footer>
+</main>
+
+<script>
+  // Init Lucide icons
+  if (window.lucide) lucide.createIcons();
+
+  // Theme toggle — persistent in localStorage
+  const root = document.documentElement;
+  const btnLight = document.getElementById('theme-light');
+  const btnDark = document.getElementById('theme-dark');
+  function applyTheme(t) {
+    root.dataset.theme = t;
+    const isDark = t === 'dark';
+    btnDark.style.background = isDark ? 'var(--bg-muted)' : 'transparent';
+    btnDark.style.color = isDark ? 'var(--text-1)' : 'var(--text-3)';
+    btnLight.style.background = !isDark ? 'var(--bg-muted)' : 'transparent';
+    btnLight.style.color = !isDark ? 'var(--text-1)' : 'var(--text-3)';
+    try { localStorage.setItem('jt-theme', t); } catch(e) {}
+  }
+  btnLight.addEventListener('click', () => applyTheme('light'));
+  btnDark.addEventListener('click', () => applyTheme('dark'));
+  applyTheme(localStorage.getItem('jt-theme') || 'dark');
+
+  // Demo: clicking checkboxes toggles aria-checked (non-mixed only)
+  document.querySelectorAll('[role="checkbox"]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      const cur = el.getAttribute('aria-checked');
+      if (cur === 'mixed') return;
+      const next = cur === 'true' ? 'false' : 'true';
+      el.setAttribute('aria-checked', next);
+      el.innerHTML = next === 'true' ? '<i data-lucide="check"></i>' : '';
+      lucide.createIcons();
+    });
+    el.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); el.click(); } });
+  });
+  document.querySelectorAll('[role="radio"]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      const group = el.closest('[role="radiogroup"]');
+      if (group) group.querySelectorAll('[role="radio"]').forEach(r => r.setAttribute('aria-checked', 'false'));
+      el.setAttribute('aria-checked', 'true');
+    });
+  });
+  document.querySelectorAll('[role="switch"]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.getAttribute('aria-disabled') === 'true') return;
+      el.setAttribute('aria-checked', el.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+    });
+    el.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); el.click(); } });
+  });
+
+  // Chip remove (visual only)
+  document.querySelectorAll('.chip-x').forEach(b => {
+    b.addEventListener('click', () => b.closest('.chip').remove());
+  });
+</script>
+</body>
+</html>

@@ -1,1 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
+// Pull in the JobTrack design system: tokens, themes, base layer, typography,
+// and utility classes. Component styles live in their own .scss files.
+@use '../../../libs/design-system/src/lib/styles' as ds;

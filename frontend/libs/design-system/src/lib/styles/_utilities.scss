@@ -1,0 +1,37 @@
+// Utility classes that mirror the design's helpers — surfaces, text colors,
+// shadows, radii. Use sparingly; prefer component classes when shape is non-trivial.
+
+.surface {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+}
+
+.subtle { background: var(--bg-subtle); }
+.muted  { background: var(--bg-muted); }
+
+.text-1 { color: var(--text-1); }
+.text-2 { color: var(--text-2); }
+.text-3 { color: var(--text-3); }
+.text-4 { color: var(--text-4); }
+
+.shadow-1 { box-shadow: var(--sh-1); }
+.shadow-2 { box-shadow: var(--sh-2); }
+.shadow-3 { box-shadow: var(--sh-3); }
+.shadow-4 { box-shadow: var(--sh-4); }
+
+.r-sm { border-radius: var(--r-sm); }
+.r-md { border-radius: var(--r-md); }
+.r-lg { border-radius: var(--r-lg); }
+.r-xl { border-radius: var(--r-xl); }
+
+// Inline code chip — used in docs and helper labels.
+code,
+.code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  padding: 1px 5px;
+  background: var(--bg-muted);
+  color: var(--text-2);
+  border-radius: 4px;
+  border: 1px solid var(--border-1);
+}

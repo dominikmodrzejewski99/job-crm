@@ -1,0 +1,115 @@
+// Button — variants × sizes, mirroring JobTrack design.
+// Selector: button[ds-button]
+
+button[ds-button] {
+  // ---- Base ----
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 40ms ease;
+
+  &:active:not(:disabled) {
+    transform: translateY(0.5px);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // ---- Sizes ----
+  &.ds-btn-sm {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  &.ds-btn-md {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  &.ds-btn-lg {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  // ---- Variants ----
+  &.ds-btn-primary {
+    background: var(--brand-500);
+    color: #fff;
+    border-color: var(--brand-600);
+    box-shadow: var(--sh-1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    &:hover:not(:disabled) { background: var(--brand-600); }
+    &:active:not(:disabled) { background: var(--brand-700); }
+  }
+
+  &.ds-btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-1);
+    border-color: var(--border-2);
+
+    &:hover:not(:disabled) { background: var(--bg-subtle); }
+    &:active:not(:disabled) { background: var(--bg-muted); }
+  }
+
+  &.ds-btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+
+    &:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      color: var(--text-1);
+    }
+    &:active:not(:disabled) { background: var(--bg-muted); }
+  }
+
+  &.ds-btn-danger {
+    background: var(--danger-500);
+    color: #fff;
+    border-color: var(--danger-600);
+    box-shadow: var(--sh-1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    &:hover:not(:disabled) { background: var(--danger-600); }
+  }
+
+  // Loading — replaces label visually while preserving width.
+  &.is-loading {
+    cursor: progress;
+
+    .ds-btn-content { visibility: hidden; }
+
+    .ds-btn-spinner {
+      position: absolute;
+      display: inline-flex;
+      animation: ds-btn-spin 800ms linear infinite;
+    }
+  }
+
+  position: relative;
+}
+
+@keyframes ds-btn-spin {
+  to { transform: rotate(360deg); }
+}

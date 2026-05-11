@@ -1,2 +1,131 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<header class="page-header">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7l5 5-5 5" />
+        <path d="M12 19h8" />
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">JobTrack</span>
+      <span class="brand-tagline">CRM aplikacji o pracę · v0.1</span>
+    </div>
+  </div>
+
+  <div class="theme-toggle" role="group" aria-label="Wybór motywu">
+    <button
+      ds-button
+      variant="ghost"
+      size="sm"
+      (click)="themeService.setTheme('light')"
+      [attr.aria-pressed]="themeService.theme() === 'light'"
+    >
+      Jasny
+    </button>
+    <button
+      ds-button
+      variant="ghost"
+      size="sm"
+      (click)="themeService.setTheme('dark')"
+      [attr.aria-pressed]="themeService.theme() === 'dark'"
+    >
+      Ciemny
+    </button>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <span class="kicker">
+      <span class="kicker-dot" aria-hidden="true"></span>
+      Internal · Portfolio
+    </span>
+    <h1 class="t-display">
+      Job hunting<br />
+      jak deploy.
+    </h1>
+    <p class="lead t-lg text-2">
+      Single-user CRM do śledzenia aplikacji o pracę. Status, follow-up,
+      integracja z JustJoinIT i NoFluffJobs, przypomnienia mailem.
+      Frontend w Angular 21, backend w Spring Boot 3.
+    </p>
+
+    <div class="cta">
+      <button ds-button variant="primary" size="md" (click)="pingBackend()" [loading]="pingLoading()">
+        Sprawdź backend
+      </button>
+      <a ds-button variant="secondary" size="md" href="/swagger-ui.html" target="_blank" rel="noopener">
+        OpenAPI docs
+      </a>
+      <a ds-button variant="ghost" size="md" href="https://github.com/dominikmodrzejewski99/job-crm" target="_blank" rel="noopener">
+        GitHub
+      </a>
+    </div>
+
+    @if (ping(); as pong) {
+      <div class="ping-card surface r-lg">
+        <div class="ping-line">
+          <span class="text-3 t-xs">status</span>
+          <code>{{ pong.status }}</code>
+        </div>
+        <div class="ping-line">
+          <span class="text-3 t-xs">service</span>
+          <code>{{ pong.service }}</code>
+        </div>
+        <div class="ping-line">
+          <span class="text-3 t-xs">timestamp</span>
+          <code>{{ pong.timestamp }}</code>
+        </div>
+      </div>
+    } @else if (pingError(); as err) {
+      <div class="ping-card surface r-lg ping-card--error">
+        <span class="text-3 t-xs">error</span>
+        <code>{{ err }}</code>
+      </div>
+    }
+  </section>
+
+  <section class="phases">
+    <h2 class="t-xl">Roadmap</h2>
+    <ol class="phase-list">
+      <li class="phase phase--done">
+        <span class="phase-num">01</span>
+        <div>
+          <div class="phase-title">Skeleton + Docker Compose</div>
+          <div class="phase-meta text-3 t-sm">Spring Boot + Angular + Postgres w jednym <code>docker compose up</code></div>
+        </div>
+      </li>
+      <li class="phase phase--current">
+        <span class="phase-num">02</span>
+        <div>
+          <div class="phase-title">Design system v0</div>
+          <div class="phase-meta text-3 t-sm">Tokeny, theme switcher, pierwsze komponenty Angular CDK</div>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-num">03</span>
+        <div>
+          <div class="phase-title">Backend CRUD Application</div>
+          <div class="phase-meta text-3 t-sm">JPA, Flyway, OpenAPI, Testcontainers</div>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-num">04</span>
+        <div>
+          <div class="phase-title">Auth multi-user + JWT</div>
+          <div class="phase-meta text-3 t-sm">Spring Security, rejestracja, login, guard</div>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-num">05</span>
+        <div>
+          <div class="phase-title">Follow-up reminders + email</div>
+          <div class="phase-meta text-3 t-sm"><code>&#64;Scheduled</code> + JavaMailSender</div>
+        </div>
+      </li>
+    </ol>
+  </section>
+</main>
+
+<router-outlet />

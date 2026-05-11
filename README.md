@@ -337,7 +337,7 @@ Trigger: push do `main` → GitHub Actions → deploy.
 ## Status
 
 - [x] Faza 1: Skeleton + Docker Compose
-- [ ] Faza 2: Design system v0
+- [~] Faza 2: Design system v0 (tokens + theme + ds-button done; pozostałe komponenty WIP)
 - [ ] Faza 3: Backend CRUD Application
 - [ ] Faza 4: Frontend CRUD Application
 - [ ] Faza 5: Auth multi-user

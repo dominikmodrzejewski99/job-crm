@@ -1,0 +1,57 @@
+// Base layer — applies to all consumers of the design system.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-canvas);
+  color: var(--text-1);
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+// Visible, WCAG-friendly focus ring on all interactive elements.
+:where(button, a, input, select, textarea, [role='button'], [role='tab'],
+  [role='checkbox'], [role='switch'], [role='menuitem']):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+// Subtle custom scrollbar — webkit only, harmless elsewhere.
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: 999px;
+  border: 2px solid var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-4);
+}
+
+a {
+  color: var(--brand-500);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
