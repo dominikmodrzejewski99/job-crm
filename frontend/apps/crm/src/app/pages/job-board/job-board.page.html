@@ -1,0 +1,113 @@
+<jt-page-header [title]="i18n.translate('page.jobBoard.title')"
+                [subtitle]="subtitle()">
+  <button ds-button
+          variant="secondary"
+          size="md"
+          [disabled]="crawlerRunning()"
+          (click)="refresh()">
+    @if (crawlerRunning()) { Odświeżam… } @else { {{ i18n.translate('action.refreshFeed') }} }
+  </button>
+</jt-page-header>
+
+<div class="toolbar">
+  <div class="toolbar-search">
+    <ds-input
+      [value]="search()"
+      (valueChange)="search.set($event)"
+      placeholder="Szukaj stanowiska, firmy, miasta…"
+      type="search" />
+  </div>
+  <div class="toolbar-filter">
+    <ds-select
+      [value]="sourceFilter()"
+      (valueChange)="sourceFilter.set($any($event ?? 'ALL'))"
+      label="Źródło">
+      <ds-option value="ALL">Wszystkie</ds-option>
+      <ds-option value="JUSTJOIN">JustJoinIT</ds-option>
+      <ds-option value="NOFLUFF">NoFluffJobs</ds-option>
+    </ds-select>
+  </div>
+  <div class="toolbar-toggle">
+    <ds-switch label="Tylko remote"
+               [checked]="remoteOnly()"
+               (checkedChange)="remoteOnly.set($event)" />
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="card-grid">
+    @for (i of [1,2,3,4]; track i) {
+      <ds-skeleton variant="card" />
+    }
+  </div>
+} @else if (filtered().length === 0) {
+  <jt-empty-state [title]="i18n.translate('empty.jobBoard.title')"
+                  [body]="i18n.translate('empty.jobBoard.body')">
+    <span slot="icon">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/>
+      </svg>
+    </span>
+  </jt-empty-state>
+} @else {
+  <div class="card-grid">
+    @for (offer of filtered(); track offer.id) {
+      <article class="offer">
+        <header class="offer-header">
+          <div class="offer-title-block">
+            <h3 class="offer-title">{{ offer.title }}</h3>
+            <p class="offer-company">{{ offer.companyName }}</p>
+          </div>
+          <ds-badge [variant]="offer.source === 'JUSTJOIN' ? 'intsch' : 'applied'">
+            {{ offer.source === 'JUSTJOIN' ? 'JJIT' : 'NoFluff' }}
+          </ds-badge>
+        </header>
+
+        <div class="offer-meta">
+          @if (offer.location) {
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              {{ offer.location }}
+            </span>
+          }
+          @if (offer.remote) {
+            <span class="meta-item meta-remote">Remote</span>
+          }
+        </div>
+
+        @if (formatSalary(offer); as salary) {
+          <p class="offer-salary">{{ salary }}</p>
+        }
+
+        <footer class="offer-footer">
+          <span class="offer-posted">{{ formatPosted(offer) }}</span>
+          <div class="offer-actions">
+            <a [href]="offer.url"
+               target="_blank"
+               rel="noopener noreferrer"
+               ds-button
+               variant="ghost"
+               size="sm">
+              View ↗
+            </a>
+            @if (savedIds().has(offer.id)) {
+              <button ds-button variant="ghost" size="sm" disabled>✓ Zapisano</button>
+            } @else {
+              <button ds-button
+                      variant="primary"
+                      size="sm"
+                      [disabled]="savingId() === offer.id"
+                      (click)="save(offer.id)">
+                @if (savingId() === offer.id) { … } @else { + Zapisz }
+              </button>
+            }
+          </div>
+        </footer>
+      </article>
+    }
+  </div>
+}

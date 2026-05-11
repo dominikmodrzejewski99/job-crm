@@ -1,0 +1,125 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bucket {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &[data-kind='overdue'] {
+    .bucket-head h2 { color: var(--danger-500); }
+    .bucket-count {
+      background: rgba(220, 38, 38, 0.08);
+      color: var(--danger-500);
+    }
+    .row { border-left: 3px solid var(--danger-500); padding-left: 16px; }
+  }
+}
+
+.bucket-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+}
+
+.bucket-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 2px 8px;
+  background: var(--bg-subtle);
+  color: var(--text-3);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.row-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: 12px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+
+  &:hover {
+    border-color: var(--brand-300);
+    box-shadow: 0 4px 12px rgba(20, 27, 65, 0.04);
+  }
+}
+
+.row-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.row-headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.row-company {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+.row-position {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.row-due {
+  font-size: 12px;
+  color: var(--text-3);
+
+  &.is-overdue {
+    color: var(--danger-500);
+    font-weight: 600;
+  }
+}
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .row-actions { justify-content: flex-end; flex-wrap: wrap; }
+}

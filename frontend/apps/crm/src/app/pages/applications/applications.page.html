@@ -1,0 +1,131 @@
+<jt-page-header [title]="i18n.translate('page.applications.title')"
+                [subtitle]="i18n.translate('page.applications.subtitle')">
+  <button ds-button variant="primary" size="md" (click)="openDrawer()">
+    {{ i18n.translate('action.newApplication') }}
+  </button>
+</jt-page-header>
+
+<div class="toolbar">
+  <div class="toolbar-search">
+    <ds-input
+      [value]="search()"
+      (valueChange)="search.set($event)"
+      placeholder="Szukaj firmy lub stanowiska…"
+      type="search" />
+  </div>
+  <div class="toolbar-filter">
+    <ds-select
+      [value]="statusFilter()"
+      (valueChange)="statusFilter.set($any($event ?? 'ALL'))"
+      label="Status">
+      <ds-option value="ALL">Wszystkie</ds-option>
+      <ds-option value="APPLIED">Applied</ds-option>
+      <ds-option value="ACK_RECEIVED">Ack received</ds-option>
+      <ds-option value="INTERVIEW_SCHEDULED">Interview scheduled</ds-option>
+      <ds-option value="INTERVIEW_DONE">Interview done</ds-option>
+      <ds-option value="OFFER">Offer</ds-option>
+      <ds-option value="REJECTED">Rejected</ds-option>
+      <ds-option value="GHOSTED">Ghosted</ds-option>
+    </ds-select>
+  </div>
+</div>
+
+@if (loading()) {
+  <ds-card>
+    <ds-card-body>
+      @for (i of [1,2,3,4]; track i) {
+        <ds-skeleton variant="text" />
+      }
+    </ds-card-body>
+  </ds-card>
+} @else if (applications().length === 0) {
+  <jt-empty-state [title]="i18n.translate('empty.applications.title')"
+                  [body]="i18n.translate('empty.applications.body')">
+    <span slot="icon">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="7" width="18" height="13" rx="2"/>
+        <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+      </svg>
+    </span>
+    <button ds-button variant="primary" size="md" (click)="openDrawer()">
+      {{ i18n.translate('empty.applications.cta') }}
+    </button>
+  </jt-empty-state>
+} @else {
+  <applications-grid [rows]="rows()" themeMode="light" (delete)="onDelete($event)" />
+}
+
+@if (drawerOpen()) {
+  <div class="drawer-scrim" (click)="closeDrawer()" aria-hidden="true"></div>
+
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <header class="drawer-header">
+      <h2 id="drawer-title">{{ i18n.translate('action.newApplication') }}</h2>
+      <button type="button"
+              class="drawer-close"
+              (click)="closeDrawer()"
+              aria-label="Zamknij">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </header>
+
+    <form class="drawer-body" (submit)="$event.preventDefault(); submit()">
+      <ds-input
+        label="Firma"
+        placeholder="Acme Corp"
+        [value]="company()"
+        (valueChange)="company.set($event)"
+        [error]="companyError()"
+        errorText="Min. 2 znaki"
+        required="true" />
+
+      <ds-input
+        label="Stanowisko"
+        placeholder="Senior Java Engineer"
+        [value]="position()"
+        (valueChange)="position.set($event)"
+        [error]="positionError()"
+        errorText="Wymagane"
+        required="true" />
+
+      <ds-select
+        label="Źródło"
+        [value]="source()"
+        (valueChange)="source.set($any($event ?? 'justjoin'))">
+        <ds-option value="justjoin">JustJoinIT</ds-option>
+        <ds-option value="nofluff">NoFluffJobs</ds-option>
+        <ds-option value="linkedin">LinkedIn</ds-option>
+        <ds-option value="referral">Polecenie</ds-option>
+        <ds-option value="companysite">Strona firmy</ds-option>
+        <ds-option value="other">Inne</ds-option>
+      </ds-select>
+
+      <ds-textarea
+        label="Notatki"
+        placeholder="Co warto zapamiętać?"
+        [rows]="4"
+        [value]="notes()"
+        (valueChange)="notes.set($event)" />
+
+      <ds-checkbox
+        label="Remote"
+        [checked]="remote()"
+        (checkedChange)="remote.set($event)" />
+    </form>
+
+    <footer class="drawer-footer">
+      <button ds-button variant="ghost" size="md" (click)="closeDrawer()">
+        Anuluj
+      </button>
+      <button ds-button
+              variant="primary"
+              size="md"
+              [disabled]="submitting()"
+              (click)="submit()">
+        @if (submitting()) { Zapisywanie… } @else { Zapisz }
+      </button>
+    </footer>
+  </aside>
+}

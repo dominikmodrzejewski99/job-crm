@@ -1,0 +1,135 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: 12px;
+  position: sticky;
+  top: var(--topbar-h);
+  z-index: 10;
+}
+
+.toolbar-search {
+  flex: 1;
+  max-width: 360px;
+}
+
+.toolbar-filter {
+  width: 220px;
+}
+
+@media (max-width: 640px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    position: static;
+  }
+  .toolbar-search,
+  .toolbar-filter { max-width: none; width: 100%; }
+}
+
+// ---- Drawer ----------------------------------------------------------------
+
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--drawer-scrim);
+  z-index: 100;
+  animation: scrim-in 200ms ease-out;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--drawer-w);
+  max-width: 90vw;
+  background: var(--bg-surface);
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -16px 0 32px rgba(20, 27, 65, 0.18);
+  animation: drawer-in 250ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-1);
+
+  h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.01em;
+  }
+}
+
+.drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+
+  &:hover {
+    background: var(--bg-subtle);
+    color: var(--text-1);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
+  }
+}
+
+.drawer-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-1);
+  background: var(--bg-surface);
+}

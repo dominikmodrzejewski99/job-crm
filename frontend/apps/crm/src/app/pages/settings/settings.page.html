@@ -1,0 +1,60 @@
+<jt-page-header [title]="i18n.translate('page.settings.title')"
+                [subtitle]="i18n.translate('page.settings.subtitle')" />
+
+<ds-card>
+  <ds-card-header>
+    <h2>Konto</h2>
+    <p class="card-sub">Twoje dane logowania</p>
+  </ds-card-header>
+  <ds-card-body>
+    <dl class="kv-list">
+      <div class="kv-row">
+        <dt>Email</dt>
+        <dd>{{ auth.user()?.email }}</dd>
+      </div>
+      <div class="kv-row">
+        <dt>Nazwa</dt>
+        <dd>{{ auth.user()?.displayName || '—' }}</dd>
+      </div>
+      <div class="kv-row">
+        <dt>Konto od</dt>
+        <dd>{{ (auth.user()?.createdAt | date) || '—' }}</dd>
+      </div>
+    </dl>
+  </ds-card-body>
+</ds-card>
+
+<ds-card>
+  <ds-card-header>
+    <h2>Język</h2>
+    <p class="card-sub">Wybierz język interfejsu</p>
+  </ds-card-header>
+  <ds-card-body>
+    <div class="locale-row" role="group" aria-label="Język">
+      <button type="button"
+              class="locale-btn"
+              [class.is-active]="i18n.locale() === 'pl'"
+              (click)="setLocale('pl')">
+        Polski
+      </button>
+      <button type="button"
+              class="locale-btn"
+              [class.is-active]="i18n.locale() === 'en'"
+              (click)="setLocale('en')">
+        English
+      </button>
+    </div>
+  </ds-card-body>
+</ds-card>
+
+<ds-card class="danger">
+  <ds-card-header>
+    <h2>Strefa niebezpieczna</h2>
+    <p class="card-sub">Wylogowanie z urządzenia</p>
+  </ds-card-header>
+  <ds-card-body>
+    <button ds-button variant="danger" size="md" (click)="logout()">
+      Wyloguj
+    </button>
+  </ds-card-body>
+</ds-card>

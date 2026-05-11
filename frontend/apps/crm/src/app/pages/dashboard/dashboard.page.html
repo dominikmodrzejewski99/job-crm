@@ -1,0 +1,94 @@
+<jt-page-header [title]="i18n.translate('page.dashboard.title')"
+                [subtitle]="i18n.translate('page.dashboard.subtitle')">
+  <a ds-button variant="primary" size="md" routerLink="/applications" [queryParams]="{ drawer: 'new' }">
+    {{ i18n.translate('action.newApplication') }}
+  </a>
+</jt-page-header>
+
+@if (statsLoading()) {
+  <div class="stat-grid">
+    @for (i of [1,2,3,4]; track i) {
+      <ds-skeleton variant="card" />
+    }
+  </div>
+} @else if (stats(); as s) {
+  <div class="stat-grid">
+    <ds-stat-card [label]="'Łącznie'" [value]="s.total" />
+    <ds-stat-card [label]="'Aktywne'" [value]="s.active" />
+    <ds-stat-card [label]="'Response rate'"
+                  [value]="(responseRatePct() ?? 0) + '%'"
+                  [delta]="s.total > 0 ? null : '—'"
+                  [deltaTone]="'neutral'" />
+    <ds-stat-card [label]="'Follow-up ≤7d'"
+                  [value]="s.followUpsDueWithin7Days" />
+  </div>
+
+  <div class="bento-row">
+    <ds-card class="bento-funnel">
+      <ds-card-header>
+        <h2>Lejek (status)</h2>
+        <p class="bento-sub">Applied → Interview → Offer</p>
+      </ds-card-header>
+      <ds-card-body>
+        <dashboard-funnel [data]="s.funnel" />
+      </ds-card-body>
+    </ds-card>
+
+    <ds-card class="bento-status">
+      <ds-card-header>
+        <h2>Po statusie</h2>
+        <p class="bento-sub">Wszystkie aplikacje</p>
+      </ds-card-header>
+      <ds-card-body>
+        <dashboard-status-bars [counts]="s.byStatus" />
+      </ds-card-body>
+    </ds-card>
+  </div>
+
+  <ds-card>
+    <ds-card-header>
+      <h2>Aplikacje tygodniowo</h2>
+      <p class="bento-sub">Ostatnie 12 tygodni</p>
+    </ds-card-header>
+    <ds-card-body>
+      <dashboard-weekly-chart [data]="s.weekly" />
+    </ds-card-body>
+  </ds-card>
+}
+
+<ds-card>
+  <ds-card-header class="recent-header">
+    <div>
+      <h2>Ostatnia aktywność</h2>
+      <p class="bento-sub">5 ostatnich aplikacji</p>
+    </div>
+    <a routerLink="/applications" class="view-all">
+      {{ i18n.translate('action.viewAll') }} →
+    </a>
+  </ds-card-header>
+  <ds-card-body>
+    @if (recentLoading()) {
+      @for (i of [1,2,3]; track i) {
+        <ds-skeleton variant="text" />
+      }
+    } @else if (recent().length === 0) {
+      <p class="empty-line">{{ i18n.translate('empty.applications.body') }}</p>
+    } @else {
+      <ul class="recent-list">
+        @for (a of recent(); track a.id) {
+          <li class="recent-row">
+            <div class="recent-meta">
+              <span class="recent-company">{{ a.companyName }}</span>
+              <span class="recent-position">{{ a.position }}</span>
+            </div>
+            <div class="recent-side">
+              <ds-badge [variant]="statusToBadge(a.currentStatus)">
+                {{ a.currentStatus }}
+              </ds-badge>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </ds-card-body>
+</ds-card>

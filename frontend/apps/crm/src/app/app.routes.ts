@@ -45,13 +45,8 @@ export const appRoutes: Route[] = [
         loadComponent: () =>
           import('./pages/settings/settings.page').then((m) => m.SettingsPage),
       },
-      // Legacy shell — the old monolithic page kept until each section is
-      // fully migrated. Reach it explicitly at /legacy if needed.
-      {
-        path: 'legacy',
-        loadComponent: () => import('./main.page').then((m) => m.MainPage),
-      },
-      { path: 'app', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'app',    pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'legacy', pathMatch: 'full', redirectTo: 'dashboard' },
     ],
   },
 
