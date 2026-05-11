@@ -46,6 +46,9 @@ import { DsTooltip } from '@frontend/design-system/tooltip';
 import { ApplicationApi } from './api/application-api';
 import { ApiApplication, statusToBadge } from './api/application-types';
 import { FollowUpApi } from './api/follow-up-api';
+import { JobOfferApi } from './api/job-offer-api';
+import { JobOffer } from './api/job-offer-types';
+import { JobOffersGrid } from './job-offers-grid';
 import { ApplicationsGrid, ApplicationRow } from './applications-grid';
 import { AuthService } from './auth/auth.service';
 import { ConfirmModal } from './confirm-modal';
@@ -98,6 +101,7 @@ type ToastKind = 'success' | 'info' | 'warning' | 'error';
     DsMenuDivider,
     DsSelect,
     DsOption,
+    JobOffersGrid,
   ],
   templateUrl: './main.page.html',
   styleUrl: './main.page.scss',
@@ -109,12 +113,17 @@ export class MainPage {
   private readonly toast = inject(DsToastService);
   private readonly api = inject(ApplicationApi);
   private readonly followUpApi = inject(FollowUpApi);
+  private readonly jobOfferApi = inject(JobOfferApi);
   private readonly router = inject(Router);
   protected readonly auth = inject(AuthService);
   protected readonly themeService = inject(ThemeService);
 
   protected readonly followUps = signal<ApiApplication[]>([]);
   protected readonly followUpsLoading = signal(true);
+
+  protected readonly jobOffers = signal<JobOffer[]>([]);
+  protected readonly jobOffersLoading = signal(true);
+  protected readonly crawlerRunning = signal(false);
 
   protected readonly ping = signal<PingResponse | null>(null);
   protected readonly pingError = signal<string | null>(null);
@@ -201,6 +210,51 @@ export class MainPage {
   constructor() {
     this.loadApplications();
     this.loadFollowUps();
+    this.loadJobOffers();
+  }
+
+  private loadJobOffers(): void {
+    this.jobOffersLoading.set(true);
+    this.jobOfferApi
+      .list()
+      .pipe(
+        catchError(() => {
+          this.jobOffersLoading.set(false);
+          return of({
+            content: [] as JobOffer[],
+            totalElements: 0, totalPages: 0, number: 0, size: 0, empty: true,
+          });
+        }),
+      )
+      .subscribe((page) => {
+        this.jobOffers.set(page.content);
+        this.jobOffersLoading.set(false);
+      });
+  }
+
+  protected refreshCrawler(): void {
+    this.crawlerRunning.set(true);
+    this.jobOfferApi.refreshCrawler().subscribe({
+      next: (report) => {
+        this.crawlerRunning.set(false);
+        this.toast.success(`Crawler: +${report.inserted} nowych, ~${report.updated} odświeżonych`);
+        this.loadJobOffers();
+      },
+      error: () => {
+        this.crawlerRunning.set(false);
+        this.toast.error('Crawler się wywalił — sprawdź logi backendu');
+      },
+    });
+  }
+
+  protected saveOfferAsApplication(offerId: string): void {
+    this.jobOfferApi.saveAsApplication(offerId).subscribe({
+      next: (created) => {
+        this.applications.update((list) => [created, ...list]);
+        this.toast.success(`Zapisano ${created.companyName} jako aplikację`);
+      },
+      error: () => this.toast.error('Nie udało się zapisać oferty'),
+    });
   }
 
   private loadFollowUps(): void {

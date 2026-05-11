@@ -153,6 +153,40 @@
         </ng-template>
       </ds-tab>
 
+      <ds-tab label="Oferty pracy">
+        <ng-template>
+          <ds-card>
+            <ds-card-header>
+              <span class="text-3 t-sm">
+                <strong class="text-1">{{ jobOffers().length }}</strong> ofert z JustJoinIT + NoFluffJobs ·
+                crawler co 6h, możesz też uruchomić ręcznie
+              </span>
+              <div class="card-header-actions">
+                <button ds-button variant="secondary" size="sm" [loading]="crawlerRunning()"
+                        (click)="refreshCrawler()">Odśwież teraz</button>
+              </div>
+            </ds-card-header>
+            @if (jobOffersLoading()) {
+              <div class="job-offers-loading">
+                <ds-skeleton width="100%" height="40px" />
+                <ds-skeleton width="100%" height="40px" />
+                <ds-skeleton width="100%" height="40px" />
+              </div>
+            } @else if (jobOffers().length === 0) {
+              <div class="job-offers-empty text-3 t-sm">
+                Brak ofert w bazie. Kliknij <strong>Odśwież teraz</strong>, żeby crawler pobrał je z JustJoinIT i NoFluffJobs.
+              </div>
+            } @else {
+              <job-offers-grid
+                [rows]="jobOffers()"
+                [themeMode]="themeService.theme()"
+                (save)="saveOfferAsApplication($event)"
+              />
+            }
+          </ds-card>
+        </ng-template>
+      </ds-tab>
+
       <ds-tab label="Dodaj aplikację">
         <ng-template>
           <form (submit)="$event.preventDefault(); submit()" class="form-grid">
@@ -385,6 +419,13 @@
         <div>
           <div class="phase-title">Follow-up reminders + email</div>
           <div class="phase-meta text-3 t-sm"><code>&#64;Scheduled</code> co 5 min · JavaMailSender → MailHog (localhost:8025) · widget dashboard</div>
+        </div>
+      </li>
+      <li class="phase phase--done">
+        <span class="phase-num">06</span>
+        <div>
+          <div class="phase-title">Job board integration (JJIT + NFJ)</div>
+          <div class="phase-meta text-3 t-sm">Spring RestClient · crawler co 6h z dedup po <code>(source, external_id)</code> · save-as-application</div>
         </div>
       </li>
     </ol>

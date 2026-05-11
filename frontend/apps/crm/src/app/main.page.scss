@@ -446,3 +446,15 @@
   display: inline-flex;
   gap: var(--sp-2);
 }
+
+.job-offers-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+}
+
+.job-offers-empty {
+  padding: var(--sp-5) var(--sp-4);
+  text-align: center;
+}
