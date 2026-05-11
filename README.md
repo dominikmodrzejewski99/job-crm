@@ -1,5 +1,14 @@
 # Job Application CRM
 
+![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F?logo=springboot&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)
+![Nx](https://img.shields.io/badge/Nx-monorepo-143055?logo=nx&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
+![Status](https://img.shields.io/badge/status-WIP-yellow)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Osobisty CRM do śledzenia aplikacji o pracę — zastępuje Google Sheets, dodaje automatyczne przypomnienia o follow-upach, integracje z job boardami i powiadomienia email.
 
 Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design system, multi-user z JWT, deployowany na Render/Vercel.
@@ -327,7 +336,7 @@ Trigger: push do `main` → GitHub Actions → deploy.
 
 ## Status
 
-- [ ] Faza 1: Skeleton + Docker Compose
+- [x] Faza 1: Skeleton + Docker Compose
 - [ ] Faza 2: Design system v0
 - [ ] Faza 3: Backend CRUD Application
 - [ ] Faza 4: Frontend CRUD Application

@@ -1,0 +1,9 @@
+{
+  "name": "crm-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/crm-e2e/src",
+  "implicitDependencies": ["crm"],
+  "// targets": "to see all targets run: nx show project crm-e2e --web",
+  "targets": {}
+}
