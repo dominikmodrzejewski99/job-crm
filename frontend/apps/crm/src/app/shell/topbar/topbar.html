@@ -1,0 +1,23 @@
+<header class="topbar">
+  <div class="title-block">
+    <h1 class="page-title">{{ pageTitle.title() }}</h1>
+    @if (pageTitle.subtitle(); as sub) {
+      <p class="page-sub">{{ sub }}</p>
+    }
+  </div>
+
+  <div class="actions">
+    <div class="locale-switch" role="group" [attr.aria-label]="'language' | tr">
+      <button type="button"
+              class="locale-btn"
+              [class.is-active]="i18n.locale() === 'pl'"
+              [attr.aria-pressed]="i18n.locale() === 'pl'"
+              (click)="setLocale('pl')">PL</button>
+      <button type="button"
+              class="locale-btn"
+              [class.is-active]="i18n.locale() === 'en'"
+              [attr.aria-pressed]="i18n.locale() === 'en'"
+              (click)="setLocale('en')">EN</button>
+    </div>
+  </div>
+</header>

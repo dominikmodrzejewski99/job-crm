@@ -1,8 +1,0 @@
-// Dark theme — only overrides the values that differ from the light defaults.
-// Palette and spacing variables stay constant across themes.
-
-@use 'abstracts/mixins' as m;
-
-[data-theme='dark'] {
-  @include m.emit-dark-theme;
-}

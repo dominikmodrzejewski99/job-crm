@@ -48,7 +48,7 @@ export class LoginPage {
         next: () => {
           this.loading.set(false);
           this.toast.success('Zalogowano');
-          this.router.navigate(['/app']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.loading.set(false);

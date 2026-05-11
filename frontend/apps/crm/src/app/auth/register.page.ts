@@ -53,7 +53,7 @@ export class RegisterPage {
         next: () => {
           this.loading.set(false);
           this.toast.success('Konto utworzone — witaj!');
-          this.router.navigate(['/app']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.loading.set(false);

@@ -18,6 +18,35 @@ export type TranslationKey =
   | 'nav.overlay'
   | 'nav.empty'
   | 'nav.jobOffers'
+  | 'nav.followUp'
+  | 'nav.settings'
+  | 'nav.primary'
+
+  | 'page.dashboard.title'
+  | 'page.dashboard.subtitle'
+  | 'page.applications.title'
+  | 'page.applications.subtitle'
+  | 'page.jobBoard.title'
+  | 'page.jobBoard.subtitle'
+  | 'page.followUp.title'
+  | 'page.followUp.subtitle'
+  | 'page.settings.title'
+  | 'page.settings.subtitle'
+
+  | 'action.newApplication'
+  | 'action.refreshFeed'
+  | 'action.viewAll'
+
+  | 'empty.applications.title'
+  | 'empty.applications.body'
+  | 'empty.applications.cta'
+  | 'empty.followUp.title'
+  | 'empty.followUp.body'
+  | 'empty.jobBoard.title'
+  | 'empty.jobBoard.body'
+
+  | 'comingSoon.title'
+  | 'comingSoon.body'
 
   | 'auth.login'
   | 'auth.logout'
@@ -71,6 +100,35 @@ const PL: Record<TranslationKey, string> = {
   'nav.overlay': 'Overlay & feedback',
   'nav.empty': 'Empty state',
   'nav.jobOffers': 'Oferty pracy',
+  'nav.followUp': 'Follow-up',
+  'nav.settings': 'Ustawienia',
+  'nav.primary': 'Nawigacja główna',
+
+  'page.dashboard.title': 'Dashboard',
+  'page.dashboard.subtitle': 'Twoje statystyki aplikacji o pracę',
+  'page.applications.title': 'Aplikacje',
+  'page.applications.subtitle': 'Zarządzaj swoimi zgłoszeniami',
+  'page.jobBoard.title': 'Oferty pracy',
+  'page.jobBoard.subtitle': 'Świeże oferty z JustJoinIT i NoFluffJobs',
+  'page.followUp.title': 'Follow-upy',
+  'page.followUp.subtitle': 'Co odhaczyć, co odłożyć',
+  'page.settings.title': 'Ustawienia',
+  'page.settings.subtitle': 'Konto, język, powiadomienia',
+
+  'action.newApplication': 'Nowa aplikacja',
+  'action.refreshFeed': 'Odśwież feed',
+  'action.viewAll': 'Zobacz wszystkie',
+
+  'empty.applications.title': 'Brak aplikacji',
+  'empty.applications.body': 'Dodaj swoją pierwszą aplikację, żeby zacząć śledzić proces rekrutacji.',
+  'empty.applications.cta': 'Dodaj aplikację',
+  'empty.followUp.title': 'Wszystko ogarnięte',
+  'empty.followUp.body': 'Brak follow-upów do zrobienia. Świetna robota!',
+  'empty.jobBoard.title': 'Brak ofert',
+  'empty.jobBoard.body': 'Zmień filtry albo odśwież feed.',
+
+  'comingSoon.title': 'Wkrótce',
+  'comingSoon.body': 'Ta sekcja jest właśnie przerabiana.',
 
   'auth.login': 'Zaloguj się',
   'auth.logout': 'Wyloguj',
@@ -124,7 +182,36 @@ const EN: Record<TranslationKey, string> = {
   'nav.addApplication': 'Add application',
   'nav.overlay': 'Overlay & feedback',
   'nav.empty': 'Empty state',
-  'nav.jobOffers': 'Job offers',
+  'nav.jobOffers': 'Job board',
+  'nav.followUp': 'Follow-ups',
+  'nav.settings': 'Settings',
+  'nav.primary': 'Primary navigation',
+
+  'page.dashboard.title': 'Dashboard',
+  'page.dashboard.subtitle': 'Your job-application stats',
+  'page.applications.title': 'Applications',
+  'page.applications.subtitle': 'Track and manage your pipeline',
+  'page.jobBoard.title': 'Job board',
+  'page.jobBoard.subtitle': 'Fresh openings from JustJoinIT and NoFluffJobs',
+  'page.followUp.title': 'Follow-ups',
+  'page.followUp.subtitle': "What to nudge, what to snooze",
+  'page.settings.title': 'Settings',
+  'page.settings.subtitle': 'Account, language, notifications',
+
+  'action.newApplication': 'New application',
+  'action.refreshFeed': 'Refresh feed',
+  'action.viewAll': 'View all',
+
+  'empty.applications.title': 'No applications yet',
+  'empty.applications.body': 'Add your first application to start tracking your hiring funnel.',
+  'empty.applications.cta': 'Add application',
+  'empty.followUp.title': 'All caught up',
+  'empty.followUp.body': 'No follow-ups to do right now. Nice work!',
+  'empty.jobBoard.title': 'No offers',
+  'empty.jobBoard.body': 'Change filters or refresh the feed.',
+
+  'comingSoon.title': 'Coming soon',
+  'comingSoon.body': 'This section is being rebuilt.',
 
   'auth.login': 'Sign in',
   'auth.logout': 'Sign out',

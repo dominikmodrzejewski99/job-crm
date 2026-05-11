@@ -14,5 +14,5 @@ export const publicOnlyGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   if (!auth.isAuthenticated()) return true;
-  return router.parseUrl('/app');
+  return router.parseUrl('/dashboard');
 };

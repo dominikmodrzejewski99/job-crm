@@ -1,0 +1,232 @@
+:host {
+  display: contents;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-w);
+  min-height: 100dvh;
+  padding: 20px 14px;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border-right: 1px solid var(--sidebar-border);
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 14px;
+  color: var(--sidebar-text-active);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 6px;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand-400) 0%, var(--brand-500) 100%);
+  color: var(--text-on-brand);
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  position: relative;
+  transition: background 150ms ease, color 150ms ease;
+  cursor: pointer;
+
+  &:hover:not(.is-active) {
+    background: var(--sidebar-bg-hover);
+    color: var(--sidebar-text-active);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--brand-400);
+  }
+
+  &.is-active {
+    background: var(--sidebar-bg-active);
+    color: var(--sidebar-text-active);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--brand-400);
+      border-radius: 0 3px 3px 0;
+    }
+  }
+}
+
+.nav-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand-400) 0%, var(--brand-600) 100%);
+  color: var(--text-on-brand);
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.account-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.account-name {
+  color: var(--sidebar-text-active);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-logout {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--sidebar-text);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: var(--sidebar-text-active);
+  }
+
+  &:focus-visible {
+    outline: none;
+    color: var(--brand-300);
+  }
+}
+
+// Tablet+ - on the smallest screens we collapse to top nav via a different
+// component; for now hide the sidebar below 1024px until mobile shell ships.
+@media (max-width: 1023px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 4px;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .brand {
+    padding: 0;
+    margin: 0 12px 0 0;
+    border-bottom: none;
+    flex-shrink: 0;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    overflow-x: auto;
+    flex: 1;
+  }
+
+  .nav-label {
+    display: none;
+  }
+
+  .nav-item {
+    padding: 8px;
+    flex-shrink: 0;
+
+    &.is-active::before {
+      left: 8px;
+      right: 8px;
+      top: auto;
+      bottom: 0;
+      width: auto;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+    }
+  }
+
+  .sidebar-footer {
+    flex-direction: row;
+    border-top: none;
+    padding-top: 0;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .account-meta {
+    display: none;
+  }
+}

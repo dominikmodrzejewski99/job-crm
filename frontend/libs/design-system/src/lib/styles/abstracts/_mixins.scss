@@ -86,32 +86,35 @@
   @include emit-status-tokens(light);
   @include emit-shadows(light);
 
-  --bg-canvas:  #fafafb;
-  --bg-surface: #ffffff;
-  --bg-subtle:  #f4f4f6;
-  --bg-muted:   #eeeef0;
-  --border-1:   #e7e7eb;
-  --border-2:   #d8d8de;
-  --text-1:     #{p.$n-900};
-  --text-2:     #{p.$n-600};
-  --text-3:     #{p.$n-500};
-  --text-4:     #{p.$n-400};
-  --ring:       rgba(91, 77, 238, 0.45);
-}
+  // Surface scale — subtle blue tint, never pure white page bg.
+  --bg-canvas:     #{p.$n-50};      // page background (#f7f9fd)
+  --bg-surface:    #{p.$n-0};       // cards
+  --bg-subtle:     #{p.$n-100};     // nested / hover
+  --bg-muted:      #{p.$n-200};
+  --surface-hover: rgba(145, 142, 244, 0.08);
 
-@mixin emit-dark-theme {
-  @include emit-status-tokens(dark);
-  @include emit-shadows(dark);
+  --border-1: #d9e1f2;
+  --border-2: #{p.$n-300};
+  --divider:  rgba(20, 27, 65, 0.06);
 
-  --bg-canvas:  #0a0a10;
-  --bg-surface: #111118;
-  --bg-subtle:  #15151d;
-  --bg-muted:   #1c1c26;
-  --border-1:   #23232f;
-  --border-2:   #2d2d3a;
-  --text-1:     #f3f3f6;
-  --text-2:     #c9c9d0;
-  --text-3:     #9a9aa6;
-  --text-4:     #6c6c79;
-  --ring:       rgba(122, 106, 255, 0.55);
+  --text-1: #{p.$n-900};
+  --text-2: #{p.$n-600};
+  --text-3: #{p.$n-500};
+  --text-4: #{p.$n-400};
+  --text-on-brand: #{p.$n-0};
+
+  --ring: rgba(145, 142, 244, 0.45);
+
+  // Shell — sidebar is the only dark surface in an otherwise light app.
+  --sidebar-bg:           #{p.$space-indigo};
+  --sidebar-bg-hover:     rgba(255, 255, 255, 0.06);
+  --sidebar-bg-active:    rgba(145, 142, 244, 0.18);
+  --sidebar-text:         rgba(255, 255, 255, 0.72);
+  --sidebar-text-active:  #{p.$n-0};
+  --sidebar-border:       rgba(255, 255, 255, 0.08);
+
+  --sidebar-w: 240px;
+  --topbar-h:  56px;
+  --drawer-w:  420px;
+  --drawer-scrim: rgba(20, 27, 65, 0.5);
 }

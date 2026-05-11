@@ -1,29 +1,37 @@
 // Raw color palette — SASS variables only. No CSS output.
 // These are the immutable source-of-truth values for the design system.
 
-// ---- Neutral (cool slate, very subtle warmth) ----
-$n-0:   #ffffff;
-$n-50:  #f7f7f8;
-$n-100: #eeeef0;
-$n-200: #e3e3e7;
-$n-300: #c9c9d0;
-$n-400: #9a9aa6;
-$n-500: #6c6c79;
-$n-600: #48485a;
-$n-700: #2d2d3a;
-$n-800: #1c1c26;
-$n-900: #0e0e14;
+// ---- Source-of-truth palette (Phase 10 — blue/periwinkle, light theme only) ----
+// space-indigo / ocean-deep / cornflower-blue / baby-blue-ice / soft-periwinkle
+$space-indigo:    #141b41;
+$ocean-deep:      #306bac;
+$cornflower-blue: #6f9ceb;
+$baby-blue-ice:   #98b9f2;
+$soft-periwinkle: #918ef4;
 
-// ---- Brand (saturated indigo/violet) ----
-$brand-50:  #efeeff;
-$brand-100: #ddd9ff;
-$brand-200: #c0b8ff;
-$brand-300: #9b8eff;
-$brand-400: #7a6aff;
-$brand-500: #5b4dee; // primary action
-$brand-600: #4a3edc;
-$brand-700: #3b31b3;
-$brand-800: #2d2685;
+// ---- Neutral (cool blue-tinted slate, derived from space-indigo) ----
+$n-0:   #ffffff;
+$n-50:  #f7f9fd;
+$n-100: #eef2fb;
+$n-200: #dde4f2;
+$n-300: #c2cde3;
+$n-400: #98a3c2;
+$n-500: #7480a8;
+$n-600: #4a5380;
+$n-700: #2e3460;
+$n-800: #1c2150;
+$n-900: $space-indigo;
+
+// ---- Brand scale (periwinkle → ocean-deep) ----
+$brand-50:  #f1f1fe;
+$brand-100: #e3e2fc;
+$brand-200: #c7c4f9;
+$brand-300: #aaa6f6;
+$brand-400: $soft-periwinkle; // primary CTA
+$brand-500: $cornflower-blue; // hover / focus
+$brand-600: $ocean-deep;      // pressed / active
+$brand-700: #1f4f85;
+$brand-800: $space-indigo;
 
 // ---- Semantic ----
 $success-400: #4ade80;
