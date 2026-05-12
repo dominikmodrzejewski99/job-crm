@@ -15,6 +15,14 @@ Osobisty CRM do śledzenia aplikacji o pracę — zastępuje Google Sheets, doda
 
 Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design system, multi-user z JWT, deployowany na Render/Vercel.
 
+## 🌐 Live demo
+
+- **Frontend (Vercel)**: https://frontend-beige-omega-33.vercel.app
+- **Backend (Render)**: https://job-crm-backend.onrender.com
+- **Swagger UI**: https://frontend-beige-omega-33.vercel.app/swagger-ui.html
+
+> ⚠️ Backend hostowany na Render free tier — usypia po 15 min bezruchu, więc **pierwsze zapytanie po przerwie może zająć 30-50 s** (cold start). Zarejestruj nowe konto na `/register` żeby przetestować pełny flow.
+
 ---
 
 ## Spis treści
@@ -313,12 +321,12 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 
 ## Deployment
 
-| Komponent | Hosting | Free tier | Config |
+| Komponent | Hosting | URL | Config |
 |---|---|---|---|
-| Backend | [Render](https://render.com) | 750h/mc, sleeps after 15 min | `render.yaml` |
-| Frontend | [Vercel](https://vercel.com) | Hobby, unlimited | `frontend/vercel.json` |
-| Database | Render Postgres | 256 MB | declared w `render.yaml` |
-| Mail | [Resend](https://resend.com) lub [Mailtrap](https://mailtrap.io) | 3 k / mc | env vars `MAIL_*` |
+| Backend | [Render](https://render.com) — free tier (sleeps po 15 min) | https://job-crm-backend.onrender.com | `render.yaml` |
+| Frontend | [Vercel](https://vercel.com) — Hobby | https://frontend-beige-omega-33.vercel.app | `frontend/vercel.json` |
+| Database | Render Postgres free (256 MB) | (internal) | declared w `render.yaml` |
+| Mail | [Resend](https://resend.com) / [Mailtrap](https://mailtrap.io) (opcjonalne) | — | env vars `MAIL_*` |
 
 ### CI
 
