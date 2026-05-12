@@ -1,0 +1,6 @@
+.angular
+node_modules
+dist
+.nx
+.vercel
+*.log
