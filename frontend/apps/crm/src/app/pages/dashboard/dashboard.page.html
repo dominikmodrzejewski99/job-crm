@@ -567,7 +567,7 @@
 </section>
 
 @if (composeFor(); as app) {
-  <div class="drawer-scrim" (click)="closeCompose()"></div>
+  <button type="button" class="drawer-scrim" (click)="closeCompose()" aria-label="Zamknij"></button>
   <div class="modal modal--compose" role="dialog" aria-modal="true">
     <header class="modal-head">
       <div>
@@ -578,11 +578,11 @@
     </header>
     <div class="modal-body">
       <div class="modal-field">
-        <label class="modal-label">Temat</label>
+        <span class="modal-label">Temat</span>
         <input type="text" [value]="'Re: Aplikacja na ' + app.position" readonly />
       </div>
       <div class="modal-field">
-        <label class="modal-label">Treść</label>
+        <span class="modal-label">Treść</span>
         <textarea rows="7" readonly>Cześć,
 
 Chciał(a)bym dopytać o status mojej aplikacji na pozycję {{ app.position }} z dnia {{ app.appliedAt | date:'d MMMM yyyy' }}. Wciąż jestem bardzo zainteresowan(a) tą rolą — chętnie dostarczę dodatkowe informacje, jeśli będą potrzebne.
@@ -602,7 +602,7 @@ Pozdrawiam</textarea>
 
 @if (postFor(); as job) {
   @let board = boardFor(job.boardId);
-  <div class="drawer-scrim" (click)="closePost()"></div>
+  <button type="button" class="drawer-scrim" (click)="closePost()" aria-label="Zamknij"></button>
   <div class="modal modal--post" role="dialog" aria-modal="true">
     <header class="modal-head">
       <div>
@@ -636,7 +636,7 @@ Pozdrawiam</textarea>
       </div>
 
       <div class="modal-field">
-        <label class="modal-label">Wersja CV</label>
+        <span class="modal-label">Wersja CV</span>
         <select>
           @for (v of cvVersions(); track v.id) {
             <option [value]="v.id">{{ v.name }}</option>
@@ -661,7 +661,7 @@ Pozdrawiam</textarea>
 }
 
 @if (drawerApp(); as app) {
-  <div class="drawer-scrim" (click)="closeDrawer()"></div>
+  <button type="button" class="drawer-scrim" (click)="closeDrawer()" aria-label="Zamknij"></button>
   <aside class="drawer" role="dialog" aria-modal="true">
     <header class="drawer-head">
       <div class="drawer-head-main">

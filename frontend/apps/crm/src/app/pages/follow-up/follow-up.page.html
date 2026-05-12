@@ -75,7 +75,7 @@
 }
 
 @if (composeFor(); as app) {
-  <div class="fu-scrim" (click)="closeCompose()"></div>
+  <button type="button" class="fu-scrim" (click)="closeCompose()" aria-label="Zamknij"></button>
   <div class="fu-modal" role="dialog" aria-modal="true" aria-labelledby="fu-modal-title">
     <header class="fu-modal-head">
       <div>
@@ -87,7 +87,7 @@
 
     <div class="fu-modal-body">
       <div class="fu-field">
-        <label class="fu-label">Szablon</label>
+        <span class="fu-label">Szablon</span>
         <div class="fu-tpl-row">
           @for (t of templates; track t.id) {
             <button type="button" class="fu-tpl-pill"
@@ -100,12 +100,12 @@
       </div>
 
       <div class="fu-field">
-        <label class="fu-label">Temat</label>
+        <span class="fu-label">Temat</span>
         <input class="fu-input" type="text" [value]="filledSubject()" readonly />
       </div>
 
       <div class="fu-field">
-        <label class="fu-label">Treść</label>
+        <span class="fu-label">Treść</span>
         <textarea class="fu-textarea" rows="9" [value]="filledBody()" readonly></textarea>
       </div>
 

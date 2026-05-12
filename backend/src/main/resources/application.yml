@@ -28,7 +28,10 @@ spring:
       mail.smtp.starttls.enable: false
 
 server:
-  port: ${SERVER_PORT:8080}
+  # Render injects PORT automatically (defaults to 10000) — its router
+  # probes that port for the health check, so we must bind to it. Local
+  # dev / Docker compose keep using 8080 via the fallback chain.
+  port: ${PORT:${SERVER_PORT:8080}}
   forward-headers-strategy: framework
 
 management:
