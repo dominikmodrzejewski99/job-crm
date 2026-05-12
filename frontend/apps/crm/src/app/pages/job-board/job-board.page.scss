@@ -6,9 +6,9 @@
 
 .toolbar {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   background: var(--bg-surface);
   border: 1px solid var(--border-1);
   border-radius: 12px;
@@ -17,9 +17,106 @@
   z-index: 10;
 }
 
-.toolbar-search { flex: 1; max-width: 360px; }
-.toolbar-filter { width: 220px; }
-.toolbar-toggle { display: flex; align-items: center; padding-bottom: 6px; }
+.toolbar-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.toolbar-row--chips {
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-row--filters {
+  border-top: 1px dashed var(--divider);
+  padding-top: 12px;
+}
+
+.toolbar-search { flex: 1; max-width: 360px; min-width: 220px; }
+.toolbar-filter { width: 180px; }
+.toolbar-filter--sort { width: 200px; }
+.toolbar-filter--salary { width: 220px; }
+.toolbar-filter--currency { width: 140px; }
+
+.chip-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: var(--bg-muted, var(--bg-1));
+  border-radius: 10px;
+  border: 1px solid var(--border-1);
+}
+
+.chip-group--wrap {
+  flex-wrap: wrap;
+}
+
+.chip-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--divider);
+}
+
+.chip {
+  border: 0;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+  font-family: inherit;
+
+  &:hover {
+    color: var(--text-1);
+    background: var(--bg-surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--brand-400);
+    outline-offset: 1px;
+  }
+}
+
+.chip--active {
+  background: var(--brand-600, var(--brand-500));
+  color: white;
+  box-shadow: 0 1px 2px rgba(20, 27, 65, 0.12);
+
+  &:hover {
+    background: var(--brand-600, var(--brand-500));
+    color: white;
+  }
+}
+
+.salary-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.salary-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.salary-inputs > ds-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.salary-sep {
+  font-size: 13px;
+  color: var(--text-3);
+}
 
 .card-grid {
   display: grid;
@@ -76,6 +173,33 @@
   color: var(--text-2);
 }
 
+.offer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.tag--seniority {
+  background: var(--bg-muted, var(--bg-1));
+  color: var(--text-2);
+  border: 1px solid var(--border-1);
+}
+
+.tag--category {
+  background: var(--brand-50);
+  color: var(--brand-700, var(--brand-600));
+}
+
 .offer-meta {
   display: flex;
   flex-wrap: wrap;
@@ -127,14 +251,19 @@
 }
 
 @media (max-width: 640px) {
-  .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    position: static;
-  }
+  .toolbar { position: static; }
+  .toolbar-row { flex-direction: column; align-items: stretch; }
   .toolbar-search,
-  .toolbar-filter {
+  .toolbar-filter,
+  .toolbar-filter--salary,
+  .toolbar-filter--sort,
+  .toolbar-filter--currency {
     max-width: none;
     width: 100%;
+  }
+  .chip-group {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
   }
 }

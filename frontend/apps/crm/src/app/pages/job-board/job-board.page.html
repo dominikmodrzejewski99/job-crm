@@ -9,28 +9,149 @@
   </button>
 </jt-page-header>
 
-<div class="toolbar">
-  <div class="toolbar-search">
-    <ds-input
-      [value]="search()"
-      (valueChange)="search.set($event)"
-      placeholder="Szukaj stanowiska, firmy, miasta…"
-      type="search" />
+<div class="toolbar" data-testid="job-board-filters">
+  <div class="toolbar-row toolbar-row--primary">
+    <div class="toolbar-search">
+      <ds-input
+        [value]="search()"
+        (valueChange)="search.set($event)"
+        placeholder="Szukaj stanowiska, firmy, miasta…"
+        type="search"
+        data-testid="filter-search" />
+    </div>
+    <div class="toolbar-filter toolbar-filter--sort">
+      <ds-select
+        [value]="sortBy()"
+        (valueChange)="sortBy.set($any($event ?? 'NEWEST'))"
+        label="Sortuj">
+        <ds-option value="NEWEST">Najnowsze</ds-option>
+        <ds-option value="OLDEST">Najstarsze</ds-option>
+        <ds-option value="SALARY_DESC">Pensja: malejąco</ds-option>
+        <ds-option value="SALARY_ASC">Pensja: rosnąco</ds-option>
+      </ds-select>
+    </div>
+    @if (activeFilterCount() > 0) {
+      <button ds-button
+              variant="ghost"
+              size="sm"
+              (click)="resetFilters()"
+              data-testid="filter-reset">
+        Wyczyść ({{ activeFilterCount() }})
+      </button>
+    }
   </div>
-  <div class="toolbar-filter">
-    <ds-select
-      [value]="sourceFilter()"
-      (valueChange)="sourceFilter.set($any($event ?? 'ALL'))"
-      label="Źródło">
-      <ds-option value="ALL">Wszystkie</ds-option>
-      <ds-option value="JUSTJOIN">JustJoinIT</ds-option>
-      <ds-option value="NOFLUFF">NoFluffJobs</ds-option>
-    </ds-select>
+
+  <div class="toolbar-row toolbar-row--chips" data-testid="filter-chips">
+    <div class="chip-group" role="group" aria-label="Tryb pracy">
+      @for (mode of workModeOptions; track mode.value) {
+        <button class="chip"
+                [class.chip--active]="workMode() === mode.value"
+                (click)="workMode.set(mode.value)"
+                type="button">
+          {{ mode.label }}
+        </button>
+      }
+    </div>
+    <span class="chip-divider" aria-hidden="true"></span>
+    <div class="chip-group" role="group" aria-label="Seniority">
+      @for (sen of seniorityOptions; track sen.value) {
+        <button class="chip"
+                [class.chip--active]="seniorityFilter() === sen.value"
+                (click)="seniorityFilter.set(sen.value)"
+                type="button">
+          {{ sen.label }}
+        </button>
+      }
+    </div>
   </div>
-  <div class="toolbar-toggle">
-    <ds-switch label="Tylko remote"
-               [checked]="remoteOnly()"
-               (checkedChange)="remoteOnly.set($event)" />
+
+  <div class="toolbar-row toolbar-row--chips" data-testid="filter-category">
+    <div class="chip-group chip-group--wrap" role="group" aria-label="Kategoria">
+      @for (cat of categoryOptions; track cat.value) {
+        <button class="chip"
+                [class.chip--active]="categoryFilter() === cat.value"
+                (click)="categoryFilter.set(cat.value)"
+                type="button">
+          {{ cat.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="toolbar-row toolbar-row--filters">
+    <div class="toolbar-filter">
+      <ds-select
+        [value]="sourceFilter()"
+        (valueChange)="sourceFilter.set($any($event ?? 'ALL'))"
+        label="Źródło">
+        <ds-option value="ALL">Wszystkie</ds-option>
+        <ds-option value="JUSTJOIN">JustJoinIT</ds-option>
+        <ds-option value="NOFLUFF">NoFluffJobs</ds-option>
+      </ds-select>
+    </div>
+    <div class="toolbar-filter">
+      <ds-select
+        [value]="locationFilter()"
+        (valueChange)="locationFilter.set($any($event ?? 'ALL'))"
+        label="Miasto">
+        <ds-option value="ALL">Wszystkie</ds-option>
+        @for (loc of availableLocations(); track loc) {
+          <ds-option [value]="loc">{{ loc }}</ds-option>
+        }
+      </ds-select>
+    </div>
+    <div class="toolbar-filter">
+      <ds-select
+        [value]="technologyFilter()"
+        (valueChange)="technologyFilter.set($any($event ?? 'ALL'))"
+        label="Technologia">
+        <ds-option value="ALL">Wszystkie</ds-option>
+        @for (tech of availableTechnologies(); track tech) {
+          <ds-option [value]="tech">{{ tech }}</ds-option>
+        }
+      </ds-select>
+    </div>
+    <div class="toolbar-filter">
+      <ds-select
+        [value]="postedWithin()"
+        (valueChange)="postedWithin.set($any($event ?? 'ALL'))"
+        label="Dodane">
+        <ds-option value="ALL">Kiedykolwiek</ds-option>
+        <ds-option value="DAY">Ostatnie 24h</ds-option>
+        <ds-option value="THREE_DAYS">Ostatnie 3 dni</ds-option>
+        <ds-option value="WEEK">Ostatni tydzień</ds-option>
+        <ds-option value="MONTH">Ostatni miesiąc</ds-option>
+      </ds-select>
+    </div>
+    <div class="toolbar-filter toolbar-filter--salary">
+      <label class="salary-label">Pensja</label>
+      <div class="salary-inputs">
+        <ds-input
+          [value]="salaryMin() === null ? '' : salaryMin()!.toString()"
+          (valueChange)="onSalaryMinChange($event)"
+          placeholder="od"
+          type="number" />
+        <span class="salary-sep">–</span>
+        <ds-input
+          [value]="salaryMax() === null ? '' : salaryMax()!.toString()"
+          (valueChange)="onSalaryMaxChange($event)"
+          placeholder="do"
+          type="number" />
+      </div>
+    </div>
+    @if (availableCurrencies().length > 1) {
+      <div class="toolbar-filter toolbar-filter--currency">
+        <ds-select
+          [value]="currencyFilter()"
+          (valueChange)="currencyFilter.set($any($event ?? 'ALL'))"
+          label="Waluta">
+          <ds-option value="ALL">Wszystkie</ds-option>
+          @for (cur of availableCurrencies(); track cur) {
+            <ds-option [value]="cur">{{ cur }}</ds-option>
+          }
+        </ds-select>
+      </div>
+    }
   </div>
 </div>
 
@@ -51,9 +172,9 @@
     </span>
   </jt-empty-state>
 } @else {
-  <div class="card-grid">
+  <div class="card-grid" data-testid="offer-grid">
     @for (offer of filtered(); track offer.id) {
-      <article class="offer">
+      <article class="offer" data-testid="offer-card">
         <header class="offer-header">
           <div class="offer-title-block">
             <h3 class="offer-title">{{ offer.title }}</h3>
@@ -63,6 +184,13 @@
             {{ offer.source === 'JUSTJOIN' ? 'JJIT' : 'NoFluff' }}
           </ds-badge>
         </header>
+
+        <div class="offer-tags">
+          <span class="tag tag--seniority">{{ seniorityLabel(offerSeniority(offer)) }}</span>
+          @if (offerCategory(offer) !== 'OTHER') {
+            <span class="tag tag--category">{{ categoryLabel(offerCategory(offer)) }}</span>
+          }
+        </div>
 
         <div class="offer-meta">
           @if (offer.location) {

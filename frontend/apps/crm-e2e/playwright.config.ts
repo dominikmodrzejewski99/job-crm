@@ -32,7 +32,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      // Use the system Google Chrome when the Playwright-managed browser
+      // download is unavailable on the host OS. Falls back to the bundled
+      // chromium build on CI/CD runners that have it installed.
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
 
     {
