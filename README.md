@@ -17,11 +17,26 @@ Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design syst
 
 ## 🌐 Live demo
 
-- **Frontend (Vercel)**: https://frontend-beige-omega-33.vercel.app
+- **Landing**: https://frontend-beige-omega-33.vercel.app/landing
+- **Login / Register**: https://frontend-beige-omega-33.vercel.app/login
+- **App (po zalogowaniu)**: https://frontend-beige-omega-33.vercel.app/dashboard
 - **Backend (Render)**: https://job-crm-backend.onrender.com
 - **Swagger UI**: https://frontend-beige-omega-33.vercel.app/swagger-ui.html
 
 > ⚠️ Backend hostowany na Render free tier — usypia po 15 min bezruchu, więc **pierwsze zapytanie po przerwie może zająć 30-50 s** (cold start). Zarejestruj nowe konto na `/register` żeby przetestować pełny flow.
+
+### Główne widoki
+
+| Ścieżka | Strona | Status |
+|---|---|---|
+| `/` | przekierowuje na `/landing` | public |
+| `/landing` | Marketing — hero z preview dashboardu, feature grid, pricing, testimonials | public |
+| `/login`, `/register` | Auth split-screen (formularz + visual column z preview cards) | public |
+| `/dashboard` | KPI z sparkline, kanban / lejek / lista, A/B CV, najbliższe wydarzenia, follow-upy, job boardy | authed |
+| `/applications` | Pełna tabela aplikacji z filtrami | authed |
+| `/job-board` | Crawler JJIT / NFJ + match score | authed |
+| `/follow-up` | Skrzynka follow-upów do wysłania | authed |
+| `/settings` | Ustawienia użytkownika (i18n, powiadomienia) | authed |
 
 ---
 
@@ -374,15 +389,16 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 - [x] Faza 7: Stats + dashboard (`/api/v1/stats/dashboard` agregacje, custom SVG funnel + weekly chart + status bars)
 - [x] Faza 8: CI/CD + deploy (GitHub Actions backend-ci + frontend-ci, render.yaml blueprint, vercel.json z /api rewrites, application-prod.yml)
 - [x] Faza 9: Polish — i18n PL/EN (signal-based `I18nService` + `tr` pipe), PWA (manifest + service worker, cache-first dla assets / network-first dla `/api`), a11y audit (`@axe-core/playwright` e2e, fail na critical/serious)
+- [x] Faza 10: **Brand refresh** — Claude Design "jobflow" handoff zaimplementowany 1:1 (paleta terracotta, Instrument Serif + Geist, sidebar/topbar redesign, dashboard z KPI sparkline / kanban / A/B CV / kalendarz wydarzeń, split-screen auth, public landing page na `/landing` z hero preview + feature grid + pricing). Pixel-diff ~3% (font sub-pixel rendering)
 
 ---
 
-## Wszystkie 9 faz roadmapy zamknięte 🎉
+## Wszystkie 10 faz roadmapy zamknięte 🎉
 
 Repo zawiera kompletny stack od pustego folderu do production-ready aplikacji:
 
 - **Backend**: Spring Boot 3.4 / Java 21 — JPA + Flyway (6 migracji), Spring Security stateless + JWT, Spring Mail (`@Scheduled` reminders), Spring RestClient (crawler JJIT/NFJ), springdoc OpenAPI, ProblemDetail, Testcontainers, integration + service tests
-- **Frontend**: Angular 21 zoneless / Nx monorepo — własny design system z 21 komponentami (SASS abstracts + signal forms + Angular CDK overlay), AG Grid dla data tables, signal-based state, custom SVG dashboard charts, i18n PL/EN, PWA (offline)
+- **Frontend**: Angular 21 zoneless / Nx monorepo — własny design system z 21 komponentami (SASS abstracts + signal forms + Angular CDK overlay), AG Grid dla data tables, signal-based state, custom SVG dashboard charts (KPI sparkline, kanban z drag&drop-ready strukturą, A/B CV bars), i18n PL/EN, PWA (offline). Pełny brand-refresh wg Claude Design "jobflow" (paleta terracotta, Instrument Serif + Geist + JetBrains Mono, split-screen auth, public landing z marketing copy)
 - **DevOps**: Docker Compose (postgres + backend + frontend + mailhog), GitHub Actions CI (dwa workflowy), Render blueprint + Vercel rewrites = zero CORS w prod
 
 ### Co dalej (gdyby były kolejne fazy)

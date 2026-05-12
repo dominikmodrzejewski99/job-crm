@@ -24,7 +24,7 @@
 
       <ul class="row-list">
         @for (a of bucket.items; track a.id) {
-          <li class="row">
+          <li class="row" [class.row--sent]="sentIds().has(a.id)">
             <div class="row-meta">
               <div class="row-headline">
                 <span class="row-company">{{ a.companyName }}</span>
@@ -38,6 +38,13 @@
               </span>
             </div>
             <div class="row-actions">
+              <button ds-button
+                      variant="primary"
+                      size="sm"
+                      [disabled]="busyId() === a.id || sentIds().has(a.id)"
+                      (click)="openCompose(a)">
+                ✉ Napisz
+              </button>
               <button ds-button
                       variant="secondary"
                       size="sm"
@@ -65,4 +72,56 @@
       </ul>
     </section>
   }
+}
+
+@if (composeFor(); as app) {
+  <div class="fu-scrim" (click)="closeCompose()"></div>
+  <div class="fu-modal" role="dialog" aria-modal="true" aria-labelledby="fu-modal-title">
+    <header class="fu-modal-head">
+      <div>
+        <div class="fu-modal-title" id="fu-modal-title">Follow-up · {{ app.companyName }}</div>
+        <div class="fu-modal-sub">{{ app.position }} · wysłane {{ relativeDue(app.appliedAt) }}</div>
+      </div>
+      <button type="button" class="fu-icon-btn" (click)="closeCompose()" aria-label="Zamknij">✕</button>
+    </header>
+
+    <div class="fu-modal-body">
+      <div class="fu-field">
+        <label class="fu-label">Szablon</label>
+        <div class="fu-tpl-row">
+          @for (t of templates; track t.id) {
+            <button type="button" class="fu-tpl-pill"
+                    [class.fu-tpl-pill--active]="templateId() === t.id"
+                    (click)="selectTemplate(t.id)">
+              {{ t.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="fu-field">
+        <label class="fu-label">Temat</label>
+        <input class="fu-input" type="text" [value]="filledSubject()" readonly />
+      </div>
+
+      <div class="fu-field">
+        <label class="fu-label">Treść</label>
+        <textarea class="fu-textarea" rows="9" [value]="filledBody()" readonly></textarea>
+      </div>
+
+      <div class="fu-meta">
+        <span>✉ do: {{ recruiterEmail(app.companyName) }}</span>
+        @if (app.tags.length) { <span>🏷 {{ app.tags.join(', ') }}</span> }
+      </div>
+    </div>
+
+    <footer class="fu-modal-foot">
+      <button ds-button variant="ghost" size="md" (click)="closeCompose()">Anuluj</button>
+      <button ds-button variant="primary" size="md"
+              [disabled]="busyId() === app.id"
+              (click)="sendCompose()">
+        ↗ Wyślij follow-up
+      </button>
+    </footer>
+  </div>
 }

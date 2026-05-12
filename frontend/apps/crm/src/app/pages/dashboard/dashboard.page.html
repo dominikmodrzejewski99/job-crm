@@ -242,18 +242,24 @@
   } @else {
     <div class="app-table" [class.app-table--compact]="density() === 'compact'">
       <header class="app-table-head">
-        <div></div>
-        <div class="th">Firma · Rola</div>
-        <div class="th th-cv">CV</div>
+        <div class="th th-fav"></div>
+        <div class="th th-company">Firma / rola</div>
+        <div class="th th-status">Status</div>
+        <div class="th th-cv">Wersja CV</div>
         <div class="th th-source">Źródło</div>
-        <div class="th">Status</div>
-        <div class="th th-salary">Widełki</div>
+        <div class="th th-salary">Wynagrodzenie</div>
         <div class="th th-date">Wysłane</div>
       </header>
       @for (app of applications(); track app.id) {
         <button class="app-table-row" (click)="openDrawer(app)">
-          <div class="td-fav" [style.color]="'var(--ink-quaternary)'">{{ app.tags.length ? '★' : '' }}</div>
-          <div class="td-company">
+          <div class="td td-fav">
+            @if (app.tags.length) {
+              <svg viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m12 3 2.7 5.5 6 .9-4.4 4.2 1 6L12 16.8 6.7 19.6l1-6L3.3 9.4l6-.9z"/></svg>
+            } @else {
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-tertiary)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m12 3 2.7 5.5 6 .9-4.4 4.2 1 6L12 16.8 6.7 19.6l1-6L3.3 9.4l6-.9z"/></svg>
+            }
+          </div>
+          <div class="td td-company">
             <span class="company-avatar"
                   [style.background]="avatarColorFor(app.companyName)"
                   [style.width.px]="28" [style.height.px]="28" [style.font-size.px]="12">
@@ -261,29 +267,29 @@
             </span>
             <div>
               <div class="td-company-name">{{ app.companyName }}</div>
-              <div class="td-company-role">{{ app.position }}</div>
+              <div class="td-company-role">{{ app.position }} • {{ app.remote ? 'Remote' : (app.location || '—') }}</div>
             </div>
           </div>
-          <div class="td-cv"><span class="cv-chip">v3.x</span></div>
-          <div class="td-source">{{ sourceLabel(app) }}</div>
-          <div>
+          <div class="td td-status">
             <span class="status-pill"
                   [style.background]="'var(--c-' + statusFor(app).col.color + '-bg)'"
                   [style.color]="'var(--c-' + statusFor(app).col.color + '-fg)'"
-                  [style.padding]="'3px 9px'"
+                  [style.padding]="'3px 8px 3px 7px'"
                   [style.fontSize.px]="11">
               <span class="status-dot" [style.background]="'var(--c-' + statusFor(app).col.color + '-dot)'"></span>
               {{ statusFor(app).label }}
             </span>
           </div>
-          <div class="td-salary">{{ formatSalary(app) }}</div>
-          <div>
-            <div class="td-date-main">{{ appliedRelative(app) }}</div>
-            <div class="td-date-sub">{{ app.appliedAt | date:'d MMM' }}</div>
+          <div class="td td-cv"><span class="cv-chip">v3.x</span></div>
+          <div class="td td-source">{{ sourceLabel(app) }}</div>
+          <div class="td td-salary">{{ formatSalary(app) }}</div>
+          <div class="td td-date">
+            <div class="td-date-main">{{ app.appliedAt | date:'d MMM' }}</div>
+            <div class="td-date-sub">{{ appliedRelative(app) }}</div>
           </div>
         </button>
       } @empty {
-        <div class="app-table-row" style="grid-template-columns: 1fr; text-align: center">
+        <div class="app-table-row" style="grid-template-columns: 1fr; text-align: center; padding: 32px 20px;">
           <span class="kpi-sub">Brak aplikacji</span>
         </div>
       }

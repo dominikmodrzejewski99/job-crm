@@ -123,3 +123,131 @@
   }
   .row-actions { justify-content: flex-end; flex-wrap: wrap; }
 }
+
+// --- Compose modal (Claude Design "Skrzynka" follow-up) ---
+
+.row--sent { opacity: 0.55; }
+
+.fu-scrim {
+  position: fixed; inset: 0;
+  background: rgba(20, 18, 14, 0.30);
+  z-index: 100;
+  animation: fuFade .15s ease;
+}
+.fu-modal {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 580px; max-width: 94vw; max-height: 90vh;
+  background: var(--bg-surface, #fff);
+  border: 1px solid var(--border-1);
+  border-radius: 14px;
+  box-shadow: 0 24px 70px -16px rgba(20, 20, 20, 0.20), 0 8px 20px -4px rgba(20, 20, 20, 0.08);
+  z-index: 101;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: fuIn .18s ease;
+  font-family: 'Geist', system-ui, sans-serif;
+  color: var(--text-1);
+}
+@keyframes fuIn { from { opacity: 0; transform: translate(-50%, -48%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+@keyframes fuFade { from { opacity: 0; } to { opacity: 1; } }
+
+.fu-modal-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border-1);
+}
+.fu-modal-title {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.1;
+}
+.fu-modal-sub {
+  font-size: 12.5px;
+  color: var(--text-3);
+  margin-top: 3px;
+}
+.fu-icon-btn {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .12s, color .12s;
+}
+.fu-icon-btn:hover { background: var(--bg-subtle); color: var(--text-1); }
+
+.fu-modal-body {
+  padding: 18px 20px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.fu-field { display: flex; flex-direction: column; gap: 6px; }
+.fu-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0.01em;
+}
+.fu-input,
+.fu-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-1);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  color: var(--text-1);
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color .12s, box-shadow .12s;
+}
+.fu-textarea {
+  resize: vertical;
+  min-height: 160px;
+  line-height: 1.45;
+}
+.fu-input:focus,
+.fu-textarea:focus {
+  outline: 0;
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.25);
+}
+
+.fu-tpl-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.fu-tpl-pill {
+  padding: 5px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border-1);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.fu-tpl-pill:hover { background: var(--bg-subtle); color: var(--text-1); }
+.fu-tpl-pill--active {
+  background: var(--text-1);
+  color: var(--bg-surface);
+  border-color: var(--text-1);
+}
+
+.fu-meta {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--text-3);
+  padding-top: 6px;
+  border-top: 1px solid var(--border-1);
+}
+.fu-meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+.fu-modal-foot {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-1);
+  background: var(--bg-subtle);
+}
