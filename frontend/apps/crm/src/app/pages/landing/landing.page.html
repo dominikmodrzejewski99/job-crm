@@ -1,0 +1,461 @@
+<nav class="lp-nav" [class.scrolled]="scrolled()">
+  <div class="wrap nav-inner">
+    <a class="brand" routerLink="/landing">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h12M4 12h16M4 18h8"/>
+          <circle cx="20" cy="6" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <span class="brand-name">jobflow</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Funkcje</a>
+      <a href="#steps">Jak to działa</a>
+      <a href="#testimonials">Opinie</a>
+      <a href="#pricing">Cennik</a>
+    </div>
+    <div class="nav-cta">
+      <a class="login" routerLink="/login">Zaloguj się</a>
+      <a class="btn-primary" routerLink="/register">Załóż konto</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-tag">
+      <span class="new">Nowe</span>
+      <span>Auto-apply przez LinkedIn jest live</span>
+    </div>
+    <h1>Szukasz pracy.<br/>My liczymy <em>response rate</em>.</h1>
+    <p class="hero-sub">Śledź każde wysłane CV, porównuj wersje, ustawiaj follow-upy i aplikuj przez LinkedIn, Pracuj.pl czy NoFluffJobs jednym klikiem. Jedno miejsce zamiast 14 zakładek w Notion.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary btn-primary--lg" routerLink="/register">
+        Spróbuj za darmo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn-ghost btn-ghost--lg" routerLink="/dashboard">Zobacz demo</a>
+    </div>
+    <div class="hero-microlegal">
+      <span><svg class="check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>50 aplikacji za darmo</span>
+      <span><svg class="check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Bez karty</span>
+      <span><svg class="check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Zsynchronizuj LinkedIn w 1 min</span>
+    </div>
+
+    <div class="hero-stage">
+      <div class="dashboard-preview">
+        <div class="dp-window-chrome">
+          <span class="dp-dot r"></span><span class="dp-dot y"></span><span class="dp-dot g"></span>
+          <span class="dp-url">jobflow.io/dashboard</span>
+        </div>
+        <div class="dp-body">
+          <div class="dp-nav">
+            <div class="dp-nav-item active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8M5 9v12h14V9"/></svg></div>
+            <div class="dp-nav-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13h-7l-2 3h-2l-2-3H2M5 5h14l3 8v6H2v-6z"/></svg></div>
+            <div class="dp-nav-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div>
+            <div class="dp-nav-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg></div>
+            <div class="dp-nav-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M7 17V10M12 17V5M17 17v-7"/></svg></div>
+          </div>
+          <div class="dp-main">
+            <div>
+              <div class="dp-hello">Cześć, <em>Maja</em></div>
+              <div class="dp-hello-sub">3 aplikacje w tym tygodniu · 1 oferta czeka na decyzję</div>
+            </div>
+            <div class="dp-kpis">
+              <div class="dp-kpi"><div class="lbl">WYSŁANE</div><div class="val">14</div><div class="sub">+3 w tym tyg.</div></div>
+              <div class="dp-kpi"><div class="lbl">RESPONSE RATE</div><div class="val">38%</div><div class="sub">↑ 6% mom</div></div>
+              <div class="dp-kpi"><div class="lbl">ROZMOWY</div><div class="val">4</div><div class="sub">5 zaplanowanych</div></div>
+              <div class="dp-kpi hi"><div class="lbl">OFERTY</div><div class="val">1</div><div class="sub">Decyzja do 16.05</div></div>
+            </div>
+            <div class="dp-pipeline">
+              <div class="head"><div class="head-title">Pipeline aplikacji</div><div class="head-sub">14 aktywnych</div></div>
+              <div class="dp-cols">
+                <div class="dp-col">
+                  <div class="dp-col-head"><span class="dot" style="background:#8A857C"></span>Wysłane<span class="count">4</span></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#5E6AD2">L</div><div><div class="dp-card-name">Linear</div><div class="dp-card-role">Product Designer</div></div></div></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#000">V</div><div><div class="dp-card-name">Vercel</div><div class="dp-card-role">Senior Designer</div></div></div></div>
+                </div>
+                <div class="dp-col">
+                  <div class="dp-col-head"><span class="dot" style="background:#D4A017"></span>Odpowiedź<span class="count">3</span></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#DC143C">C</div><div><div class="dp-card-name">CD Projekt</div><div class="dp-card-role">UX Designer</div></div></div></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#FC6D26">G</div><div><div class="dp-card-name">GitLab</div><div class="dp-card-role">Staff Designer</div></div></div></div>
+                </div>
+                <div class="dp-col">
+                  <div class="dp-col-head"><span class="dot" style="background:#4F69E6"></span>Rozmowa<span class="count">3</span></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#635BFF">S</div><div><div class="dp-card-name">Stripe</div><div class="dp-card-role">Sr. Product Designer</div></div></div></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#0ACF83">F</div><div><div class="dp-card-name">Figma</div><div class="dp-card-role">Sr. Product Designer</div></div></div></div>
+                </div>
+                <div class="dp-col">
+                  <div class="dp-col-head"><span class="dot" style="background:#2EA055"></span>Oferta<span class="count">1</span></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#FF5A00">A</div><div><div class="dp-card-name">Allegro</div><div class="dp-card-role">Product Designer</div></div></div></div>
+                </div>
+                <div class="dp-col">
+                  <div class="dp-col-head"><span class="dot" style="background:#D04B4B"></span>Odrzuc.<span class="count">3</span></div>
+                  <div class="dp-card"><div class="dp-card-row"><div class="dp-avatar" style="background:#E60000">m</div><div><div class="dp-card-name">mBank</div><div class="dp-card-role">Product Designer</div></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="float-cards">
+        <div class="float float-notif">
+          <div class="row">
+            <div class="ic">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+            </div>
+            <div>
+              <div class="ttl">Allegro odpowiedziało</div>
+              <div class="sub">Oferta zatrudnienia — sprawdź</div>
+            </div>
+          </div>
+        </div>
+        <div class="float float-board">
+          <div class="row">
+            <div class="li">in</div>
+            <div>
+              <div class="ttl">Spotify — 94% match</div>
+              <div class="sub">Sr. Product Designer</div>
+            </div>
+          </div>
+          <span class="pill">Easy apply ↗</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="logos-strip">
+  <div class="wrap">
+    <div class="logos-label">Tysiące job seekerów zdobyło pracę w firmach takich jak</div>
+    <div class="logos">
+      <span class="b">Allegro</span>
+      <span>Stripe</span>
+      <span class="b">CD&nbsp;Projekt</span>
+      <span>Figma</span>
+      <span class="b">Booksy</span>
+      <span>Vercel</span>
+      <span class="b">Brainly</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="lp-section-head">
+      <div class="eyebrow">Wszystko w jednym miejscu</div>
+      <h2>Koniec arkuszy w Excelu i <em>notatek w Notion</em>.</h2>
+      <p>jobflow daje ci kontrolę nad procesem — od pierwszej aplikacji do podpisania oferty.</p>
+    </div>
+
+    <div class="feat-grid">
+      <article class="feat-card feat-pipeline span-7">
+        <div class="feat-body">
+          <h3>Pipeline, który widzi twój postęp</h3>
+          <p>Kanban, lejek konwersji albo czysta lista — to ten sam pipeline, w trzech widokach. Drag &amp; drop między statusami, filtry, sortowanie po dacie wysłania.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="fp-funnel">
+            <div class="fp-row"><span class="dot" style="background:#8A857C"></span><span class="lbl">Wysłane</span><span class="bar"><span class="fill" style="width:100%;background:linear-gradient(90deg,#8A857C,#5C574E)"></span></span><span class="num">14</span></div>
+            <div class="fp-row"><span class="dot" style="background:#D4A017"></span><span class="lbl">Odpowiedź</span><span class="bar"><span class="fill" style="width:64%;background:linear-gradient(90deg,#D4A017,#946800)"></span></span><span class="num">9</span></div>
+            <div class="fp-row"><span class="dot" style="background:#4F69E6"></span><span class="lbl">Rozmowa</span><span class="bar"><span class="fill" style="width:36%;background:linear-gradient(90deg,#4F69E6,#2540B0)"></span></span><span class="num">5</span></div>
+            <div class="fp-row"><span class="dot" style="background:#2EA055"></span><span class="lbl">Oferta</span><span class="bar"><span class="fill" style="width:7%;background:linear-gradient(90deg,#2EA055,#1F7A3F)"></span></span><span class="num">1</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-ab span-5">
+        <div class="feat-body">
+          <h3>Wiesz, która wersja CV działa</h3>
+          <p>A/B test wersji CV pokazuje response rate dla każdej. Zatrzymujesz tę, która zdobywa rozmowy.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="ab-pair">
+            <div class="ab-card">
+              <div class="ver">v3.1 — Product</div>
+              <div class="pct">33%</div>
+              <div class="lbl">response</div>
+            </div>
+            <div class="ab-card win">
+              <div class="crown">★ Lepszy</div>
+              <div class="ver">v3.2 — Senior</div>
+              <div class="pct">50%</div>
+              <div class="lbl">response</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-boards span-6">
+        <div class="feat-body">
+          <h3>Aplikuj przez 5 boardów <em>jednym klikiem</em></h3>
+          <p>LinkedIn, Pracuj.pl, NoFluffJobs, JustJoin.IT, Glassdoor — wybierz wersję CV, my zapakujemy cover letter i wyślemy. Aplikacja od razu wpada do pipeline'u.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="fb-list">
+            <div class="fb-item"><div class="fb-logo" style="background:#0A66C2">in</div><div class="fb-name">LinkedIn</div><div class="fb-status"><span class="d"></span>podłączone</div></div>
+            <div class="fb-item"><div class="fb-logo" style="background:#FF5A00">Pr</div><div class="fb-name">Pracuj.pl</div><div class="fb-status"><span class="d"></span>podłączone</div></div>
+            <div class="fb-item"><div class="fb-logo" style="background:#1B1B1F">Nf</div><div class="fb-name">NoFluffJobs</div><div class="fb-status"><span class="d"></span>podłączone</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-followups span-6">
+        <div class="feat-body">
+          <h3>Follow-upy pisane same się</h3>
+          <p>Po 7 dniach bez odpowiedzi jobflow przygotowuje delikatny ping. Wybierasz szablon, klikasz „Wyślij" — gotowe.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="ff-mail">
+            <div class="ff-row">
+              <div class="ff-avatar">S</div>
+              <div class="ff-co">Stripe</div>
+              <div class="ff-tag">14 dni bez odp.</div>
+            </div>
+            <div class="ff-body">Cześć, chciałabym dopytać o status mojej aplikacji na Senior Product Designer. Wciąż jestem bardzo zainteresowana…</div>
+            <span class="ff-cta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>Wyślij follow-up</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-crud span-4">
+        <div class="feat-body">
+          <h3>Dodawaj i edytuj w sekundę</h3>
+          <p>Pełen CRUD: firma, rola, źródło, wersja CV, notatki. Wszystko, czego potrzebujesz po rozmowie.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="fc-form">
+            <div class="fc-field"><div class="l">FIRMA</div><div class="v">Stripe</div></div>
+            <div class="fc-grid">
+              <div class="fc-field"><div class="l">STATUS</div><div class="v">Rozmowa</div></div>
+              <div class="fc-field"><div class="l">CV</div><div class="v">v3.2 Senior</div></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-calendar span-4">
+        <div class="feat-body">
+          <h3>Kalendarz, który nie zapomina</h3>
+          <p>Nadchodzące rozmowy, deadline'y ofert, follow-upy do wysłania — wszystko w jednym widoku, z synchronizacją do Google Cal.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="fcal-list">
+            <div class="fcal-item fcal-item--next">
+              <div class="fcal-date fcal-date--accent">
+                <div class="fcal-day">13</div>
+                <div class="fcal-mo">MAJ</div>
+              </div>
+              <div>
+                <div class="fcal-ttl">GitLab · HR Screen</div>
+                <div class="fcal-sub">16:00 · Google Meet</div>
+              </div>
+            </div>
+            <div class="fcal-item">
+              <div class="fcal-date">
+                <div class="fcal-day">14</div>
+                <div class="fcal-mo">MAJ</div>
+              </div>
+              <div>
+                <div class="fcal-ttl">Booksy · Final Round</div>
+                <div class="fcal-sub">11:00 · Biuro</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="feat-card feat-streak span-4">
+        <div class="feat-body">
+          <h3>Cele i streak, jak w Duolingo</h3>
+          <p>Ustaw cel tygodniowy aplikacji. jobflow przypomina, motywuje i pokazuje serię dni aktywności.</p>
+        </div>
+        <div class="feat-visual">
+          <div class="fst-wrap">
+            <div class="fst-streak">
+              <div class="fst-flame">🔥</div>
+              <div>
+                <div class="fst-num">12 dni</div>
+                <div class="fst-sub">aktywności z rzędu</div>
+              </div>
+            </div>
+            <div class="fst-goal">
+              <div class="fst-goal-head"><span>Cel tygodniowy</span><span class="fst-goal-val">5/8</span></div>
+              <div class="fst-goal-track"><div class="fst-goal-fill"></div></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="steps">
+  <div class="wrap">
+    <div class="lp-section-head">
+      <div class="eyebrow">3 minuty do pierwszej aplikacji</div>
+      <h2>Tak <em>prosto</em>, jak powinno być.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Załóż konto i podłącz LinkedIn</h3>
+        <p>Zaimportujemy twój profil i wykryjemy oferty, które najbardziej do ciebie pasują.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Aplikuj — przez nas albo własnoręcznie</h3>
+        <p>Jedno kliknięcie wysyła CV przez LinkedIn / Pracuj.pl. Albo zapisz aplikację którą złożyłaś poza systemem.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Śledź, mierz, optymalizuj</h3>
+        <p>Pipeline pokaże gdzie utknęłaś. A/B test CV powie ci która wersja działa. Follow-upy się piszą same.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="testimonials">
+  <div class="wrap">
+    <div class="lp-section-head">
+      <div class="eyebrow">Mówią nasze użytkowniczki</div>
+      <h2>Co tydzień ktoś podpisuje <em>ofertę</em>.</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test">
+        <div class="test-quote">Przez 3 lata szukałam pracy z notatkami w Notion. Dwa tygodnie po przejściu na jobflow miałam 3 oferty i wiedziałam która wersja CV działa.</div>
+        <div class="test-foot">
+          <div class="test-avatar" style="background:#D97757">KM</div>
+          <div><div class="test-name">Karolina Mazur</div><div class="test-role">Senior Designer &#64; Allegro</div></div>
+        </div>
+      </div>
+      <div class="test">
+        <div class="test-quote">Auto-apply przez LinkedIn to game changer. W weekend wysłałem 18 aplikacji, w poniedziałek miałem 4 odpowiedzi.</div>
+        <div class="test-foot">
+          <div class="test-avatar" style="background:#2A6FDB">PK</div>
+          <div><div class="test-name">Piotr Krawczyk</div><div class="test-role">Frontend Eng &#64; Stripe</div></div>
+        </div>
+      </div>
+      <div class="test">
+        <div class="test-quote">Pierwszy raz mam ogarnięty proces. Wiem co wysłałam, kiedy, jaką wersją CV i co odpisali. Czyli wszystko, czego potrzebuję na rozmowę.</div>
+        <div class="test-foot">
+          <div class="test-avatar" style="background:#1F8A5B">AW</div>
+          <div><div class="test-name">Anna Wójcik</div><div class="test-role">Product Manager &#64; Booksy</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="lp-section-head">
+      <div class="eyebrow">Cennik</div>
+      <h2>Prosty plan, jak <em>twoje notatki w Notion</em> — tylko działa.</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div class="price-amt"><span class="num">0</span><span class="per">/zł zawsze</span></div>
+        <div class="price-desc">Wszystko, czego potrzebujesz na start.</div>
+        <ul class="price-feat">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>50 aplikacji w pipeline</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>2 wersje CV</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>1 podłączony job board</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Manualne follow-upy</li>
+        </ul>
+        <a class="btn-ghost price-btn" routerLink="/register">Zacznij za darmo</a>
+      </div>
+      <div class="price-card hi">
+        <span class="price-tag">Najpopularniejszy</span>
+        <div class="price-name">Pro</div>
+        <div class="price-amt"><span class="num">39</span><span class="per">zł / mies.</span></div>
+        <div class="price-desc">Dla aktywnie szukających pracy.</div>
+        <ul class="price-feat">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Bez limitu aplikacji</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Bez limitu wersji CV + A/B test</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>5 job boardów + auto-apply</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>AI follow-upy + cover letters</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Sync z Google Calendar</li>
+        </ul>
+        <a class="btn-primary price-btn" routerLink="/register">7 dni za darmo</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Coach</div>
+        <div class="price-amt"><span class="num">119</span><span class="per">zł / mies.</span></div>
+        <div class="price-desc">Dla coachów i agencji.</div>
+        <ul class="price-feat">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Wszystko z Pro</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Do 25 kandydatów</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Komentarze + review CV</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>White-label dashboard</li>
+        </ul>
+        <a class="btn-ghost price-btn" routerLink="/register">Skontaktuj się</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Twoja następna oferta zaczyna się <em>dzisiaj</em>.</h2>
+    <p>Załóż konto w 30 sekund. Zero karty, zero zobowiązań — pierwsze 50 aplikacji za darmo.</p>
+    <a class="btn-primary btn-primary--lg" routerLink="/register">
+      Zacznij za darmo
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="lp-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <a class="brand" routerLink="/landing">
+          <div class="brand-mark">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6h12M4 12h16M4 18h8"/>
+              <circle cx="20" cy="6" r="2" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <span class="brand-name">jobflow</span>
+        </a>
+        <p class="footer-tag">Najprostszy sposób, żeby trzymać poszukiwanie pracy pod kontrolą.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produkt</h4>
+        <ul>
+          <li><a href="#features">Funkcje</a></li>
+          <li><a href="#pricing">Cennik</a></li>
+          <li><a routerLink="/dashboard">Demo</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Firma</h4>
+        <ul>
+          <li><a href="#">O nas</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Kontakt</a></li>
+          <li><a href="#">Kariera</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pomoc</h4>
+        <ul>
+          <li><a href="#">Centrum pomocy</a></li>
+          <li><a href="#">Status</a></li>
+          <li><a href="#">Regulamin</a></li>
+          <li><a href="#">Prywatność</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 jobflow. Made in Warszawa.</span>
+      <span>PL · EN</span>
+    </div>
+  </div>
+</footer>

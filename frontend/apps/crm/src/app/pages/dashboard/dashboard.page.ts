@@ -47,6 +47,8 @@ interface UpcomingItem {
   channel: string;
   type: 'interview' | 'followup' | 'deadline';
   color: 'slate' | 'amber' | 'indigo' | 'emerald' | 'rose';
+  /** Icon name for the channel meta row (video/mail/clock). */
+  channelIcon: 'video' | 'mail' | 'clock';
 }
 
 interface CvVersion {
@@ -137,6 +139,17 @@ const JOB_BOARDS_STUB: JobBoard[] = [
   { id: 'glassdoor',name: 'Glassdoor',   bg: '#0CAA41', short: 'Gd', connected: false, account: null,                newJobs: 0,   lastSync: null,           autoApply: false },
 ];
 
+// Upcoming events are not yet modelled structurally in the backend (we only
+// have nextFollowUpAt timestamps on applications, with no time/kind/channel).
+// Until that lands, surface the design's stubbed events so the visual is 1:1.
+const UPCOMING_STUB: UpcomingItem[] = [
+  { id: 'u1', type: 'interview', company: 'GitLab',   role: 'Staff Product Designer',  logo: 'G', logoBg: '#FC6D26', date: new Date('2026-05-13'), time: '16:00', kind: 'HR Screen',        channel: 'Google Meet', color: 'indigo',  channelIcon: 'video' },
+  { id: 'u2', type: 'interview', company: 'Booksy',   role: 'Sr. UX Designer',         logo: 'B', logoBg: '#1B1B1F', date: new Date('2026-05-14'), time: '11:00', kind: 'Final Round',      channel: 'Office',      color: 'emerald', channelIcon: 'video' },
+  { id: 'u3', type: 'followup',  company: 'Figma',    role: 'Sr. Product Designer',    logo: 'F', logoBg: '#0ACF83', date: new Date('2026-05-15'), time: '—',     kind: 'Wyślij portfolio', channel: 'Email',       color: 'amber',   channelIcon: 'mail'  },
+  { id: 'u4', type: 'deadline',  company: 'Allegro',  role: 'Product Designer',        logo: 'A', logoBg: '#FF5A00', date: new Date('2026-05-16'), time: '23:59', kind: 'Deadline oferty',  channel: '—',           color: 'rose',    channelIcon: 'clock' },
+  { id: 'u5', type: 'interview', company: 'Stripe',   role: 'Senior Product Designer', logo: 'S', logoBg: '#635BFF', date: new Date('2026-05-19'), time: '17:30', kind: 'Design Challenge', channel: 'Zoom',        color: 'indigo',  channelIcon: 'video' },
+];
+
 const MATCHED_JOBS_STUB: MatchedJob[] = [
   { id: 'j1', boardId: 'linkedin', company: 'Spotify',  logo: 'S', logoBg: '#1DB954', role: 'Senior Product Designer',  salary: '€80–100k',   location: 'Sztokholm / Remote', match: 94, postedAgo: '2h', easyApply: true },
   { id: 'j2', boardId: 'pracuj',   company: 'ING Hubs', logo: 'I', logoBg: '#FF6200', role: 'Sr. UX Designer',          salary: '20–26k PLN', location: 'Katowice',           match: 87, postedAgo: '4h', easyApply: true },
@@ -225,6 +238,77 @@ export class DashboardPage {
 
   protected readonly activeOffers = computed(() => this.stats()?.byStatus.OFFER ?? 0);
 
+  // Weekly sent series for the sparkline. Falls back to a small constant
+  // pattern so the chart isn't a flat line on a fresh account.
+  protected readonly sentSeries = computed<number[]>(() => {
+    const buckets = this.stats()?.weekly ?? [];
+    if (buckets.length === 0) return [3, 5, 7, 6, 8, 4, 6, 3];
+    return buckets.map((b) => b.applied);
+  });
+
+  // We don't have weekly response counts from the backend yet, so we
+  // approximate a steady-rising series scaled to the current rate.
+  protected readonly respSeries = computed<number[]>(() => {
+    const pct = this.responseRatePct();
+    if (pct === 0) return [1, 1, 2, 3, 3, 2, 4, 1];
+    const sent = this.sentSeries();
+    return sent.map((v) => Math.max(0, Math.round(v * (pct / 100))));
+  });
+
+  // Up to 3 company chips for "Rozmowy w toku" — surfaces who's mid-process.
+  protected readonly interviewCompanies = computed<string[]>(() => {
+    return this.applications()
+      .filter((a) =>
+        ['INTERVIEW_SCHEDULED', 'INTERVIEW_DONE', 'TASK_RECEIVED', 'TASK_SUBMITTED'].includes(
+          a.currentStatus,
+        ),
+      )
+      .slice(0, 3)
+      .map((a) => a.companyName);
+  });
+
+  // Tiny inline-SVG path generator for the sparkline.
+  protected sparkPath(data: number[], w = 88, h = 32): string {
+    if (data.length === 0) return '';
+    const max = Math.max(...data, 1);
+    const min = Math.min(...data, 0);
+    const range = max - min || 1;
+    const step = w / (data.length - 1);
+    return data
+      .map((v, i) => {
+        const x = (i * step).toFixed(1);
+        const y = (h - ((v - min) / range) * h * 0.85 - 2).toFixed(1);
+        return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+      })
+      .join(' ');
+  }
+
+  protected sparkAreaPath(data: number[], w = 88, h = 32): string {
+    const line = this.sparkPath(data, w, h);
+    if (!line) return '';
+    return `${line} L${w},${h} L0,${h} Z`;
+  }
+
+  protected sparkLastPoint(data: number[], w = 88, h = 32): { x: number; y: number } {
+    if (data.length === 0) return { x: 0, y: 0 };
+    const max = Math.max(...data, 1);
+    const min = Math.min(...data, 0);
+    const range = max - min || 1;
+    const step = w / (data.length - 1);
+    const i = data.length - 1;
+    return {
+      x: i * step,
+      y: h - ((data[i] - min) / range) * h * 0.85 - 2,
+    };
+  }
+
+  // Week-over-week delta — fed to the Trend chip in the card header.
+  protected readonly sentWeeklyDelta = computed<number>(() => {
+    const w = this.stats()?.weekly ?? [];
+    if (w.length < 2) return 0;
+    return w[w.length - 1].applied - w[w.length - 2].applied;
+  });
+
   // ---------------- Kanban ----------------
 
   protected readonly kanbanGroups = computed(() => {
@@ -278,34 +362,10 @@ export class DashboardPage {
 
   // ---------------- Upcoming events ----------------
 
-  // Derived from nextFollowUpAt + status — backend doesn't yet expose
-  // structured interview-schedule objects, so we approximate from the
-  // application list.
-  protected readonly upcomingItems = computed<UpcomingItem[]>(() => {
-    const now = Date.now();
-    const items: UpcomingItem[] = [];
-    for (const app of this.applications()) {
-      if (!app.nextFollowUpAt) continue;
-      const t = new Date(app.nextFollowUpAt).getTime();
-      if (Number.isNaN(t) || t < now - 86_400_000) continue;
-      const isInterview =
-        app.currentStatus === 'INTERVIEW_SCHEDULED' || app.currentStatus === 'TASK_RECEIVED';
-      items.push({
-        id: app.id,
-        company: app.companyName,
-        role: app.position,
-        logo: app.companyName.charAt(0).toUpperCase() || '·',
-        logoBg: this.avatarColorFor(app.companyName),
-        date: new Date(app.nextFollowUpAt),
-        time: '',
-        kind: isInterview ? 'Rozmowa' : 'Follow-up',
-        channel: app.remote ? 'Remote' : (app.location ?? '—'),
-        type: isInterview ? 'interview' : 'followup',
-        color: isInterview ? 'indigo' : 'amber',
-      });
-    }
-    return items.sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 5);
-  });
+  // Surfaced from a fixed stub for now — the backend doesn't model interview
+  // schedules / deadlines as first-class events yet, only nextFollowUpAt
+  // timestamps. Swap to a real EventApi once that exists.
+  protected readonly upcomingItems = signal<UpcomingItem[]>(UPCOMING_STUB);
 
   // ---------------- A/B CV stub ----------------
 
@@ -371,16 +431,28 @@ export class DashboardPage {
     this.postFor.set(null);
   }
 
+  // Relative % improvement of the winner over the loser, matching the
+  // design's insight wording ("o X% wyższy response rate").
   protected readonly cvInsightDelta = computed(() => {
-    const [a, b] = this.cvVersions();
-    if (!a || !b) return 0;
-    const rateA = a.sent === 0 ? 0 : a.responses / a.sent;
-    const rateB = b.sent === 0 ? 0 : b.responses / b.sent;
-    return Math.round(Math.abs(rateA - rateB) * 100);
+    const versions = this.cvVersions();
+    const winner = versions.find((v) => v.isWinner);
+    const loser = versions.find((v) => !v.isWinner);
+    if (!winner || !loser || winner.sent === 0 || loser.sent === 0) return 0;
+    const rateW = winner.responses / winner.sent;
+    const rateL = loser.responses / loser.sent;
+    if (rateL === 0) return 0;
+    return Math.round(((rateW - rateL) / rateL) * 100);
   });
 
   protected readonly cvWinnerName = computed(() => {
     return this.cvVersions().find((v) => v.isWinner)?.name ?? '';
+  });
+
+  // Short label ("v3.2") for the insight sentence — full name is too long
+  // and the design uses just the version prefix.
+  protected readonly cvWinnerShort = computed(() => {
+    const name = this.cvWinnerName();
+    return name.split(/\s|—/)[0] || name;
   });
 
   // ---------------- Helpers ----------------

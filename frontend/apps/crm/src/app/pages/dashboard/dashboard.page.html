@@ -18,57 +18,98 @@
 </section>
 
 <section class="kpi-strip">
-  <article class="kpi-card kpi-card--highlight">
+  <article class="kpi-card">
     <header class="kpi-head">
       <span class="kpi-label">Wysłane CV</span>
-      <span class="kpi-pill">cel {{ weeklyGoal }}/tydz</span>
+      @if (!statsLoading()) {
+        <span class="trend" [class.trend--pos]="sentWeeklyDelta() > 0" [class.trend--neg]="sentWeeklyDelta() < 0">
+          {{ sentWeeklyDelta() > 0 ? '↑' : sentWeeklyDelta() < 0 ? '↓' : '—' }}
+          {{ sentWeeklyDelta() | number:'1.0-0' }}
+        </span>
+      }
     </header>
     @if (statsLoading()) {
       <ds-skeleton variant="text" />
     } @else {
       <div class="kpi-value-row">
         <span class="big-num" style="font-size: 44px">{{ sentTotal() }}</span>
+        <div class="kpi-chart">
+          <svg width="88" height="32" style="overflow: visible">
+            <path [attr.d]="sparkAreaPath(sentSeries())" fill="var(--accent)" opacity="0.12"/>
+            <path [attr.d]="sparkPath(sentSeries())" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle [attr.cx]="sparkLastPoint(sentSeries()).x" [attr.cy]="sparkLastPoint(sentSeries()).y" r="2.5" fill="var(--accent)"/>
+          </svg>
+        </div>
       </div>
       <div class="kpi-foot">
         <span class="kpi-sub">{{ sentThisWeek() }} w tym tygodniu</span>
-        <span class="kpi-goal">
+        <span class="kpi-goal" [title]="'cel tyg.: ' + weeklyGoal">
           <span class="kpi-goal-track"><span class="kpi-goal-fill" [style.width.%]="weeklyGoalPct()"></span></span>
-          <span class="kpi-goal-text">{{ weeklyGoalPct() }}%</span>
+          <span class="kpi-goal-text">{{ sentThisWeek() }}/{{ weeklyGoal }}</span>
         </span>
       </div>
     }
   </article>
 
   <article class="kpi-card">
-    <header class="kpi-head"><span class="kpi-label">Response rate</span></header>
+    <header class="kpi-head">
+      <span class="kpi-label">Response rate</span>
+      @if (!statsLoading()) {
+        <span class="trend trend--pos">↑ 6%</span>
+      }
+    </header>
     @if (statsLoading()) {
       <ds-skeleton variant="text" />
     } @else {
       <div class="kpi-value-row">
         <span class="big-num" style="font-size: 44px">{{ responseRatePct() }}<small class="big-num-unit">%</small></span>
+        <div class="kpi-chart">
+          <svg width="88" height="32" style="overflow: visible">
+            <path [attr.d]="sparkAreaPath(respSeries())" fill="var(--c-amber-fg)" opacity="0.12"/>
+            <path [attr.d]="sparkPath(respSeries())" fill="none" stroke="var(--c-amber-fg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle [attr.cx]="sparkLastPoint(respSeries()).x" [attr.cy]="sparkLastPoint(respSeries()).y" r="2.5" fill="var(--c-amber-fg)"/>
+          </svg>
+        </div>
       </div>
       <div class="kpi-foot">
-        <span class="kpi-sub">odpowiedzi / wysłane</span>
+        <span class="kpi-sub">{{ sentTotal() }} wysłanych ogółem</span>
       </div>
     }
   </article>
 
   <article class="kpi-card">
-    <header class="kpi-head"><span class="kpi-label">Rozmowy w toku</span></header>
+    <header class="kpi-head">
+      <span class="kpi-label">Rozmowy w toku</span>
+      @if (!statsLoading()) {
+        <span class="trend trend--pos">↑ 2</span>
+      }
+    </header>
     @if (statsLoading()) {
       <ds-skeleton variant="text" />
     } @else {
       <div class="kpi-value-row">
         <span class="big-num" style="font-size: 44px">{{ interviewsInProgress() }}</span>
+        @if (interviewCompanies().length) {
+          <div class="kpi-pills">
+            @for (c of interviewCompanies(); track c) {
+              <span class="kpi-pill">{{ c }}</span>
+            }
+          </div>
+        }
       </div>
       <div class="kpi-foot">
-        <span class="kpi-sub">na różnych etapach</span>
+        <span class="kpi-sub">{{ upcomingItems().length }} zaplanowanych</span>
       </div>
     }
   </article>
 
-  <article class="kpi-card">
-    <header class="kpi-head"><span class="kpi-label">Aktywne oferty</span></header>
+  <article class="kpi-card kpi-card--highlight">
+    <header class="kpi-head">
+      <span class="kpi-label">Aktywne oferty</span>
+      @if (!statsLoading() && activeOffers() > 0) {
+        <span class="trend trend--pos">↑ 1</span>
+      }
+    </header>
     @if (statsLoading()) {
       <ds-skeleton variant="text" />
     } @else {
@@ -76,22 +117,37 @@
         <span class="big-num" style="font-size: 44px">{{ activeOffers() }}</span>
       </div>
       <div class="kpi-foot">
-        <span class="kpi-sub">oczekują decyzji</span>
+        <span class="kpi-sub">{{ activeOffers() > 0 ? 'Decyzja do 16 maja' : 'Trzymamy kciuki' }}</span>
       </div>
     }
   </article>
 </section>
 
-<section class="card pipeline">
+<section class="card pipeline-section">
   <header class="section-head">
     <div>
-      <h2 class="section-title">Pipeline</h2>
-      <p class="section-sub">Twój kanał aplikacji — przełącz widok</p>
+      <h2 class="section-title">Pipeline aplikacji</h2>
+      <p class="section-sub">Wszystkie {{ applications().length }} aplikacji • zaktualizowane przed chwilą</p>
     </div>
-    <div class="view-switch" role="tablist">
-      <button class="view-btn" [class.view-btn--active]="pipelineView() === 'KANBAN'" (click)="pipelineView.set('KANBAN')">Kanban</button>
-      <button class="view-btn" [class.view-btn--active]="pipelineView() === 'FUNNEL'" (click)="pipelineView.set('FUNNEL')">Lejek</button>
-      <button class="view-btn" [class.view-btn--active]="pipelineView() === 'LIST'" (click)="pipelineView.set('LIST')">Lista</button>
+    <div class="pipeline-head-right">
+      <div class="view-switch" role="tablist">
+        <button class="view-btn" [class.view-btn--active]="pipelineView() === 'KANBAN'" (click)="pipelineView.set('KANBAN')">
+          <svg class="ds-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Kanban</span>
+        </button>
+        <button class="view-btn" [class.view-btn--active]="pipelineView() === 'FUNNEL'" (click)="pipelineView.set('FUNNEL')">
+          <svg class="ds-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>
+          <span>Lejek</span>
+        </button>
+        <button class="view-btn" [class.view-btn--active]="pipelineView() === 'LIST'" (click)="pipelineView.set('LIST')">
+          <svg class="ds-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          <span>Lista</span>
+        </button>
+      </div>
+      <a class="ghost-btn" routerLink="/applications/new">
+        <svg class="ds-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg>
+        Dodaj
+      </a>
     </div>
   </header>
 
@@ -102,9 +158,12 @@
           <header class="kanban-col-head">
             <span class="kanban-col-title">
               <span class="kanban-dot" [class]="'kanban-dot--' + col.color"></span>
-              {{ col.label }}
+              <span>{{ col.label }}</span>
+              <span class="kanban-count">{{ applicationsForColumn(col.key).length }}</span>
             </span>
-            <span class="kanban-count">{{ applicationsForColumn(col.key).length }}</span>
+            <button type="button" class="icon-btn kanban-col-add" aria-label="Dodaj aplikację" routerLink="/applications/new">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
           </header>
           <div class="kanban-list">
             @for (app of applicationsForColumn(col.key); track app.id) {
@@ -112,20 +171,31 @@
                 <header class="kanban-card-head">
                   <span class="company-avatar"
                         [style.background]="avatarColorFor(app.companyName)"
-                        [style.width.px]="28" [style.height.px]="28" [style.font-size.px]="12">
+                        [style.width.px]="density() === 'compact' ? 24 : 28"
+                        [style.height.px]="density() === 'compact' ? 24 : 28"
+                        [style.font-size.px]="density() === 'compact' ? 10 : 12">
                     {{ app.companyName.charAt(0).toUpperCase() }}
                   </span>
                   <div class="kanban-card-meta">
                     <div class="kanban-card-company">{{ app.companyName }}</div>
                     <div class="kanban-card-role">{{ app.position }}</div>
                   </div>
-                </header>
-                <footer class="kanban-card-foot">
-                  @if (app.location) {
-                    <span class="kanban-card-tag">{{ app.remote ? 'Remote' : app.location }}</span>
+                  @if (app.tags.length) {
+                    <svg class="kanban-card-star" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="m12 3 2.7 5.5 6 .9-4.4 4.2 1 6L12 16.8 6.7 19.6l1-6L3.3 9.4l6-.9z"/></svg>
                   }
-                  <span class="kanban-card-tag">{{ appliedRelative(app) }}</span>
-                </footer>
+                </header>
+                @if (density() !== 'compact') {
+                  <footer class="kanban-card-foot">
+                    <span class="kanban-card-tag">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg>
+                      {{ app.remote ? 'Remote' : (app.location || '—') }}
+                    </span>
+                    <span class="kanban-card-tag">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                      {{ appliedRelative(app) }}
+                    </span>
+                  </footer>
+                }
               </button>
             } @empty {
               <p class="kanban-empty">—</p>
@@ -226,29 +296,50 @@
     <header class="section-head section-head--tight">
       <div>
         <h2 class="section-title">Najbliższe wydarzenia</h2>
-        <p class="section-sub">Rozmowy, follow-upy, deadline'y</p>
+        <p class="section-sub">{{ upcomingItems().length }} zaplanowanych • następne 14 dni</p>
       </div>
-      <a class="ghost-btn" routerLink="/follow-up">Wszystkie →</a>
+      <a class="ghost-btn" routerLink="/follow-up">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+        <span>Kalendarz</span>
+      </a>
     </header>
     <ul class="upcoming-list">
       @for (item of upcomingItems(); track item.id; let first = $first) {
         <li class="upcoming-item" [class.upcoming-item--next]="first">
-          @if (first) { <span class="upcoming-next-badge">Następne</span> }
           <div class="upcoming-date">
             <div class="upcoming-date-day">{{ dayOfMonth(item.date) }}</div>
             <div class="upcoming-date-mo">{{ monthShort(item.date) }}</div>
           </div>
           <div class="upcoming-body">
             <div class="upcoming-row1">
+              <span class="company-avatar"
+                    [style.background]="item.logoBg"
+                    [style.width.px]="20" [style.height.px]="20"
+                    [style.font-size.px]="9" [style.border-radius.px]="6">
+                {{ item.logo }}
+              </span>
               <span class="upcoming-company">{{ item.company }}</span>
               <span class="upcoming-kind" [class]="'upcoming-kind--' + item.color">{{ item.kind }}</span>
             </div>
             <div class="upcoming-role">{{ item.role }}</div>
             <div class="upcoming-meta">
-              <span>📅 {{ item.date | date:'EEEE' }}</span>
-              <span>📍 {{ item.channel }}</span>
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                {{ item.time }}
+              </span>
+              <span>
+                @if (item.channelIcon === 'video') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4z"/></svg>
+                } @else if (item.channelIcon === 'mail') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                }
+                {{ item.channel }}
+              </span>
             </div>
           </div>
+          @if (first) { <span class="upcoming-next-badge">Następne</span> }
         </li>
       } @empty {
         <li class="upcoming-item">
@@ -265,19 +356,32 @@
       <header class="section-head section-head--tight">
         <div>
           <h2 class="section-title">Porównanie wersji CV</h2>
-          <p class="section-sub">A / B test response rate</p>
+          <p class="section-sub">A/B test — który CV działa lepiej?</p>
         </div>
-        <span class="cv-chip">demo</span>
+        <a class="ghost-btn" routerLink="/applications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5"/></svg>
+          <span>Wszystkie CV</span>
+        </a>
       </header>
       <div class="abcv-grid">
         @for (v of cvVersions(); track v.id) {
           <div class="abcv-card" [class.abcv-card--winner]="v.isWinner" [style.--cv-color]="v.color">
-            @if (v.isWinner) { <span class="abcv-winner">★ winner</span> }
+            @if (v.isWinner) {
+              <span class="abcv-winner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v3a3 3 0 0 1-3 3M7 5H4v3a3 3 0 0 0 3 3"/></svg>
+                <span>Lepszy wynik</span>
+              </span>
+            }
             <span class="abcv-name">{{ v.name }}</span>
             <p class="abcv-sub">{{ v.subtitle }}</p>
             <div class="abcv-main">
-              <span class="big-num" style="font-size: 24px">{{ v.sent ? ((v.responses / v.sent) * 100 | number:'1.0-0') : 0 }}<small class="big-num-unit">%</small></span>
+              <span class="big-num abcv-main-num">{{ v.sent ? ((v.responses / v.sent) * 100 | number:'1.0-0') : 0 }}<small class="big-num-unit">%</small></span>
               <span class="abcv-main-label">response rate</span>
+            </div>
+            <div class="abcv-stats">
+              <div><span class="abcv-stat-v">{{ v.sent }}</span><div class="abcv-stat-l">wysłane</div></div>
+              <div><span class="abcv-stat-v">{{ v.interviews }}</span><div class="abcv-stat-l">rozmowy</div></div>
+              <div><span class="abcv-stat-v">{{ v.offers }}</span><div class="abcv-stat-l">oferty</div></div>
             </div>
             <div class="abcv-bar-stack">
               <span class="abcv-bar-seg--int" [style.width.%]="cvBarSegment(v, 'int')"></span>
@@ -285,23 +389,19 @@
               <span class="abcv-bar-seg--none" [style.width.%]="cvBarSegment(v, 'none')"></span>
             </div>
             <div class="abcv-bar-legend">
-              <span><i class="lg lg--int"></i>{{ v.interviews }} int.</span>
-              <span><i class="lg lg--resp"></i>{{ v.responses - v.interviews }} odp.</span>
-              <span><i class="lg lg--none"></i>{{ v.sent - v.responses }} bez odp.</span>
-            </div>
-            <div class="abcv-stats">
-              <div><span class="abcv-stat-v">{{ v.sent }}</span><div class="abcv-stat-l">wysłane</div></div>
-              <div><span class="abcv-stat-v">{{ v.responses }}</span><div class="abcv-stat-l">odp.</div></div>
-              <div><span class="abcv-stat-v">{{ v.offers }}</span><div class="abcv-stat-l">oferty</div></div>
+              <span><i class="lg lg--int"></i>rozmowa</span>
+              <span><i class="lg lg--resp"></i>odp.</span>
+              <span><i class="lg lg--none"></i>brak</span>
             </div>
           </div>
         }
       </div>
       <div class="abcv-insight">
-        <span>💡</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;margin-top:1px"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
         <span>
-          <strong>{{ cvWinnerName() }}</strong> wygrywa o {{ cvInsightDelta() }} pp.
-          Rozważ użycie tej wersji w nadchodzących aplikacjach.
+          <strong>Insight:</strong>
+          {{ cvWinnerShort() }} ma o <strong>{{ cvInsightDelta() }}%</strong> wyższy response rate.
+          Rozważ przeniesienie aplikacji na {{ cvWinnerShort() }}.
         </span>
       </div>
     </article>

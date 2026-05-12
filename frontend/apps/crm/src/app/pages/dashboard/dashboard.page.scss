@@ -172,6 +172,19 @@
   background: var(--surface-3);
   padding: 2px 7px; border-radius: 999px;
 }
+.kpi-pills {
+  display: flex; flex-direction: column; gap: 3px;
+  align-items: flex-end;
+}
+.kpi-chart { flex-shrink: 0; }
+.trend {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.trend--pos { color: var(--c-emerald-fg); }
+.trend--neg { color: var(--c-rose-fg); }
 .kpi-value-row {
   display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
   min-height: 56px;
@@ -310,6 +323,13 @@
   padding: 16px 0;
   margin: 0;
 }
+.kanban-col-add {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  color: var(--ink-tertiary);
+}
+.kanban-col-add:hover { background: var(--surface); color: var(--ink); }
 .kanban-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -320,8 +340,9 @@
   cursor: pointer;
   font-family: inherit;
   color: inherit;
-  transition: border-color .12s, box-shadow .12s;
+  transition: border-color .12s, box-shadow .12s, transform .08s;
 }
+.kanban-card-star { flex-shrink: 0; }
 .kanban-card:hover {
   border-color: var(--border-strong);
   box-shadow: var(--shadow-sm);
@@ -345,9 +366,13 @@
   display: inline-flex; align-items: center; gap: 3px;
   font-size: 10.5px;
   color: var(--ink-tertiary);
-  padding: 1px 6px;
+  padding: 1px 6px 1px 5px;
   background: var(--surface-3);
   border-radius: 4px;
+}
+.kanban-card-tag svg { flex-shrink: 0; }
+.pipeline-head-right {
+  display: flex; gap: 10px; align-items: center;
 }
 
 // ---------- Funnel ----------
@@ -539,6 +564,8 @@
   color: var(--ink-secondary);
 }
 .upcoming-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.upcoming-meta svg { flex-shrink: 0; }
+.upcoming-row1 .company-avatar { font-size: 9px !important; }
 .upcoming-next-badge {
   position: absolute; top: 12px; right: 14px;
   font-size: 10px; font-weight: 600;
@@ -581,6 +608,7 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.abcv-winner svg { color: white; }
 .abcv-name {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -596,6 +624,10 @@
 .abcv-main {
   display: flex; align-items: baseline; gap: 8px;
   margin-top: 2px;
+}
+.abcv-main-num {
+  font-size: 42px;
+  line-height: 0.95;
 }
 .abcv-main-label {
   font-size: 11px;

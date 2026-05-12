@@ -7,16 +7,15 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { DsButton } from '@frontend/design-system/button';
-import { DsInput } from '@frontend/design-system/input';
 import { DsToastService } from '@frontend/design-system/toast';
 
 import { AuthService } from './auth.service';
 
 @Component({
   selector: 'register-page',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DsInput, DsButton, RouterLink],
+  imports: [RouterLink],
   templateUrl: './register.page.html',
   styleUrl: './login.page.scss',
 })
@@ -30,6 +29,7 @@ export class RegisterPage {
   protected readonly displayName = signal('');
   protected readonly attempted = signal(false);
   protected readonly loading = signal(false);
+  protected readonly showPassword = signal(false);
 
   private readonly emailValid = computed(() => /\S+@\S+\.\S+/.test(this.email().trim()));
   private readonly passwordValid = computed(() => this.password().length >= 8);
@@ -37,6 +37,32 @@ export class RegisterPage {
   protected readonly emailError = computed(() => this.attempted() && !this.emailValid());
   protected readonly passwordError = computed(() => this.attempted() && !this.passwordValid());
   protected readonly formValid = computed(() => this.emailValid() && this.passwordValid());
+
+  protected readonly pwChecks = computed(() => {
+    const v = this.password();
+    return {
+      length: v.length >= 8,
+      upper: /[A-Z]/.test(v),
+      num: /[0-9]/.test(v),
+      special: /[^a-zA-Z0-9]/.test(v),
+    };
+  });
+
+  protected onNameInput(event: Event): void {
+    this.displayName.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onEmailInput(event: Event): void {
+    this.email.set((event.target as HTMLInputElement).value);
+  }
+
+  protected onPasswordInput(event: Event): void {
+    this.password.set((event.target as HTMLInputElement).value);
+  }
+
+  protected togglePassword(): void {
+    this.showPassword.update((v) => !v);
+  }
 
   protected submit(): void {
     this.attempted.set(true);

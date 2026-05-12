@@ -32,8 +32,8 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "24kb",
-              "maximumError": "40kb"
+              "maximumWarning": "32kb",
+              "maximumError": "48kb"
             }
           ],
           "outputHashing": "all"
@@ -49,6 +49,9 @@
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "options": {
+        "proxyConfig": "apps/crm/proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "crm:build:production"

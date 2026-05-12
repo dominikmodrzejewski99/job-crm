@@ -3,6 +3,13 @@ import { Route } from '@angular/router';
 import { authGuard, publicOnlyGuard } from './auth/auth.guard';
 
 export const appRoutes: Route[] = [
+  // Root → public marketing landing. The authed shell still owns
+  // /dashboard, /applications, etc. via the prefix-matching '' route below.
+  { path: '', pathMatch: 'full', redirectTo: 'landing' },
+  {
+    path: 'landing',
+    loadComponent: () => import('./pages/landing/landing.page').then((m) => m.LandingPage),
+  },
   {
     path: 'login',
     canActivate: [publicOnlyGuard],
