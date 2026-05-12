@@ -103,7 +103,7 @@
   --text-4: #{p.$n-400};
   --text-on-brand: #{p.$n-0};
 
-  --ring: rgba(145, 142, 244, 0.45);
+  --ring: rgba(145, 142, 244, 0.4);  // soft-periwinkle @ 40%
 
   // Shell — sidebar is the only dark surface in an otherwise light app.
   --sidebar-bg:           #{p.$space-indigo};

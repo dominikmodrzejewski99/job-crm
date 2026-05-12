@@ -53,10 +53,10 @@ table[ds-table] {
       }
 
       &[data-selected='true'] td {
-        background: rgba(91, 77, 238, 0.06);
+        background: rgba(145, 142, 244, 0.08);
 
         [data-theme='dark'] & {
-          background: rgba(122, 106, 255, 0.10);
+          background: rgba(145, 142, 244, 0.14);
         }
 
         &:first-child {

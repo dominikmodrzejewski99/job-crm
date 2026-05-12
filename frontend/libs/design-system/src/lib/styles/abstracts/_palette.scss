@@ -22,16 +22,20 @@ $n-700: #2e3460;
 $n-800: #1c2150;
 $n-900: $space-indigo;
 
-// ---- Brand scale (periwinkle → ocean-deep) ----
-$brand-50:  #f1f1fe;
+// ---- Brand scale (periwinkle = CTA, darkens down through ocean-deep) ----
+// Components default to --brand-500 as the active fill, --brand-600 on hover
+// and --brand-700 on press. The scale must therefore go light → dark as the
+// numbers go up; we hand-mix tints below 500 because the palette only gives
+// us a single mid value (periwinkle).
+$brand-50:  #f1f1fe; // lightest tint, for backgrounds
 $brand-100: #e3e2fc;
 $brand-200: #c7c4f9;
-$brand-300: #aaa6f6;
-$brand-400: $soft-periwinkle; // primary CTA
-$brand-500: $cornflower-blue; // hover / focus
-$brand-600: $ocean-deep;      // pressed / active
-$brand-700: #1f4f85;
-$brand-800: $space-indigo;
+$brand-300: $baby-blue-ice;   // #98b9f2
+$brand-400: $cornflower-blue; // #6f9ceb, lighter accent / focus
+$brand-500: $soft-periwinkle; // #918ef4, PRIMARY (default button bg, badges)
+$brand-600: $ocean-deep;      // #306bac, hover
+$brand-700: #1f4f85;          // pressed
+$brand-800: $space-indigo;    // text on light, sidebar bg
 
 // ---- Semantic ----
 $success-400: #4ade80;

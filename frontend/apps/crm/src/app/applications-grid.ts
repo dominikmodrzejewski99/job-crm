@@ -45,15 +45,15 @@ const sharedThemeParams = {
 const lightTheme: Theme = themeQuartz.withPart(colorSchemeLight).withParams({
   ...sharedThemeParams,
   backgroundColor: '#ffffff',
-  foregroundColor: '#0e0e14',
-  chromeBackgroundColor: '#f4f4f6',
-  headerBackgroundColor: '#f4f4f6',
-  headerTextColor: '#6c6c79',
-  borderColor: '#e7e7eb',
-  rowHoverColor: 'rgba(91, 77, 238, 0.04)',
-  selectedRowBackgroundColor: 'rgba(91, 77, 238, 0.08)',
-  accentColor: '#5b4dee',
-  inputFocusBorder: { color: '#5b4dee' },
+  foregroundColor: '#141b41',
+  chromeBackgroundColor: '#f7f9fd',
+  headerBackgroundColor: '#f7f9fd',
+  headerTextColor: '#4a5380',
+  borderColor: '#d9e1f2',
+  rowHoverColor: 'rgba(145, 142, 244, 0.06)',
+  selectedRowBackgroundColor: 'rgba(145, 142, 244, 0.12)',
+  accentColor: '#918ef4',
+  inputFocusBorder: { color: '#918ef4' },
 });
 
 const darkTheme: Theme = themeQuartz.withPart(colorSchemeDark).withParams({
@@ -64,10 +64,10 @@ const darkTheme: Theme = themeQuartz.withPart(colorSchemeDark).withParams({
   headerBackgroundColor: '#15151d',
   headerTextColor: '#9a9aa6',
   borderColor: '#23232f',
-  rowHoverColor: 'rgba(122, 106, 255, 0.08)',
-  selectedRowBackgroundColor: 'rgba(122, 106, 255, 0.14)',
-  accentColor: '#7a6aff',
-  inputFocusBorder: { color: '#7a6aff' },
+  rowHoverColor: 'rgba(145, 142, 244, 0.10)',
+  selectedRowBackgroundColor: 'rgba(145, 142, 244, 0.16)',
+  accentColor: '#918ef4',
+  inputFocusBorder: { color: '#918ef4' },
 });
 
 @Component({
