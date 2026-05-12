@@ -22,10 +22,21 @@ services:
         value: prod
       - key: SERVER_PORT
         value: "8080"
-      - key: DB_URL
+      # Render's `connectionString` property returns `postgres://...` which
+      # HikariCP rejects ("URL must start with 'jdbc'"). Build the JDBC URL
+      # from the discrete fields in application-prod.yml instead.
+      - key: DB_HOST
         fromDatabase:
           name: job-crm-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: job-crm-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: job-crm-db
+          property: database
       - key: DB_USER
         fromDatabase:
           name: job-crm-db
