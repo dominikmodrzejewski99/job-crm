@@ -1,41 +1,41 @@
 // Raw color palette — SASS variables only. No CSS output.
 // These are the immutable source-of-truth values for the design system.
 
-// ---- Source-of-truth palette (Phase 10 — blue/periwinkle, light theme only) ----
-// space-indigo / ocean-deep / cornflower-blue / baby-blue-ice / soft-periwinkle
-$space-indigo:    #141b41;
-$ocean-deep:      #306bac;
-$cornflower-blue: #6f9ceb;
-$baby-blue-ice:   #98b9f2;
-$soft-periwinkle: #918ef4;
+// ---- Source-of-truth palette (Phase 11 — warm terracotta from Claude Design) ----
+// terracotta accent / ink / warm sand neutrals — adopted to match the
+// "jobflow" handoff. Replaces the previous periwinkle/space-indigo palette.
+$terracotta:      #D97757;
+$terracotta-deep: #B85838;
+$ink:             #1B1B1F;
+$cream:           #F7F5F2;
+$sand:            #EEEAE3;
+$warm-stone:      #D6CFC2;
 
-// ---- Neutral (cool blue-tinted slate, derived from space-indigo) ----
+// ---- Neutral (warm sand-based slate; ink-on-cream contrast) ----
 $n-0:   #ffffff;
-$n-50:  #f7f9fd;
-$n-100: #eef2fb;
-$n-200: #dde4f2;
-$n-300: #c2cde3;
-$n-400: #98a3c2;
-$n-500: #7480a8;
-$n-600: #4a5380;
-$n-700: #2e3460;
-$n-800: #1c2150;
-$n-900: $space-indigo;
+$n-50:  $cream;           // page bg
+$n-100: $sand;            // hover / nested
+$n-200: #E8E2D8;          // border
+$n-300: $warm-stone;      // strong border
+$n-400: #B4AEA3;          // ink-quaternary
+$n-500: #8A857C;          // ink-tertiary
+$n-600: #4D4A45;          // ink-secondary
+$n-700: #2A2622;
+$n-800: #211E1B;
+$n-900: $ink;             // primary text
 
-// ---- Brand scale (periwinkle = CTA, darkens down through ocean-deep) ----
+// ---- Brand scale (terracotta = accent, ink = primary action) ----
 // Components default to --brand-500 as the active fill, --brand-600 on hover
-// and --brand-700 on press. The scale must therefore go light → dark as the
-// numbers go up; we hand-mix tints below 500 because the palette only gives
-// us a single mid value (periwinkle).
-$brand-50:  #f1f1fe; // lightest tint, for backgrounds
-$brand-100: #e3e2fc;
-$brand-200: #c7c4f9;
-$brand-300: $baby-blue-ice;   // #98b9f2
-$brand-400: $cornflower-blue; // #6f9ceb, lighter accent / focus
-$brand-500: $soft-periwinkle; // #918ef4, PRIMARY (default button bg, badges)
-$brand-600: $ocean-deep;      // #306bac, hover
-$brand-700: #1f4f85;          // pressed
-$brand-800: $space-indigo;    // text on light, sidebar bg
+// and --brand-700 on press.
+$brand-50:  #FBE9E0;  // accent-soft tint
+$brand-100: #F5D2C0;
+$brand-200: #EFB89E;
+$brand-300: #E89E7C;
+$brand-400: #E0875F;
+$brand-500: $terracotta;       // #D97757, PRIMARY
+$brand-600: $terracotta-deep;  // #B85838, hover
+$brand-700: #913F25;           // pressed
+$brand-800: #5E2A18;
 
 // ---- Semantic ----
 $success-400: #4ade80;

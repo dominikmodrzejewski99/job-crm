@@ -7,6 +7,32 @@
   </div>
 
   <div class="actions">
+    <label class="search">
+      <span class="search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.3-4.3"/>
+        </svg>
+      </span>
+      <input type="search" placeholder="Szukaj firmy, roli, statusu…" aria-label="Szukaj" />
+      <kbd>⌘K</kbd>
+    </label>
+
+    <button type="button" class="icon-btn icon-btn--lg" aria-label="Powiadomienia">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 1 1 12 0v5l1.5 2.5h-15L6 13z"/>
+        <path d="M10 18a2 2 0 0 0 4 0"/>
+      </svg>
+      <span class="icon-btn-dot"></span>
+    </button>
+
+    <a class="primary-btn" routerLink="/applications" [queryParams]="{ drawer: 'new' }">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span>Nowa aplikacja</span>
+    </a>
+
     <div class="locale-switch" role="group" [attr.aria-label]="'language' | tr">
       <button type="button"
               class="locale-btn"

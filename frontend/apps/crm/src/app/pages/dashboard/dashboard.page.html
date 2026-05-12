@@ -308,6 +308,252 @@
   }
 </section>
 
+<section class="two-col">
+  <article class="card followup-panel">
+    <header class="section-head section-head--tight">
+      <div>
+        <h2 class="section-title">Follow-upy do wysłania</h2>
+        <p class="section-sub">{{ followupCandidates().length }} aplikacji bez odpowiedzi · czas na ping</p>
+      </div>
+      <a class="ghost-btn" routerLink="/follow-up">Skrzynka →</a>
+    </header>
+    <div class="followup-list">
+      @for (app of followupCandidates(); track app.id) {
+        @let days = daysSince(app.appliedAt) ?? 0;
+        @let urgent = days >= 14;
+        @let isSent = sentFollowUpIds().has(app.id);
+        <div class="followup-item"
+             [class.followup-item--urgent]="urgent"
+             [class.followup-item--sent]="isSent">
+          <span class="company-avatar"
+                [style.background]="avatarColorFor(app.companyName)"
+                [style.width.px]="32" [style.height.px]="32" [style.font-size.px]="13">
+            {{ app.companyName.charAt(0).toUpperCase() }}
+          </span>
+          <div class="followup-body">
+            <div class="followup-line1">
+              <span class="followup-company">{{ app.companyName }}</span>
+              <span class="status-pill"
+                    [style.background]="'var(--c-' + statusFor(app).col.color + '-bg)'"
+                    [style.color]="'var(--c-' + statusFor(app).col.color + '-fg)'"
+                    [style.padding]="'2px 8px'"
+                    [style.fontSize.px]="10.5">
+                {{ statusFor(app).label }}
+              </span>
+            </div>
+            <div class="followup-line2">
+              <span class="followup-role">{{ app.position }}</span>
+              <span class="followup-age" [class.followup-age--urgent]="urgent">
+                ⏱ {{ appliedRelative(app) }}
+              </span>
+            </div>
+          </div>
+          @if (isSent) {
+            <span class="followup-sent-tag">✓ Wysłane</span>
+          } @else {
+            <button type="button" class="followup-send" (click)="openComposeFor(app)">
+              ✉ Napisz
+            </button>
+          }
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <span style="font-size: 22px">✓</span>
+          <p>Wszystkie aplikacje są na bieżąco — żadnych zaległych follow-upów.</p>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="card boards-panel">
+    <header class="section-head section-head--tight">
+      <div>
+        <h2 class="section-title">Job boardy</h2>
+        <p class="section-sub">{{ connectedBoards().length }} podłączonych · {{ totalNewBoardJobs() }} nowych ofert dziś</p>
+      </div>
+      <div class="view-switch">
+        <button class="view-btn" [class.view-btn--active]="boardsTab() === 'matched'" (click)="boardsTab.set('matched')">Dopasowane</button>
+        <button class="view-btn" [class.view-btn--active]="boardsTab() === 'boards'" (click)="boardsTab.set('boards')">Integracje</button>
+      </div>
+    </header>
+    @if (boardsTab() === 'matched') {
+      <div class="matched-list">
+        @for (job of matchedJobs(); track job.id) {
+          @let board = boardFor(job.boardId);
+          <div class="matched-item">
+            <span class="company-avatar"
+                  [style.background]="job.logoBg"
+                  [style.width.px]="36" [style.height.px]="36" [style.font-size.px]="14">
+              {{ job.logo }}
+            </span>
+            <div class="matched-body">
+              <div class="matched-line1">
+                <span class="matched-company">{{ job.company }}</span>
+                @if (board) {
+                  <span class="matched-via">
+                    <span class="matched-via-dot" [style.background]="board.bg"></span>
+                    via {{ board.name }}
+                  </span>
+                }
+              </div>
+              <div class="matched-role">{{ job.role }}</div>
+              <div class="matched-meta">
+                <span>📍 {{ job.location }}</span>
+                <span>{{ job.salary }}</span>
+                <span>⏱ {{ job.postedAgo }}</span>
+              </div>
+            </div>
+            <div class="matched-actions">
+              <div class="match-score" [attr.data-match]="matchTier(job.match)">
+                <div class="match-score-ring">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="var(--surface-3)" stroke-width="3" />
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="currentColor" stroke-width="3"
+                            [attr.stroke-dasharray]="matchDash(job.match)" stroke-linecap="round"
+                            transform="rotate(-90 19 19)" />
+                  </svg>
+                  <span class="match-score-num">{{ job.match }}</span>
+                </div>
+                <span class="match-score-lbl">match</span>
+              </div>
+              <button type="button" class="post-btn" [class.post-btn--easy]="job.easyApply" (click)="openPostFor(job)">
+                ↗ {{ job.easyApply ? 'Wyślij CV' : 'Aplikuj' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="boards-list">
+        @for (b of jobBoards(); track b.id) {
+          <div class="board-item" [class.board-item--off]="!b.connected">
+            <div class="board-mark" [style.background]="b.bg">{{ b.short }}</div>
+            <div class="board-body">
+              <div class="board-line1">
+                <span class="board-name">{{ b.name }}</span>
+                @if (b.connected) {
+                  <span class="board-status board-status--on">
+                    <span class="status-dot" style="background: var(--c-emerald-dot)"></span>
+                    podłączone
+                  </span>
+                } @else {
+                  <span class="board-status">niepodłączone</span>
+                }
+              </div>
+              @if (b.connected) {
+                <div class="board-meta">
+                  <span>{{ b.account }}</span>
+                  <span>· sync {{ b.lastSync }}</span>
+                  <span>· {{ b.newJobs }} nowych</span>
+                </div>
+              } @else {
+                <div class="board-meta">Połącz, by widzieć dopasowane oferty i aplikować jednym klikiem</div>
+              }
+            </div>
+            <button type="button" [class]="b.connected ? 'ghost-btn' : 'primary-btn'">
+              {{ b.connected ? 'Zarządzaj' : 'Połącz' }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </article>
+</section>
+
+@if (composeFor(); as app) {
+  <div class="drawer-scrim" (click)="closeCompose()"></div>
+  <div class="modal modal--compose" role="dialog" aria-modal="true">
+    <header class="modal-head">
+      <div>
+        <div class="modal-title">Follow-up · {{ app.companyName }}</div>
+        <div class="modal-sub">{{ app.position }} · wysłane {{ appliedRelative(app) }}</div>
+      </div>
+      <button type="button" class="icon-btn" (click)="closeCompose()" aria-label="Zamknij">✕</button>
+    </header>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-label">Temat</label>
+        <input type="text" [value]="'Re: Aplikacja na ' + app.position" readonly />
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Treść</label>
+        <textarea rows="7" readonly>Cześć,
+
+Chciał(a)bym dopytać o status mojej aplikacji na pozycję {{ app.position }} z dnia {{ app.appliedAt | date:'d MMMM yyyy' }}. Wciąż jestem bardzo zainteresowan(a) tą rolą — chętnie dostarczę dodatkowe informacje, jeśli będą potrzebne.
+
+Pozdrawiam</textarea>
+      </div>
+      <div class="compose-meta">
+        <span>✉ do: rekrutacja&#64;{{ app.companyName.toLowerCase().replace(' ', '') }}.com</span>
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <button class="ghost-btn" (click)="closeCompose()">Anuluj</button>
+      <button class="primary-btn" (click)="confirmComposeSend()">↗ Wyślij follow-up</button>
+    </footer>
+  </div>
+}
+
+@if (postFor(); as job) {
+  @let board = boardFor(job.boardId);
+  <div class="drawer-scrim" (click)="closePost()"></div>
+  <div class="modal modal--post" role="dialog" aria-modal="true">
+    <header class="modal-head">
+      <div>
+        <div class="modal-title">Aplikuj na {{ job.company }}</div>
+        <div class="modal-sub">via {{ board?.name }} · {{ job.role }}</div>
+      </div>
+      <button type="button" class="icon-btn" (click)="closePost()" aria-label="Zamknij">✕</button>
+    </header>
+    <div class="modal-body">
+      <div class="post-summary">
+        <span class="company-avatar"
+              [style.background]="job.logoBg"
+              [style.width.px]="44" [style.height.px]="44" [style.font-size.px]="16">
+          {{ job.logo }}
+        </span>
+        <div>
+          <div class="post-summary-role">{{ job.role }}</div>
+          <div class="post-summary-meta">{{ job.location }} · {{ job.salary }}</div>
+        </div>
+        <div class="match-score" [attr.data-match]="matchTier(job.match)" style="margin-left:auto">
+          <div class="match-score-ring">
+            <svg width="38" height="38" viewBox="0 0 38 38">
+              <circle cx="19" cy="19" r="15" fill="none" stroke="var(--surface-3)" stroke-width="3" />
+              <circle cx="19" cy="19" r="15" fill="none" stroke="currentColor" stroke-width="3"
+                      [attr.stroke-dasharray]="matchDash(job.match)" stroke-linecap="round"
+                      transform="rotate(-90 19 19)" />
+            </svg>
+            <span class="match-score-num">{{ job.match }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">Wersja CV</label>
+        <select>
+          @for (v of cvVersions(); track v.id) {
+            <option [value]="v.id">{{ v.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="post-checklist">
+        <div class="post-checklist-row">✓ CV gotowe</div>
+        <div class="post-checklist-row">✓ Profile {{ board?.name }} zweryfikowany</div>
+        <div class="post-checklist-row">✓ Cover letter wygenerowany</div>
+        <div class="post-checklist-row">✓ Dodane do pipeline jako „Wysłane"</div>
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <button class="ghost-btn" (click)="closePost()">Anuluj</button>
+      <button class="primary-btn" [style.background]="board?.bg" (click)="closePost()">
+        ↗ Wyślij przez {{ board?.name }}
+      </button>
+    </footer>
+  </div>
+}
+
 @if (drawerApp(); as app) {
   <div class="drawer-scrim" (click)="closeDrawer()"></div>
   <aside class="drawer" role="dialog" aria-modal="true">

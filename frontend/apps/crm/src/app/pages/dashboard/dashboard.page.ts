@@ -61,6 +61,32 @@ interface CvVersion {
   isWinner: boolean;
 }
 
+interface JobBoard {
+  id: string;
+  name: string;
+  bg: string;
+  short: string;
+  connected: boolean;
+  account: string | null;
+  newJobs: number;
+  lastSync: string | null;
+  autoApply: boolean;
+}
+
+interface MatchedJob {
+  id: string;
+  boardId: string;
+  company: string;
+  logo: string;
+  logoBg: string;
+  role: string;
+  salary: string;
+  location: string;
+  match: number;
+  postedAgo: string;
+  easyApply: boolean;
+}
+
 const PIPELINE_COLUMNS: PipelineColumn[] = [
   { key: 'sent', label: 'Wysłane', short: 'WYS', color: 'slate', statuses: ['DRAFT', 'APPLIED'] },
   { key: 'responded', label: 'Odpowiedź', short: 'ODP', color: 'amber', statuses: ['ACK_RECEIVED'] },
@@ -100,6 +126,22 @@ const CV_VERSIONS_STUB: CvVersion[] = [
 ];
 
 const WEEKLY_GOAL = 8;
+
+// Job boards demo data — wraps real JJIT/NFJ integration we already have
+// plus stubs for boards we don't crawl yet (LinkedIn / Pracuj / Glassdoor).
+const JOB_BOARDS_STUB: JobBoard[] = [
+  { id: 'linkedin', name: 'LinkedIn',    bg: '#0A66C2', short: 'in', connected: true,  account: 'maja.lewandowska',  newJobs: 124, lastSync: '5 min temu',  autoApply: true },
+  { id: 'pracuj',   name: 'Pracuj.pl',   bg: '#FF5A00', short: 'Pr', connected: true,  account: 'maja@example.pl',   newJobs: 38,  lastSync: '12 min temu', autoApply: false },
+  { id: 'nofluff',  name: 'NoFluffJobs', bg: '#1B1B1F', short: 'Nf', connected: true,  account: 'maja@design.pl',    newJobs: 22,  lastSync: '34 min temu', autoApply: false },
+  { id: 'justjoin', name: 'JustJoin.IT', bg: '#FF003C', short: 'JJ', connected: false, account: null,                newJobs: 0,   lastSync: null,           autoApply: false },
+  { id: 'glassdoor',name: 'Glassdoor',   bg: '#0CAA41', short: 'Gd', connected: false, account: null,                newJobs: 0,   lastSync: null,           autoApply: false },
+];
+
+const MATCHED_JOBS_STUB: MatchedJob[] = [
+  { id: 'j1', boardId: 'linkedin', company: 'Spotify',  logo: 'S', logoBg: '#1DB954', role: 'Senior Product Designer',  salary: '€80–100k',   location: 'Sztokholm / Remote', match: 94, postedAgo: '2h', easyApply: true },
+  { id: 'j2', boardId: 'pracuj',   company: 'ING Hubs', logo: 'I', logoBg: '#FF6200', role: 'Sr. UX Designer',          salary: '20–26k PLN', location: 'Katowice',           match: 87, postedAgo: '4h', easyApply: true },
+  { id: 'j3', boardId: 'nofluff',  company: 'Brainly',  logo: 'B', logoBg: '#1854D8', role: 'Product Designer (Mobile)',salary: '18–24k PLN', location: 'Remote',             match: 82, postedAgo: '1d', easyApply: false },
+];
 
 @Component({
   selector: 'jt-dashboard-page',
@@ -268,6 +310,66 @@ export class DashboardPage {
   // ---------------- A/B CV stub ----------------
 
   protected readonly cvVersions = signal<CvVersion[]>(CV_VERSIONS_STUB);
+
+  // ---------------- Follow-ups + Job Boards ----------------
+
+  protected readonly jobBoards = signal<JobBoard[]>(JOB_BOARDS_STUB);
+  protected readonly matchedJobs = signal<MatchedJob[]>(MATCHED_JOBS_STUB);
+  protected readonly boardsTab = signal<'matched' | 'boards'>('matched');
+  protected readonly composeFor = signal<ApiApplication | null>(null);
+  protected readonly postFor = signal<MatchedJob | null>(null);
+  protected readonly sentFollowUpIds = signal<Set<string>>(new Set());
+
+  protected readonly followupCandidates = computed<ApiApplication[]>(() => {
+    return this.applications()
+      .filter((a) => {
+        const days = this.daysSince(a.appliedAt) ?? 0;
+        return days >= 5 &&
+          !['OFFER', 'REJECTED', 'WITHDRAWN', 'GHOSTED'].includes(a.currentStatus);
+      })
+      .sort((a, b) => (this.daysSince(b.appliedAt) ?? 0) - (this.daysSince(a.appliedAt) ?? 0))
+      .slice(0, 6);
+  });
+
+  protected readonly connectedBoards = computed(() => this.jobBoards().filter((b) => b.connected));
+  protected readonly totalNewBoardJobs = computed(() =>
+    this.connectedBoards().reduce((s, b) => s + b.newJobs, 0),
+  );
+
+  protected boardFor(id: string): JobBoard | undefined {
+    return this.jobBoards().find((b) => b.id === id);
+  }
+
+  protected matchTier(score: number): 'high' | 'mid' | 'low' {
+    return score >= 90 ? 'high' : score >= 80 ? 'mid' : 'low';
+  }
+
+  protected matchDash(score: number): string {
+    return `${(score / 100) * 94.2} 94.2`;
+  }
+
+  protected openComposeFor(app: ApiApplication): void {
+    this.composeFor.set(app);
+  }
+
+  protected closeCompose(): void {
+    this.composeFor.set(null);
+  }
+
+  protected confirmComposeSend(): void {
+    const app = this.composeFor();
+    if (!app) return;
+    this.sentFollowUpIds.update((set) => new Set(set).add(app.id));
+    setTimeout(() => this.composeFor.set(null), 600);
+  }
+
+  protected openPostFor(job: MatchedJob): void {
+    this.postFor.set(job);
+  }
+
+  protected closePost(): void {
+    this.postFor.set(null);
+  }
 
   protected readonly cvInsightDelta = computed(() => {
     const [a, b] = this.cvVersions();

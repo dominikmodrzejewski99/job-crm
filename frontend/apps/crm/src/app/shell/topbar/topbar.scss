@@ -49,8 +49,106 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 280px;
+  height: 36px;
+  padding: 0 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: 10px;
+  color: var(--text-3);
+  transition: border-color .12s, box-shadow .12s;
+}
+
+.search:focus-within {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.search-icon { display: inline-flex; }
+
+.search input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-1);
+  min-width: 0;
+}
+
+.search input::placeholder { color: var(--text-3); }
+
+.search kbd {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  padding: 2px 5px;
+  border: 1px solid var(--border-1);
+  border-radius: 4px;
+  color: var(--text-3);
+  background: var(--bg-subtle);
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--text-2);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  transition: background .12s, color .12s;
+}
+
+.icon-btn:hover { background: var(--bg-subtle); color: var(--text-1); }
+
+.icon-btn--lg {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+}
+
+.icon-btn-dot {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-500);
+  border: 2px solid var(--bg-surface);
+}
+
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--text-1);
+  color: var(--bg-canvas);
+  border-radius: 10px;
+  border: 0;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity .12s, transform .08s;
+}
+
+.primary-btn:hover { opacity: .9; }
+.primary-btn:active { transform: translateY(1px); }
 
 .locale-switch {
   display: inline-flex;
@@ -92,4 +190,11 @@
     padding: 0 16px;
     gap: 12px;
   }
+  .search { width: 180px; }
+}
+
+@media (max-width: 720px) {
+  .search,
+  .primary-btn span { display: none; }
+  .primary-btn { padding: 0 10px; }
 }

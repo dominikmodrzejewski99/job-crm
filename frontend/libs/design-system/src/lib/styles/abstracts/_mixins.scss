@@ -86,35 +86,36 @@
   @include emit-status-tokens(light);
   @include emit-shadows(light);
 
-  // Surface scale — subtle blue tint, never pure white page bg.
-  --bg-canvas:     #{p.$n-50};      // page background (#f7f9fd)
+  // Surface scale — warm cream/sand bg, never pure white.
+  --bg-canvas:     #{p.$n-50};      // page background (#F7F5F2 cream)
   --bg-surface:    #{p.$n-0};       // cards
-  --bg-subtle:     #{p.$n-100};     // nested / hover
+  --bg-subtle:     #{p.$n-100};     // sand — sidebar / nested
   --bg-muted:      #{p.$n-200};
-  --surface-hover: rgba(145, 142, 244, 0.08);
+  --surface-hover: rgba(217, 119, 87, 0.08);
 
-  --border-1: #d9e1f2;
+  --border-1: #E8E2D8;
   --border-2: #{p.$n-300};
-  --divider:  rgba(20, 27, 65, 0.06);
+  --divider:  rgba(27, 27, 31, 0.06);
 
-  --text-1: #{p.$n-900};
-  --text-2: #{p.$n-600};
-  --text-3: #{p.$n-500};
-  --text-4: #{p.$n-400};
+  --text-1: #{p.$n-900};            // ink
+  --text-2: #{p.$n-600};            // ink-secondary
+  --text-3: #{p.$n-500};            // ink-tertiary
+  --text-4: #{p.$n-400};            // ink-quaternary
   --text-on-brand: #{p.$n-0};
 
-  --ring: rgba(145, 142, 244, 0.4);  // soft-periwinkle @ 40%
+  --ring: rgba(217, 119, 87, 0.4);  // terracotta @ 40%
 
-  // Shell — sidebar is the only dark surface in an otherwise light app.
-  --sidebar-bg:           #{p.$space-indigo};
-  --sidebar-bg-hover:     rgba(255, 255, 255, 0.06);
-  --sidebar-bg-active:    rgba(145, 142, 244, 0.18);
-  --sidebar-text:         rgba(255, 255, 255, 0.72);
-  --sidebar-text-active:  #{p.$n-0};
-  --sidebar-border:       rgba(255, 255, 255, 0.08);
+  // Shell — sidebar is now light sand to match the design handoff;
+  // the active item floats on a white surface card.
+  --sidebar-bg:           #{p.$sand};                // #EEEAE3
+  --sidebar-bg-hover:     #{p.$n-200};               // warm hover
+  --sidebar-bg-active:    #{p.$n-0};                 // active row = white card
+  --sidebar-text:         #{p.$n-600};               // ink-secondary
+  --sidebar-text-active:  #{p.$n-900};               // ink
+  --sidebar-border:       #{p.$n-200};
 
   --sidebar-w: 240px;
-  --topbar-h:  56px;
-  --drawer-w:  420px;
-  --drawer-scrim: rgba(20, 27, 65, 0.5);
+  --topbar-h:  64px;
+  --drawer-w:  460px;
+  --drawer-scrim: rgba(20, 18, 14, 0.3);
 }
