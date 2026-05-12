@@ -1,6 +1,9 @@
 @use '../../styles/abstracts' as a;
 
-table[ds-table] {
+// Host element is `table[ds-table]`; under ViewEncapsulation.Emulated bare
+// selectors are scoped to content children, so we use `:host` to style the
+// host table itself.
+:host {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;

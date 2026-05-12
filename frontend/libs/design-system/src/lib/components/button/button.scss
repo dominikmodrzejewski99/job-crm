@@ -1,6 +1,11 @@
 @use '../../styles/abstracts' as a;
 
-button[ds-button] {
+// Component host is `button[ds-button]`. Angular's ViewEncapsulation.Emulated
+// rewrites bare selectors to `[_ngcontent-XXX]` (matching content children),
+// not `[_nghost-XXX]` (matching the host itself), so referencing the host as
+// `button[ds-button]` here silently doesn't match. Using `:host` is the
+// correct way to style the host element.
+:host {
   display: inline-flex;
   align-items: center;
   justify-content: center;
