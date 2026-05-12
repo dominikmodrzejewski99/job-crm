@@ -23,10 +23,14 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      # Render injects PORT (defaults to 10000) and probes that port for
-      # its health check — application.yml reads PORT first, so we don't
-      # need to pin SERVER_PORT here. Setting SERVER_PORT=8080 actually
-      # broke prod because the router kept probing 10000 → health timeout.
+      # Render's internal health-check probes port 10000 even when the
+      # service binds elsewhere. Pin PORT here so application.yml's
+      # ${PORT:${SERVER_PORT:8080}} resolves to 10000 in prod, the same
+      # port Render's router uses for `healthCheckPath`. Without this the
+      # deploy times out with "Detected service running on port 8080" +
+      # "Timed Out at port 10000".
+      - key: PORT
+        value: "10000"
       # Render's `connectionString` property returns `postgres://...` which
       # HikariCP rejects ("URL must start with 'jdbc'"). Build the JDBC URL
       # from the discrete fields in application-prod.yml instead.

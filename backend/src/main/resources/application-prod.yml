@@ -25,6 +25,14 @@ management:
     web:
       exposure:
         include: health  # tighter than dev — no /info or /metrics in prod
+  # MAIL_* env vars are optional (sync: false in render.yaml) so SMTP
+  # credentials may not be configured. Without disabling the mail health
+  # indicator the actuator endpoint returns 503 on every probe, which
+  # makes Render mark the deploy as failed even though the app itself is
+  # serving fine. Re-enable once Resend/SendGrid creds are provisioned.
+  health:
+    mail:
+      enabled: false
 
 logging:
   level:
