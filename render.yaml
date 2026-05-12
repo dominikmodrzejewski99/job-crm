@@ -10,7 +10,10 @@ services:
     name: job-crm-backend
     runtime: docker
     plan: free
-    region: frankfurt
+    # No explicit `region` — let Render co-locate the web service with the
+    # free Postgres (free DBs aren't available in every region, so pinning
+    # the backend to Frankfurt while the DB landed in Oregon would break
+    # the internal hostname resolution).
     repo: https://github.com/dominikmodrzejewski99/job-crm
     branch: main
     rootDir: backend
