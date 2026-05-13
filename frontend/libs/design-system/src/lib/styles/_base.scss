@@ -55,3 +55,32 @@ a {
     text-decoration: underline;
   }
 }
+
+// Respect users who request reduced motion. Aggressive global suppression
+// (animations near-instant, transitions near-instant, smooth scrolling off).
+// Component-level overrides may still opt in to motion if essential.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Screen-reader only utility — visually hidden but exposed to assistive
+// tech. Use for context that's redundant for sighted users but critical
+// for SR (e.g. "Otwórz menu" on an icon-only button).
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

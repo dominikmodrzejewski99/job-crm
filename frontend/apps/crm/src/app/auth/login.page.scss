@@ -204,6 +204,8 @@ p.subtitle { margin: 0 0 28px; color: var(--ink-secondary); font-size: 14.5px; m
 
 .checks {
   margin: -4px 0 14px;
+  padding: 0;
+  list-style: none;
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 4px 14px;
 }

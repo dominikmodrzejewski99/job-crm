@@ -22,6 +22,19 @@ export default [
   },
   {
     files: ['**/*.html'],
-    rules: {},
+    rules: {
+      // WCAG AA enforcement — every a11y rule from @angular-eslint/template
+      // bumped to "error" so violations fail the build, not just warn.
+      '@angular-eslint/template/alt-text': 'error',
+      '@angular-eslint/template/elements-content': 'error',
+      '@angular-eslint/template/label-has-associated-control': 'error',
+      '@angular-eslint/template/no-positive-tabindex': 'error',
+      '@angular-eslint/template/table-scope': 'error',
+      '@angular-eslint/template/valid-aria': 'error',
+      '@angular-eslint/template/click-events-have-key-events': 'error',
+      '@angular-eslint/template/interactive-supports-focus': 'error',
+      '@angular-eslint/template/mouse-events-have-key-events': 'error',
+      '@angular-eslint/template/role-has-required-aria': 'error',
+    },
   },
 ];

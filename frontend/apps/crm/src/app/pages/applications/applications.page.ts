@@ -1,3 +1,4 @@
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
@@ -35,7 +36,6 @@ const SOURCE_MAP: Record<FormSource, ApiApplicationSource> = {
 
 @Component({
   selector: 'jt-applications-page',
-  standalone: true,
   imports: [
     DsButton,
     DsCard,
@@ -49,6 +49,7 @@ const SOURCE_MAP: Record<FormSource, ApiApplicationSource> = {
     ApplicationsGrid,
     EmptyStateComponent,
     PageHeaderComponent,
+    CdkTrapFocus,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './applications.page.html',

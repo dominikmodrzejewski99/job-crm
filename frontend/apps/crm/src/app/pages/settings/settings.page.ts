@@ -12,7 +12,6 @@ import { PageTitleService } from '../../shell/page-title.service';
 
 @Component({
   selector: 'jt-settings-page',
-  standalone: true,
   imports: [DatePipe, DsButton, DsCard, DsCardHeader, DsCardBody, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings.page.html',

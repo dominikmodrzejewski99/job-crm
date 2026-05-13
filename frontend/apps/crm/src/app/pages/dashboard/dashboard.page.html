@@ -568,10 +568,10 @@
 
 @if (composeFor(); as app) {
   <button type="button" class="drawer-scrim" (click)="closeCompose()" aria-label="Zamknij"></button>
-  <div class="modal modal--compose" role="dialog" aria-modal="true">
+  <div class="modal modal--compose" role="dialog" aria-modal="true" aria-labelledby="compose-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <header class="modal-head">
       <div>
-        <div class="modal-title">Follow-up · {{ app.companyName }}</div>
+        <div class="modal-title" id="compose-modal-title">Follow-up · {{ app.companyName }}</div>
         <div class="modal-sub">{{ app.position }} · wysłane {{ appliedRelative(app) }}</div>
       </div>
       <button type="button" class="icon-btn" (click)="closeCompose()" aria-label="Zamknij">✕</button>
@@ -603,10 +603,10 @@ Pozdrawiam</textarea>
 @if (postFor(); as job) {
   @let board = boardFor(job.boardId);
   <button type="button" class="drawer-scrim" (click)="closePost()" aria-label="Zamknij"></button>
-  <div class="modal modal--post" role="dialog" aria-modal="true">
+  <div class="modal modal--post" role="dialog" aria-modal="true" aria-labelledby="post-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <header class="modal-head">
       <div>
-        <div class="modal-title">Aplikuj na {{ job.company }}</div>
+        <div class="modal-title" id="post-modal-title">Aplikuj na {{ job.company }}</div>
         <div class="modal-sub">via {{ board?.name }} · {{ job.role }}</div>
       </div>
       <button type="button" class="icon-btn" (click)="closePost()" aria-label="Zamknij">✕</button>
@@ -662,7 +662,7 @@ Pozdrawiam</textarea>
 
 @if (drawerApp(); as app) {
   <button type="button" class="drawer-scrim" (click)="closeDrawer()" aria-label="Zamknij"></button>
-  <aside class="drawer" role="dialog" aria-modal="true">
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dashboard-drawer-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <header class="drawer-head">
       <div class="drawer-head-main">
         <span class="company-avatar"
@@ -671,7 +671,7 @@ Pozdrawiam</textarea>
           {{ app.companyName.charAt(0).toUpperCase() }}
         </span>
         <div>
-          <div class="drawer-company">{{ app.companyName }}</div>
+          <div class="drawer-company" id="dashboard-drawer-title">{{ app.companyName }}</div>
           <div class="drawer-role">{{ app.position }}</div>
         </div>
       </div>

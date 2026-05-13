@@ -1,3 +1,4 @@
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 import {
@@ -87,6 +88,12 @@ export class DsModalService {
 @Component({
   selector: 'ds-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: CdkTrapFocus,
+      inputs: ['cdkTrapFocusAutoCapture: cdkTrapFocusAutoCapture'],
+    },
+  ],
   template: `
     <div class="ds-modal__header">
       <ng-content select="[ds-modal-title]" />
@@ -99,6 +106,12 @@ export class DsModalService {
     </div>
   `,
   styleUrl: './modal.scss',
-  host: { class: 'ds-modal', role: 'dialog', 'aria-modal': 'true' },
+  host: {
+    class: 'ds-modal',
+    role: 'dialog',
+    'aria-modal': 'true',
+    cdkTrapFocus: 'true',
+    cdkTrapFocusAutoCapture: 'true',
+  },
 })
 export class DsModal {}

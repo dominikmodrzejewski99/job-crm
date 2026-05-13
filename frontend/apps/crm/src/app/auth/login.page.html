@@ -33,39 +33,45 @@
 
         <div class="divider">lub email</div>
 
-        <form (submit)="$event.preventDefault(); submit()">
+        <form (submit)="$event.preventDefault(); submit()" novalidate>
           <div class="field">
-            <span class="field-label">Email</span>
+            <label class="field-label" for="login-email">Email</label>
             <div class="field-input" [class.field-input--error]="emailError()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              <input type="email" placeholder="maja@example.com" autocomplete="email" required
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+              <input id="login-email" type="email" placeholder="maja@example.com" autocomplete="email" required
+                     [attr.aria-invalid]="emailError() ? 'true' : null"
+                     [attr.aria-describedby]="emailError() ? 'login-email-err' : null"
                      [value]="email()" (input)="onEmailInput($event)" />
             </div>
-            @if (emailError()) { <span class="field-err">Podaj poprawny email</span> }
+            @if (emailError()) { <span class="field-err" id="login-email-err" role="alert">Podaj poprawny email</span> }
           </div>
           <div class="field">
-            <span class="field-label">Hasło</span>
+            <label class="field-label" for="login-password">Hasło</label>
             <div class="field-input" [class.field-input--error]="passwordError()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <input [type]="showPassword() ? 'text' : 'password'" placeholder="••••••••" autocomplete="current-password" required
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="login-password" [type]="showPassword() ? 'text' : 'password'" placeholder="••••••••" autocomplete="current-password" required
+                     [attr.aria-invalid]="passwordError() ? 'true' : null"
+                     [attr.aria-describedby]="passwordError() ? 'login-password-err' : null"
                      [value]="password()" (input)="onPasswordInput($event)" />
-              <button type="button" class="toggle-pw" (click)="togglePassword()">
-                {{ showPassword() ? 'Ukryj' : 'Pokaż' }}
+              <button type="button" class="toggle-pw" (click)="togglePassword()"
+                      [attr.aria-label]="showPassword() ? 'Ukryj hasło' : 'Pokaż hasło'"
+                      [attr.aria-pressed]="showPassword()">
+                <span aria-hidden="true">{{ showPassword() ? 'Ukryj' : 'Pokaż' }}</span>
               </button>
             </div>
-            @if (passwordError()) { <span class="field-err">Min. 8 znaków</span> }
+            @if (passwordError()) { <span class="field-err" id="login-password-err" role="alert">Min. 8 znaków</span> }
           </div>
           <div class="row-between">
             <label class="remember"><input type="checkbox" checked /> Zapamiętaj mnie</label>
             <a href="#" class="forgot">Nie pamiętasz hasła?</a>
           </div>
-          <button class="primary-btn" type="submit" [class.loading]="loading()" [disabled]="loading()">
+          <button class="primary-btn" type="submit" [class.loading]="loading()" [disabled]="loading()" [attr.aria-busy]="loading() ? 'true' : null">
             @if (loading()) {
-              <span class="spinner"></span>
+              <span class="spinner" aria-hidden="true"></span>
               <span>Logowanie…</span>
             } @else {
               <span>Zaloguj się</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             }
           </button>
         </form>

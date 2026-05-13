@@ -76,7 +76,7 @@
 
 @if (composeFor(); as app) {
   <button type="button" class="fu-scrim" (click)="closeCompose()" aria-label="Zamknij"></button>
-  <div class="fu-modal" role="dialog" aria-modal="true" aria-labelledby="fu-modal-title">
+  <div class="fu-modal" role="dialog" aria-modal="true" aria-labelledby="fu-modal-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <header class="fu-modal-head">
       <div>
         <div class="fu-modal-title" id="fu-modal-title">Follow-up · {{ app.companyName }}</div>

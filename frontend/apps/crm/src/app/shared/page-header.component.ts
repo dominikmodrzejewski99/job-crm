@@ -6,7 +6,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
  */
 @Component({
   selector: 'jt-page-header',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="page-header">

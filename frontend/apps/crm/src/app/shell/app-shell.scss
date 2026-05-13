@@ -4,6 +4,39 @@
   background: var(--bg-canvas);
 }
 
+// Skip link — visually hidden until keyboard-focused. Lets keyboard and
+// SR users bypass the sidebar + topbar and jump straight into <main>.
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10000;
+  padding: 10px 16px;
+  background: var(--bg-surface, #fff);
+  color: var(--text-on-bg, #1B1B1F);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-200%);
+  transition: transform 150ms ease-out;
+
+  &:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--ring, #D97757);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// <main> receives focus when skip-link is used. Suppress default outline
+// since the visual focus state is already conveyed by the focused page
+// content; keep tabindex="-1" for programmatic focus only.
+main:focus { outline: none; }
+
 .shell {
   display: flex;
   min-height: 100dvh;

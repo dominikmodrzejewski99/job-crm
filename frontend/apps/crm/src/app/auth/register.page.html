@@ -33,38 +33,56 @@
 
         <div class="divider">lub email</div>
 
-        <form (submit)="$event.preventDefault(); submit()">
+        <form (submit)="$event.preventDefault(); submit()" novalidate>
           <div class="field">
-            <span class="field-label">Imię</span>
+            <label class="field-label" for="register-name">Imię</label>
             <div class="field-input">
-              <input type="text" placeholder="Maja" autocomplete="given-name"
+              <input id="register-name" type="text" placeholder="Maja" autocomplete="given-name"
                      [value]="displayName()" (input)="onNameInput($event)" />
             </div>
           </div>
           <div class="field">
-            <span class="field-label">Email</span>
+            <label class="field-label" for="register-email">Email</label>
             <div class="field-input" [class.field-input--error]="emailError()">
-              <input type="email" placeholder="maja@example.com" autocomplete="email" required
+              <input id="register-email" type="email" placeholder="maja@example.com" autocomplete="email" required
+                     [attr.aria-invalid]="emailError() ? 'true' : null"
+                     [attr.aria-describedby]="emailError() ? 'register-email-err' : null"
                      [value]="email()" (input)="onEmailInput($event)" />
             </div>
-            @if (emailError()) { <span class="field-err">Podaj poprawny email</span> }
+            @if (emailError()) { <span class="field-err" id="register-email-err" role="alert">Podaj poprawny email</span> }
           </div>
           <div class="field">
-            <span class="field-label">Hasło</span>
+            <label class="field-label" for="register-password">Hasło</label>
             <div class="field-input" [class.field-input--error]="passwordError()">
-              <input [type]="showPassword() ? 'text' : 'password'" placeholder="Minimum 8 znaków" autocomplete="new-password" required
+              <input id="register-password" [type]="showPassword() ? 'text' : 'password'" placeholder="Minimum 8 znaków" autocomplete="new-password" required
+                     [attr.aria-invalid]="passwordError() ? 'true' : null"
+                     aria-describedby="register-password-checks"
                      [value]="password()" (input)="onPasswordInput($event)" />
-              <button type="button" class="toggle-pw" (click)="togglePassword()">
-                {{ showPassword() ? 'Ukryj' : 'Pokaż' }}
+              <button type="button" class="toggle-pw" (click)="togglePassword()"
+                      [attr.aria-label]="showPassword() ? 'Ukryj hasło' : 'Pokaż hasło'"
+                      [attr.aria-pressed]="showPassword()">
+                <span aria-hidden="true">{{ showPassword() ? 'Ukryj' : 'Pokaż' }}</span>
               </button>
             </div>
           </div>
-          <div class="checks">
-            <div class="check-line" [class.ok]="pwChecks().length"><span class="check-dot"></span>min. 8 znaków</div>
-            <div class="check-line" [class.ok]="pwChecks().upper"><span class="check-dot"></span>wielka litera</div>
-            <div class="check-line" [class.ok]="pwChecks().num"><span class="check-dot"></span>cyfra</div>
-            <div class="check-line" [class.ok]="pwChecks().special"><span class="check-dot"></span>znak specjalny</div>
-          </div>
+          <ul class="checks" id="register-password-checks" aria-label="Wymagania hasła">
+            <li class="check-line" [class.ok]="pwChecks().length">
+              <span class="check-dot" aria-hidden="true"></span>
+              <span class="sr-only">{{ pwChecks().length ? 'Spełnione: ' : 'Niespełnione: ' }}</span>min. 8 znaków
+            </li>
+            <li class="check-line" [class.ok]="pwChecks().upper">
+              <span class="check-dot" aria-hidden="true"></span>
+              <span class="sr-only">{{ pwChecks().upper ? 'Spełnione: ' : 'Niespełnione: ' }}</span>wielka litera
+            </li>
+            <li class="check-line" [class.ok]="pwChecks().num">
+              <span class="check-dot" aria-hidden="true"></span>
+              <span class="sr-only">{{ pwChecks().num ? 'Spełnione: ' : 'Niespełnione: ' }}</span>cyfra
+            </li>
+            <li class="check-line" [class.ok]="pwChecks().special">
+              <span class="check-dot" aria-hidden="true"></span>
+              <span class="sr-only">{{ pwChecks().special ? 'Spełnione: ' : 'Niespełnione: ' }}</span>znak specjalny
+            </li>
+          </ul>
 
           <button class="primary-btn" type="submit" [class.loading]="loading()" [disabled]="loading()">
             @if (loading()) {

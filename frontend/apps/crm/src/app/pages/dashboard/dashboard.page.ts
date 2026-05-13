@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, HostBinding, computed, effect, inject, signal } from '@angular/core';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
@@ -158,11 +159,14 @@ const MATCHED_JOBS_STUB: MatchedJob[] = [
 
 @Component({
   selector: 'jt-dashboard-page',
-  standalone: true,
-  imports: [RouterLink, DatePipe, DecimalPipe, DsSkeleton],
+  imports: [RouterLink, DatePipe, DecimalPipe, DsSkeleton, CdkTrapFocus],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.scss',
+  host: {
+    '[attr.data-dashboard-theme]': 'theme()',
+    '[attr.data-density]': 'density()',
+  },
 })
 export class DashboardPage {
   protected readonly i18n = inject(I18nService);
@@ -186,14 +190,6 @@ export class DashboardPage {
 
   protected readonly columns = PIPELINE_COLUMNS;
   protected readonly weeklyGoal = WEEKLY_GOAL;
-
-  @HostBinding('attr.data-dashboard-theme') protected get hostTheme(): Theme {
-    return this.theme();
-  }
-
-  @HostBinding('attr.data-density') protected get hostDensity(): Density {
-    return this.density();
-  }
 
   protected readonly userInitials = computed(() => {
     const name = this.auth.user()?.displayName ?? this.auth.user()?.email ?? 'You';

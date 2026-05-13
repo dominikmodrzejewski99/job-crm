@@ -13,7 +13,6 @@ interface NavItem {
 
 @Component({
   selector: 'jt-sidebar',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, TrPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sidebar.html',

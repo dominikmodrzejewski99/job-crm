@@ -42,14 +42,17 @@
   &.ds-btn-lg { height: 40px; padding: 0 16px; font-size: 14px; line-height: 1; }
 
   // ---- Variants ----
+  // brand-500 (#D97757) on white text is 3.36:1 — fails WCAG AA (4.5:1) for
+  // small text. brand-600 (#B85838) on white is 4.88:1 ✓. We keep terracotta
+  // as the brand color but use the darker step for primary action surfaces.
   &.ds-btn-primary {
-    background: var(--brand-500);
+    background: var(--brand-600);
     color: #fff;
-    border-color: var(--brand-600);
+    border-color: var(--brand-700);
     box-shadow: var(--sh-1), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-    &:hover:not(:disabled) { background: var(--brand-600); }
-    &:active:not(:disabled) { background: var(--brand-700); }
+    &:hover:not(:disabled) { background: var(--brand-700); }
+    &:active:not(:disabled) { background: var(--brand-800); }
   }
 
   &.ds-btn-secondary {

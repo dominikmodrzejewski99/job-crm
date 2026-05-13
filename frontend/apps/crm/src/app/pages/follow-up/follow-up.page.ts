@@ -1,3 +1,4 @@
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { catchError, of } from 'rxjs';
 
@@ -66,7 +67,7 @@ Pozdrawiam`,
 @Component({
   selector: 'jt-follow-up-page',
   standalone: true,
-  imports: [DsBadge, DsButton, DsSkeleton, EmptyStateComponent, PageHeaderComponent],
+  imports: [DsBadge, DsButton, DsSkeleton, EmptyStateComponent, PageHeaderComponent, CdkTrapFocus],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './follow-up.page.html',
   styleUrl: './follow-up.page.scss',

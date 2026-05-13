@@ -56,9 +56,14 @@
 }
 
 @if (drawerOpen()) {
-  <div class="drawer-scrim" (click)="closeDrawer()" aria-hidden="true"></div>
+  <button
+    type="button"
+    class="drawer-scrim"
+    (click)="closeDrawer()"
+    aria-label="Zamknij panel"
+  ></button>
 
-  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <header class="drawer-header">
       <h2 id="drawer-title">{{ i18n.translate('action.newApplication') }}</h2>
       <button type="button"
