@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 
 import { RouteAnnouncerComponent } from '../shared/route-announcer.component';
 import { Sidebar } from './sidebar/sidebar';
@@ -15,7 +17,7 @@ import { Topbar } from './topbar/topbar';
       <jt-sidebar />
       <div class="shell-main">
         <jt-topbar />
-        <main id="main-content" class="shell-content" tabindex="-1">
+        <main #main id="main-content" class="shell-content" tabindex="-1">
           <router-outlet />
         </main>
       </div>
@@ -24,4 +26,23 @@ import { Topbar } from './topbar/topbar';
   `,
   styleUrl: './app-shell.scss',
 })
-export class AppShell {}
+export class AppShell {
+  private readonly main = viewChild<ElementRef<HTMLElement>>('main');
+
+  constructor() {
+    const router = inject(Router);
+    const destroyRef = inject(DestroyRef);
+
+    router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(destroyRef),
+      )
+      .subscribe(() => {
+        // Angular Router does not move focus on SPA navigation, so the
+        // previous focus stays put and screen-reader cursors lag behind.
+        // Push focus to <main> after the new view is in the DOM.
+        queueMicrotask(() => this.main()?.nativeElement.focus({ preventScroll: false }));
+      });
+  }
+}

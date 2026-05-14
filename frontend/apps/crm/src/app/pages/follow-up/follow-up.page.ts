@@ -66,7 +66,6 @@ Pozdrawiam`,
 
 @Component({
   selector: 'jt-follow-up-page',
-  standalone: true,
   imports: [DsBadge, DsButton, DsSkeleton, EmptyStateComponent, PageHeaderComponent, CdkTrapFocus],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './follow-up.page.html',

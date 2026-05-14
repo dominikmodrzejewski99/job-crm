@@ -13,7 +13,6 @@ import { AuthService } from './auth.service';
 
 @Component({
   selector: 'register-page',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   templateUrl: './register.page.html',

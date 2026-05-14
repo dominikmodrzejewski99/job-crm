@@ -6,7 +6,6 @@ import { PageTitleService } from '../page-title.service';
 
 @Component({
   selector: 'jt-topbar',
-  standalone: true,
   imports: [RouterLink, TrPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './topbar.html',

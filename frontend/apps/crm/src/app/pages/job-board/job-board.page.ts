@@ -79,7 +79,6 @@ function detectCategory(title: string): Exclude<Category, 'ALL'> {
 
 @Component({
   selector: 'jt-job-board-page',
-  standalone: true,
   imports: [
     DsButton,
     DsBadge,

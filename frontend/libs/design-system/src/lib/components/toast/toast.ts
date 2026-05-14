@@ -1,10 +1,10 @@
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
   Injectable,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -28,7 +28,7 @@ interface ActiveToast extends DsToastOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @for (toast of items(); track toast.id) {
-      <div [class]="toastClass(toast)" role="status" [attr.aria-live]="ariaLive(toast)">
+      <div [class]="toastClass(toast)">
         <svg class="ds-toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           @switch (toast.variant) {
@@ -57,10 +57,6 @@ export class DsToastStack {
     return `ds-toast ds-toast--${toast.variant ?? 'info'}`;
   }
 
-  protected ariaLive(toast: ActiveToast): 'polite' | 'assertive' {
-    return toast.variant === 'error' || toast.variant === 'warning' ? 'assertive' : 'polite';
-  }
-
   protected dismiss(id: number): void {
     this.toastService.dismiss(id);
   }
@@ -69,6 +65,7 @@ export class DsToastStack {
 @Injectable({ providedIn: 'root' })
 export class DsToastService {
   private readonly overlay = inject(Overlay);
+  private readonly announcer = inject(LiveAnnouncer);
 
   private overlayRef: OverlayRef | null = null;
   private nextId = 1;
@@ -80,6 +77,10 @@ export class DsToastService {
     const id = this.nextId++;
     const toast: ActiveToast = { id, duration: 4000, variant: 'info', ...opts };
     this.toasts.update((list) => [...list, toast]);
+
+    const politeness = toast.variant === 'error' || toast.variant === 'warning' ? 'assertive' : 'polite';
+    const spoken = toast.title ? `${toast.title}. ${toast.message}` : toast.message;
+    this.announcer.announce(spoken, politeness);
 
     if (toast.duration && toast.duration > 0) {
       setTimeout(() => this.dismiss(id), toast.duration);

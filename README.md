@@ -6,6 +6,7 @@
 ![Nx](https://img.shields.io/badge/Nx-monorepo-143055?logo=nx&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
+![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1-AA-0F62FE?logo=accessibility&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 [![backend-ci](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/dominikmodrzejewski99/job-crm/actions/workflows/backend-ci.yml)
@@ -13,7 +14,7 @@
 
 Osobisty CRM do śledzenia aplikacji o pracę — zastępuje Google Sheets, dodaje automatyczne przypomnienia o follow-upach, integracje z job boardami i powiadomienia email.
 
-Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design system, multi-user z JWT, deployowany na Render/Vercel.
+Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design system, multi-user z JWT, deployowany na Render/Vercel. **Zgodny z WCAG 2.1 AA** — dostępność cyfrowa zaprojektowana od pierwszego commita, nie doklejana w trakcie audytu (wymóg European Accessibility Act 2025 / polskiej ustawy o dostępności cyfrowej 2019).
 
 ## 🌐 Live demo
 
@@ -47,10 +48,11 @@ Projekt portfolio: **Angular 21 + Java 21 / Spring Boot 3**, własny design syst
 3. [Struktura repo](#struktura-repo)
 4. [Model domeny](#model-domeny)
 5. [REST API](#rest-api)
-6. [Fazowanie](#fazowanie)
-7. [Uruchomienie lokalnie](#uruchomienie-lokalnie)
-8. [Deployment](#deployment)
-9. [Konwencje](#konwencje)
+6. [Dostępność cyfrowa (WCAG 2.1 AA)](#dostępność-cyfrowa-wcag-21-aa)
+7. [Fazowanie](#fazowanie)
+8. [Uruchomienie lokalnie](#uruchomienie-lokalnie)
+9. [Deployment](#deployment)
+10. [Konwencje](#konwencje)
 
 ---
 
@@ -287,6 +289,55 @@ Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ---
 
+## Dostępność cyfrowa (WCAG 2.1 AA)
+
+Projekt celuje w **WCAG 2.1 AA** — zgodność z polską ustawą o dostępności cyfrowej (2019) i European Accessibility Act (obowiązujący od czerwca 2025). Dostępność nie jest checkboxem na końcu sprintu, tylko architekturą — wymuszoną przez lintera i CI.
+
+### Cztery zasady WCAG → konkretne wzorce
+
+| Zasada | Implementacja |
+|---|---|
+| **Postrzegalność** | Kontrast ≥ 4.5:1 dla body text (przycisk `--brand-600` = 4.88:1 zamiast `--brand-500` = 3.36:1); status nigdy przez sam kolor — badge + tekst; `prefers-reduced-motion: reduce` w globalnym `_base.scss` |
+| **Funkcjonalność** | Skip link `Przejdź do treści` → `<main id="main-content" tabindex="-1">`; programowy `main.focus()` po `NavigationEnd` (Angular Router nie robi tego sam); `cdkTrapFocus [cdkTrapFocusAutoCapture]="true"` we wszystkich modalach; każdy interaktywny element to `<button>` lub `<a>`, nigdy `<div (click)>` |
+| **Zrozumiałość** | Etykiety przez `<label for>`, błędy po polsku w `role="alert"`, `i18n` PL/EN, spójne wzorce między podstronami |
+| **Solidność** | Semantyczny HTML, atrybuty `aria-*` po stronie DS, atrybuty walidowane przez ESLint |
+
+### Wbudowane prymitywy `@angular/cdk/a11y`
+
+- **`LiveAnnouncer`** — `DsToastService.show()` woła `announce(spoken, politeness)` (assertive dla błędów/ostrzeżeń, polite dla reszty). Toast jest jednym źródłem komunikatu dla widzących i SR-userów; brak dublowania z DOM `aria-live`.
+- **`cdkTrapFocus`** — wszystkie modale (`DsModal` przez host directive + inline modale dashboardu, applications, follow-up). Tab nie ucieka pod modal, focus wraca na trigger po zamknięciu.
+- **`.sr-only`** (clip pattern) — `RouteAnnouncerComponent` mirruje `PageTitleService.title()` do `aria-live="polite" role="status"`, więc SR słyszy zmianę strony w SPA.
+- **`:focus-visible`** — globalny focus ring w `_base.scss`, widoczny tylko dla użytkowników klawiatury.
+
+### Formularze
+
+`DsInput` i `DsTextarea` automatycznie ustawiają:
+- `aria-required` z `required()` signal
+- `aria-invalid` z `showError()` (dirty/touched + invalid)
+- `aria-describedby` linkujące input z error-messagem
+- error wrapper ma `role="alert"`, więc SR usłyszy walidację natychmiast
+- toggle "pokaż hasło" niesie `aria-pressed`
+
+### Kontrola w CI
+
+| Narzędzie | Czego pilnuje | Plik |
+|---|---|---|
+| `@angular-eslint` template a11y rules (10 reguł promoted to **error**) | brak `alt`, źle podpięte labels, `tabindex > 0`, `<div (click)>`, nieprawidłowe `aria-*`, brak keyboard events przy click | `apps/crm/eslint.config.mjs` |
+| `@axe-core/playwright` | runtime axe scan publicznych routes — fail na `critical` / `serious` | `apps/crm-e2e/src/a11y.spec.ts` |
+
+```bash
+npx nx lint crm                 # template a11y rules
+npx nx e2e crm-e2e              # axe-core przeciw running app
+```
+
+### Znane ograniczenia kontrastowe
+
+- `--text-3` (`#8A857C` na cream) = **3.35:1** — poniżej AA dla body text. **Używać tylko dla large text** (≥ 14pt bold / 18pt regular) lub dekoracji niesłużącej treści. Dla właściwych tekstów: `--text-1` (primary) lub `--text-2` (7.9:1).
+
+Pełny checklist wzorców + uzasadnienia: [`CLAUDE.md`](./CLAUDE.md) sekcja *Accessibility — WCAG AA*.
+
+---
+
 ## Fazowanie
 
 Każda faza to osobny commit / PR. Po każdej fazie aplikacja jest w działającym stanie.
@@ -374,7 +425,7 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 - **Branche**: `feature/<short-name>`, `fix/<short-name>`
 - **Jeden PR per faza** (małe, możliwe do review w 10 minut)
 - **Testy obowiązkowe** dla service layer + controllerów (>70% coverage backendu)
-- **A11y first** w design system: każdy komponent ma ARIA, keyboard nav, screen reader
+- **A11y first** — WCAG 2.1 AA wymuszone przez ESLint (10 reguł a11y → error) + axe-core w e2e. `@angular/cdk/a11y` (`LiveAnnouncer`, `cdkTrapFocus`, `.sr-only`, `:focus-visible`) zamiast ręcznych ARIA-hacków. Programowy focus `<main>` po nawigacji, route announcer dla SR, kontrast ≥ 4.5:1 dla body text. Szczegóły w sekcji [Dostępność cyfrowa](#dostępność-cyfrowa-wcag-21-aa) i [`CLAUDE.md`](./CLAUDE.md).
 
 ---
 
@@ -388,7 +439,7 @@ Wymagania: Docker, Java 21, Node 20+, pnpm/npm.
 - [x] Faza 6: Job board integration (Spring RestClient → JustJoinIT + NoFluffJobs, 6h crawler, dedup, save-as-application, ag-grid UI)
 - [x] Faza 7: Stats + dashboard (`/api/v1/stats/dashboard` agregacje, custom SVG funnel + weekly chart + status bars)
 - [x] Faza 8: CI/CD + deploy (GitHub Actions backend-ci + frontend-ci, render.yaml blueprint, vercel.json z /api rewrites, application-prod.yml)
-- [x] Faza 9: Polish — i18n PL/EN (signal-based `I18nService` + `tr` pipe), PWA (manifest + service worker, cache-first dla assets / network-first dla `/api`), a11y audit (`@axe-core/playwright` e2e, fail na critical/serious)
+- [x] Faza 9: Polish — i18n PL/EN (signal-based `I18nService` + `tr` pipe), PWA (manifest + service worker, cache-first dla assets / network-first dla `/api`), **a11y WCAG 2.1 AA** (`@axe-core/playwright` e2e + 10 ESLint template-a11y rules promoted to error, `@angular/cdk/a11y` primitives: `LiveAnnouncer`/`cdkTrapFocus`/`.sr-only`/`:focus-visible`, skip link + programowy focus `<main>` po `NavigationEnd`, route announcer w polite live region)
 - [x] Faza 10: **Brand refresh** — Claude Design "jobflow" handoff zaimplementowany 1:1 (paleta terracotta, Instrument Serif + Geist, sidebar/topbar redesign, dashboard z KPI sparkline / kanban / A/B CV / kalendarz wydarzeń, split-screen auth, public landing page na `/landing` z hero preview + feature grid + pricing). Pixel-diff ~3% (font sub-pixel rendering)
 
 ---
